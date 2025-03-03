@@ -554,6 +554,7 @@ export default {
      * 获取聊天列表
      */
     async getChatList() {
+      showLoading();
       const res = await getChatMsgListApi(this.params);
       this.currentChat.messages = res.data.records;
       if (this.params.pageNum === 1 && this.currentChat.messages.length > 0) {
@@ -575,7 +576,8 @@ export default {
         msg.time = formatTime(msg.time);
       });
 
-     this.handlePreCode();
+      this.handlePreCode();
+      hideLoading();
     },
     /**
      * 连接WebSocket
@@ -2813,9 +2815,8 @@ export default {
   }
 
 .message {
-    // existing styles...
     .active-message {
-        background-color: rgb(222 22 22 / 55%) !important; // 你可以根据需要调整颜色
+        background-color: rgb(222 22 22 / 55%) !important; 
         transition: background-color 0.2s ease !important;
     }
 }
