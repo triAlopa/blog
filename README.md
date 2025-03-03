@@ -111,7 +111,7 @@ blog
 
 ![statics/img_18.png](/statics/img_18.png)  ![statics/img_19.png](/statics/img_19.png)
 
-![statics/img_20.png](/statics/img_20.png) ![statics/img21.png](img21.png)
+![statics/img_20.png](/statics/img_20.png) ![statics/img21.png](/statics/img21.png)
 
 
 ## 技术介绍
