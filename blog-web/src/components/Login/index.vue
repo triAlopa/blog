@@ -89,7 +89,10 @@
 
         <!-- 注册表单 -->
         <div v-show="currentForm === 'register'" class="form-container">
-
+          <div class="form-header">
+                <h2 class="form-title">注册账号</h2>
+                <p class="form-subtitle">欢迎注册,请输入您的账号</p>
+          </div>
           <el-form :model="registerForm" :rules="rules" ref="registerForm">
 
             <el-form-item lable="昵称" prop="nickname">
@@ -129,6 +132,10 @@
 
         <!-- 忘记密码表单 -->
         <div v-show="currentForm === 'forgot'" class="form-container">
+             <div class="form-header">
+                <h2 class="form-title">找回账号</h2>
+                <p class="form-subtitle">重置密码,请输入您的邮箱</p>
+          </div>
           <el-form :model="forgotForm" :rules="rules" ref="forgotForm">
             <el-form-item class="form-item" prop="email">
               <el-input prefix-icon="el-icon-message" v-model="forgotForm.email" placeholder="请输入注册邮箱" />
@@ -261,7 +268,7 @@ export default {
   },
   methods: {
     /**
-     * 
+     * 切换表单
      * @param form 
      */
     switchForm(form) {
@@ -472,6 +479,8 @@ export default {
       if (this.currentForm === 'login') {
         this.switchForm('account')
       } else if (this.currentForm === 'account') {
+        this.switchForm('login')
+      } else {
         this.switchForm('login')
       }
     }
