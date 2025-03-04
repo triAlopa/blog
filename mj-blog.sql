@@ -1300,6 +1300,7 @@ CREATE TABLE `sys_user`
     `email`           varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
     `sex`             int NULL DEFAULT NULL COMMENT '性别',
     `login_type`      varchar(20) NULL DEFAULT NULL COMMENT '登录方式',
+    `signature` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '个性签名',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `username`(`username` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1811 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
@@ -1311,7 +1312,7 @@ INSERT INTO `sys_user`
 VALUES (1, 'admin', '$2a$10$GSHv.XwqBkizplz5j2pcmu73IRY2rgtxCYQwAvSXMvu9SryzydLpe', '2024-12-27 14:16:17',
         '2024-12-30 13:43:25', 1, '134.160.135.229', '日本|埼玉县', 'Windows', '2025-01-02 11:01:04', 'Chrome', '墨笺',
         'https://img2.baidu.com/it/u=3029837478,1144772205&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1731862800&t=a82c956c5d1b9ded3bcd9ffe204802f5',
-        '', NULL, 1, 'email');
+        '', NULL, 1, 'email',null);
 
 -- ----------------------------
 -- Table structure for sys_user_role

@@ -52,6 +52,8 @@ Vue.directive('animate-on-scroll', animateOnScroll)
 import ImagePreview from '@/components/common/ImagePreview.vue'
 Vue.component('mj-image-preview', ImagePreview)
 
+
+
 // 为了支持 HMR
 if (import.meta.hot) {
   import.meta.hot.accept()

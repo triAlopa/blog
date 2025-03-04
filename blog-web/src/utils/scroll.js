@@ -28,19 +28,10 @@ const getScrollbarWidth = () => {
 
 // 禁用页面滚动
 export const disableScroll = () => {
-  // 只在页面有滚动条的时候处理
-  if (hasScroll()) {
-    const scrollbarWidth = getScrollbarWidth()
-    // 只在滚动条存在时添加 padding
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = scrollbarWidth + 'px'
-    }
-  }
-  document.body.style.overflow = 'hidden'
+   document.body.classList.add('scroll-disabled')
 }
 
 // 启用页面滚动
 export const enableScroll = () => {
-  document.body.style.overflow = ''
-  document.body.style.paddingRight = ''
+  document.body.classList.remove('scroll-disabled')
 } 

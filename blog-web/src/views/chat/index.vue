@@ -145,6 +145,7 @@
                 <span v-if="msg.userId === 2" class="assistant-tag">A I</span>
                 <span class="message-time">{{ msg.time }}</span>
                 <span class="location">{{ splitIpAddress(msg.location) }}</span>
+                <span class="gender" v-if="msg.sex"><i :class="msg.sex === 1 ? 'fas fa-mars' : 'fas fa-venus'"></i></span>
               </div>
             </div>
             <div v-if="msg.isRecalled" class="message-recalled">
@@ -490,8 +491,12 @@ export default {
       return;
     }
     this.init();
-    //禁止滚动
-    disableScroll();
+    
+    // 在nextTick后禁用滚动,确保DOM已经渲染
+    this.$nextTick(() => {
+      disableScroll();
+    });
+    
     this.checkMobile();
     window.addEventListener("resize", this.checkMobile);
   },
@@ -509,7 +514,7 @@ export default {
     if (this.countdownTimer) {
       clearInterval(this.countdownTimer);
     }
-    //开启滚动
+    // 确保在组件销毁时启用滚动
     enableScroll();
     window.removeEventListener("resize", this.checkMobile);
   },
@@ -661,6 +666,7 @@ export default {
         userId: message.userId,
         name: message.name,
         avatar: message.avatar,
+        sex: message.sex,
         location: message.location,
         fileSize: message.fileSize,
         fileName: message.fileName,
@@ -768,6 +774,7 @@ export default {
         name: this.$store.state.userInfo.nickname,
         userId: this.$store.state.userInfo.id,
         avatar: this.$store.state.userInfo.avatar,
+        sex: this.$store.state.userInfo.sex,
         replyId: this.selectedReplyMessage?.id || null,
         replyContent: this.selectedReplyMessage?.content || null,
         replyUserId: this.selectedReplyMessage?.userId || null,
@@ -799,6 +806,7 @@ export default {
         name: this.$store.state.userInfo.nickname,
         userId: this.$store.state.userInfo.id,
         avatar: this.$store.state.userInfo.avatar,
+        sex: this.$store.state.userInfo.sex,
       };
 
       try {
@@ -1452,6 +1460,7 @@ export default {
         name: this.$store.state.userInfo.nickname,
         userId: this.$store.state.userInfo.id,
         avatar: this.$store.state.userInfo.avatar,
+        sex: this.$store.state.userInfo.sex,
       };
 
       try {
@@ -1582,6 +1591,7 @@ export default {
         name: this.$store.state.userInfo.nickname,
         userId: this.$store.state.userInfo.id,
         avatar: this.$store.state.userInfo.avatar,
+        sex: this.$store.state.userInfo.sex,
       };
 
       try {
@@ -1694,6 +1704,7 @@ export default {
   overflow: hidden;
   max-width: 1200px;
   position: relative;
+  z-index: 1;
 
   @media screen and (max-width: 768px) {
     height: 100vh;
@@ -2198,6 +2209,9 @@ export default {
     display: flex;
     flex-direction: column;
     gap: $spacing-md;
+    -webkit-overflow-scrolling: touch; // 增加iOS滚动支持
+    position: relative;
+    z-index: 1;
 
     .message {
       display: flex;
@@ -2260,6 +2274,18 @@ export default {
             }
             .assistant-name {
               color: #b32ce9;
+            }
+          }
+          .gender{
+            font-size: 1em;
+            &::before {
+              content: '·';
+            }
+            .fa-mars{
+              color: #007bff;
+            }
+            .fa-venus{
+              color: pink;
             }
           }
         }
@@ -2819,5 +2845,12 @@ export default {
         background-color: rgb(222 22 22 / 55%) !important; 
         transition: background-color 0.2s ease !important;
     }
+}
+
+// 添加以下全局样式
+:deep(body) {
+  &.scroll-disabled {
+    overflow: hidden !important;
+  }
 }
 </style>

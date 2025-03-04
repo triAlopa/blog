@@ -122,6 +122,10 @@
   font-family: 'Font Awesome 5 Brands' !important;
 }
 
+.scroll-disabled{
+  overflow: hidden !important;
+}
+
 /* 鼠标点击效果容器 */
 .cursor-container {
   pointer-events: none;

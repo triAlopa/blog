@@ -18,7 +18,8 @@
             m.create_time as `time`,
             u.id as userId,
             u.nickname as name,
-            u.avatar
+            u.avatar,
+            u.sex
         from chat_msg m
             left join sys_user u on m.sender_id = u.id
             left join sys_user ru on m.reply_user_id = ru.id

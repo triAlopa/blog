@@ -21,6 +21,7 @@
     "mavon-editor": "^2.10.4",
     "vite-plugin-svg-icons": "^2.0.1",
     "vue": "^2.7.16",
+    "vue-cropper": "^0.6.5",
     "vue-danmaku": "^1.7.2",
     "vue-lazyload": "^1.3.3",
     "vue-router": "^3.6.5",

@@ -5,18 +5,16 @@
       <!-- 用户信息卡片 -->
       <el-card class="user-card">
         <div class="avatar-section">
-          <div class="avatar-wrapper" @click="triggerUpload" role="button" tabindex="0" @keydown.enter="triggerUpload"
+          <div class="avatar-wrapper" @click="showCropper = true" role="button" tabindex="0"
             aria-label="更换头像">
             <el-avatar :size="100" :src="userInfo.avatar" alt="用户头像"></el-avatar>
             <div class="upload-overlay" inert>
               <i class="el-icon-camera"></i>
             </div>
           </div>
-          <input type="file" ref="fileInput" class="hidden-input" accept="image/*" @change="handleAvatarChange"
-            aria-label="上传头像">
         </div>
         <h3 class="username">{{ userInfo.nickname }}</h3>
-        <p class="bio">{{ userInfo.bio || '这个人很懒，还没有写简介...' }}</p>
+        <p class="signature">{{ userInfo.signature || '这个人很懒，还没有写简介...' }}</p>
         
         <!-- 添加签到按钮 -->
         <div class="sign-in-section">
@@ -81,13 +79,13 @@
             <el-input v-model="profileForm.email" placeholder="请输入邮箱" aria-label="邮箱输入框"></el-input>
           </el-form-item>
           <el-form-item label="个人简介">
-            <el-input type="textarea" v-model="profileForm.bio" :rows="4" placeholder="介绍一下自己吧..."></el-input>
+            <el-input type="textarea" v-model="profileForm.signature" :rows="4" placeholder="介绍一下自己吧..."></el-input>
           </el-form-item>
           <el-form-item label="性别">
             <el-radio-group v-model="profileForm.sex">
               <el-radio :label="1">男</el-radio>
-              <el-radio :label="0">女</el-radio>
-              <el-radio :label="2">保密</el-radio>
+              <el-radio :label="2">女</el-radio>
+              <el-radio :label="0">保密</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item>
@@ -359,15 +357,19 @@
                 </div>
               </div>
               <el-empty v-else description="暂无反馈记录"></el-empty>
-
-
             </div>
           </el-tab-pane>
         </el-tabs>
       </div>
 
-
     </main>
+
+    <AvatarCropper 
+      :visible.sync="showCropper"
+      :user="userInfo"
+      @update-avatar="handleAvatarUpdate"
+    />
+
   </div>
 </template>
 
@@ -377,13 +379,16 @@ import {
   getMyCommentApi, delMyCommentApi, getMyLikeApi, getMyReplyApi, getMyFeedbackApi, addFeedbackApi,
   signInApi, getSignInStatusApi, getSignInStatsApi
 } from '@/api/user'
-import { uploadFileApi } from '@/api/file'
 import { getMyArticleApi, likeArticleApi, delArticleApi } from '@/api/article'
 import { getDictDataApi } from '@/api/dict'
+import AvatarCropper from '@/components/common/AvatarCropper.vue'
 
 import { marked } from "marked";
 export default {
   name: 'Profile',
+  components: {
+    AvatarCropper
+  },
   data() {
     // 密码确认验证规则
     const validateConfirmPassword = (rule, value, callback) => {
@@ -399,7 +404,7 @@ export default {
       editForm: {
         username: '',
         email: '',
-        bio: ''
+        signature: ''
       },
       passwordForm: {
         oldPassword: '',
@@ -471,6 +476,7 @@ export default {
         nickname: '',
         email: '',
         sex: 2,
+        signature: ''
       },
       profileRules: {
         username: [
@@ -516,6 +522,7 @@ export default {
         totalDays: 0
       },
       signInLoading: false,
+      showCropper: false,
     }
   },
 
@@ -601,44 +608,6 @@ export default {
     handlePageChange(val) {
       this.params.pageNum = val
       this.getMyComment()
-    },
-
-    triggerUpload() {
-      this.$refs.fileInput.click()
-    },
-    /**
-     * 修改头像
-     * @param e
-     */
-    async handleAvatarChange(e) {
-      const file = e.target.files[0]
-      if (!file) return
-
-      // 这里可以添加文件类型和大小检查
-      if (!file.type.includes('image/')) {
-        alert('请上传图片文件')
-        return
-      }
-
-      // 创建 FormData 对象
-      const formData = new FormData()
-      formData.append('file', file)
-
-      // 调用上传接口
-      const response = await uploadFileApi(formData,'avatar')
-
-      // 发送图片消息
-      if (response.data) {
-        updateProfileApi({ id: this.profileForm.id, avatar: response.data }).then(res => {
-          this.$message.success('头像更新成功')
-          this.userInfo.avatar = response.data
-          this.$store.state.userInfo.avatar = response.data
-        }).catch(err => {
-          this.$message.error(err.message || '头像更新失败')
-        })
-      } else {
-        alert('上传失败')
-      }
     },
 
     /**
@@ -893,28 +862,6 @@ export default {
       this.params.pageNum = val
       this.getMyFeedbacks()
     },
-
-    handleCoverUpload(e) {
-      const file = e.target.files[0]
-      if (!file) return
-
-      const formData = new FormData()
-      formData.append('file', file)
-
-      uploadFileApi(formData).then(res => {
-        if (res.code === 200) {
-          this.articleForm.cover = res.data.url  // 使用返回的 url
-          this.$message.success('上传成功')
-        } else {
-          this.$message.error(res.message || '上传失败')
-        }
-      }).catch(error => {
-        this.$message.error('上传失败，请重试')
-      })
-
-      // 清空 input 的值，这样可以重复上传同一个文件
-      e.target.value = ''
-    },
     /**
      * 获取签到状态
      */
@@ -949,6 +896,13 @@ export default {
       }).finally(() => {
         this.signInLoading = false
       })
+    },
+
+    /**
+     * 更新头像
+     */
+    handleAvatarUpdate(newAvatarUrl) {
+      this.userInfo.avatar = newAvatarUrl;
     },
   }
 }
@@ -1035,7 +989,7 @@ export default {
     color: var(--text-primary);
   }
 
-  .bio {
+  .signature {
     color: var(--text-secondary);
     font-size: 14px;
     margin: 0 0 16px;

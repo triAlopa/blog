@@ -61,6 +61,9 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "邮箱")
     private String email;
 
+    @ApiModelProperty(value = "个性签名")
+    private String signature;
+
     @ApiModelProperty(value = "性别")
     private Integer sex;
 
