@@ -31,7 +31,7 @@
 
 账号:test 密码:123456
 
-**Gitee地址：** [https  ://gitee.com/quequnlong/shiyi-blog](https://gitee.com/quequnlong/shiyi-blog)
+**Gitee地址：** [https://gitee.com/quequnlong/shiyi-blog](https://gitee.com/quequnlong/shiyi-blog)
 
 您的star是我坚持的动力，感谢大家的支持，欢迎提交pr共同改进项目。
 
