@@ -3,6 +3,11 @@
     <div class="login-container">
       <!-- 登录表单 -->
       <div class="login-body">
+        <el-tooltip class="item" effect="dark" :content="currentForm === 'login' ? '账号密码登录' : '扫码登录'" placement="top">
+          <button class="switch-form-btn" @click="handleSwitchForm">
+            <i :class="currentForm === 'login' ? 'el-icon-user' : 'fas fa-qrcode'"></i>
+          </button>
+        </el-tooltip>
         <!-- 微信扫码登录 -->
         <div v-show="currentForm === 'login'" class="form-container">
           <div class="qrcode-content">
@@ -32,10 +37,6 @@
                 </div>
               </el-tooltip>
             </div>
-          </div>
-
-          <div class="form-switch">
-            <a @click="switchForm('account')">使用账号密码登录</a>
           </div>
         </div>
 
@@ -70,7 +71,6 @@
 
             <div class="form-options">
               <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-              <a class="forgot-link" @click="switchForm('forgot')">忘记密码?</a>
             </div>
 
             <el-form-item class="form-item">
@@ -81,9 +81,9 @@
           </el-form>
           
           <div class="form-switch">
-            <a @click="switchForm('login')">返回扫码登录</a>
-            <span class="divider-line">|</span>
             <a @click="switchForm('register')">立即注册</a>
+            <span class="divider-line">|</span>
+            <a @click="switchForm('forgot')">忘记密码?</a>
           </div>
         </div>
 
@@ -184,16 +184,6 @@ export default {
         showQrcode: false,
       },
       countdown: 0,
-      formTitles: {
-        login: '欢迎回来',
-        register: '创建账号',
-        forgot: '重置密码'
-      },
-      formSubtitles: {
-        login: '登录您的账号继续访问',
-        register: '填写信息创建您的账号',
-        forgot: '通过邮箱重置您的密码'
-      },
       loginForm: {
         username: '',
         password: '',
@@ -476,6 +466,14 @@ export default {
       if (this.pollingTimer) {
         clearInterval(this.pollingTimer)
       }
+    },
+
+    handleSwitchForm() {
+      if (this.currentForm === 'login') {
+        this.switchForm('account')
+      } else if (this.currentForm === 'account') {
+        this.switchForm('login')
+      }
     }
 
   },
@@ -508,6 +506,7 @@ export default {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.95);
+  position: relative;
 }
 
 .form-container {
@@ -650,6 +649,10 @@ export default {
 .code-text {
   color: #6366f1;
   font-weight: 500;
+  i {
+    cursor: pointer;
+    margin-left: $spacing-sm;
+  }
 }
 
 .form-header {
@@ -690,5 +693,31 @@ export default {
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+.switch-form-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f3f4f6;
+  border: none;
+  color: #6b7280;
+  
+  &:hover {
+    background: #e5e7eb;
+    transform: rotate(180deg);
+  }
+  
+  i {
+    font-size: 20px;
+  }
 }
 </style>
