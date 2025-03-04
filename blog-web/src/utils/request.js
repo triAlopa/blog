@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { getToken,removeToken } from '@/utils/cookie'
 import store from '@/store'
+import router from '@/router'
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
@@ -34,7 +35,7 @@ service.interceptors.response.use(
       removeToken()
       //这里获取不到this，所以需要使用全局变量
       store.commit('SET_USER_INFO', null)
-      store.commit('SET_LOGIN_VISIBLE', true)
+      router.push('/login')
       return Promise.reject(new Error('当前登录已过期，请重新登录'))
     }else {
       // 可以在这里统一处理错误

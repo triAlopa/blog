@@ -226,7 +226,7 @@ export default {
     },
     handleLogin() {
       // 处理登录逻辑
-      this.$store.commit('SET_LOGIN_VISIBLE', true)
+      this.$router.push('/login')
     },
     closeAllPanels() {
       this.showMobileSearch = false

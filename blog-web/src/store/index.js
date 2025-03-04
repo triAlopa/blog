@@ -11,7 +11,6 @@ export default new Vuex.Store({
       showList:[]
     },
     token: getToken() || '',
-    loginVisible: false,
     searchVisible: false,
     mobileMenuVisible: false,
     visitorAccess: 0,
@@ -31,9 +30,7 @@ export default new Vuex.Store({
       state.userInfo = userInfo
       sessionStorage.setItem("user", JSON.stringify(userInfo))
     },
-    SET_LOGIN_VISIBLE(state, visible) {
-      state.loginVisible = visible
-    },
+
     SET_SEARCH_VISIBLE(state, visible) {
       state.searchVisible = visible
     },

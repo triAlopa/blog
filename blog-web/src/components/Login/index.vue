@@ -1,38 +1,23 @@
 <template>
-  <el-dialog width="400px" :visible.sync="$store.state.loginVisible" @close="handleClose">
-
-    <template slot="title">
-      <div class="login-header">
-        <h3>{{ formTitles[currentForm] }}</h3>
-        <p class="subtitle">{{ formSubtitles[currentForm] }}</p>
-      </div>
-    </template>
-    <div>
+  <div>
+    <div class="login-container">
       <!-- 登录表单 -->
       <div class="login-body">
+        <!-- 微信扫码登录 -->
         <div v-show="currentForm === 'login'" class="form-container">
-          <el-form :model="loginForm" :rules="rules" ref="ruleFrom">
-            <el-form-item class="form-item" prop="username">
-              <el-input prefix-icon="el-icon-user-solid" v-model="loginForm.username" placeholder="请输入用户名"
-              @keyup.enter.native="handleLogin"/>
-            </el-form-item>
-
-            <el-form-item class="form-item" prop="password">
-              <el-input prefix-icon="el-icon-lock" v-model="loginForm.password" placeholder="请输入密码"
-              @keyup.enter.native="handleLogin" show-password />
-            </el-form-item>
-
-            <div class="form-options">
-              <a class="forgot-password" @click="switchForm('forgot')">忘记密码？</a>
+          <div class="qrcode-content">
+            <div class="qrcode-box">
+              <!-- 这里放二维码图片 -->
+              <img v-lazy="'https://img.shiyit.com/qrcode.jpg'" :key="'https://img.shiyit.com/qrcode.jpg'" alt="微信二维码">
             </div>
-
-            <el-form-item class="form-item">
-              <el-button class="submit-btn ripple" :loading="loading" @click="handleLogin">
-                登 录
-              </el-button>
-            </el-form-item>
-          </el-form>
-
+            <p class="qrcode-tip">登录验证码：
+              <span class="code-text">{{ wechatForm.code }}</span>
+              <span class="code-text" v-if="wechatForm.code === '验证码已失效'">
+                <i class="fas fa-sync-alt" @click="getWechatLoginCode"></i>
+              </span>
+            </p>
+            <p class="qrcode-tip">微信扫码关注公众号，并发送验证码</p>
+          </div>
 
           <div class="divider">
             <el-divider>其他登录方式</el-divider>
@@ -40,23 +25,65 @@
 
           <div class="third-party-login">
             <div v-for="(item, type) in loginTypes" :key="type" class="login-icon-wrapper"
-              @click="handleThirdPartyLogin(type)">
+              @click="handleThirdPartyLogin(type)" v-if="type !== 'wechat'">
               <el-tooltip :content="item.title" placement="top">
                 <div :class="['login-icon', type]">
-                  <i :class="item.icon" v-if="type === 'github'"></i>
-                  <i :class="item.icon" v-if="type === 'qq'"></i>
-                  <i :class="item.icon" v-if="type === 'wechat'"></i>
-                  <i :class="item.icon" v-if="type === 'gitee'"></i>
-                  <i :class="item.icon" v-if="type === 'weibo'"></i>
+                  <i :class="item.icon"></i>
                 </div>
               </el-tooltip>
-
             </div>
-
           </div>
 
           <div class="form-switch">
-            还没有账号？<a @click="switchForm('register')">立即注册</a>
+            <a @click="switchForm('account')">使用账号密码登录</a>
+          </div>
+        </div>
+
+        <!-- 账号密码登录表单 -->
+        <div v-show="currentForm === 'account'" class="form-container">
+          <div class="form-header">
+            <h2 class="form-title">账号密码登录</h2>
+            <p class="form-subtitle">欢迎回来,请输入您的账号</p>
+          </div>
+
+          <el-form :model="loginForm" :rules="rules" ref="ruleFrom">
+            <el-form-item class="form-item" prop="username">
+              <el-input 
+                prefix-icon="el-icon-user-solid" 
+                v-model="loginForm.username" 
+                placeholder="请输入用户名"
+                @keyup.enter.native="handleLogin"
+                size="large"
+              />
+            </el-form-item>
+
+            <el-form-item class="form-item" prop="password">
+              <el-input 
+                prefix-icon="el-icon-lock" 
+                v-model="loginForm.password" 
+                placeholder="请输入密码"
+                @keyup.enter.native="handleLogin" 
+                show-password
+                size="large"
+              />
+            </el-form-item>
+
+            <div class="form-options">
+              <el-checkbox v-model="rememberMe">记住我</el-checkbox>
+              <a class="forgot-link" @click="switchForm('forgot')">忘记密码?</a>
+            </div>
+
+            <el-form-item class="form-item">
+              <el-button class="submit-btn ripple" :loading="loading" @click="handleLogin" type="primary">
+                登 录
+              </el-button>
+            </el-form-item>
+          </el-form>
+          
+          <div class="form-switch">
+            <a @click="switchForm('login')">返回扫码登录</a>
+            <span class="divider-line">|</span>
+            <a @click="switchForm('register')">立即注册</a>
           </div>
         </div>
 
@@ -94,7 +121,7 @@
             </el-form-item>
 
             <div class="form-switch">
-              已有账号？<a @click="switchForm('login')">立即登录</a>
+              已有账号？<a @click="switchForm('account')">立即登录</a>
             </div>
           </el-form>
 
@@ -128,37 +155,14 @@
             </el-form-item>
 
             <div class="form-switch">
-              <a @click="switchForm('login')">返回登录</a>
+              <a @click="switchForm('account')">返回登录</a>
             </div>
           </el-form>
 
         </div>
       </div>
-
-      <!-- 微信二维码弹窗 -->
-      <div class="qrcode-modal" v-if="wechatForm.showQrcode" @click.self="handleCloseWechat">
-        <div class="qrcode-container">
-          <div class="qrcode-header">
-            <span>微信扫码登录</span>
-            <span class="close-qrcode" @click="handleCloseWechat">×</span>
-          </div>
-          <div class="qrcode-content">
-            <div class="qrcode-box">
-              <!-- 这里放二维码图片 -->
-              <img v-lazy="'https://img.shiyit.com/qrcode.jpg'" :key="'https://img.shiyit.com/qrcode.jpg'" alt="微信二维码">
-            </div>
-            <p class="qrcode-tip">登录验证码：
-              <span class="code-text">{{ wechatForm.code }}</span>
-              <span class="code-text" v-if="wechatForm.code === '验证码已失效'">
-                <i class="fas fa-sync-alt" @click="getWechatLoginCode"></i>
-              </span>
-            </p>
-            <p class="qrcode-tip">微信扫码关注公众号，并发送验证码</p>
-          </div>
-        </div>
-      </div>
     </div>
-  </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -252,28 +256,19 @@ export default {
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' }
         ]
-      }
-
-    }
-  },
-  watch: {
-    '$store.state.loginVisible': {
-      handler(newVal) {
-        if (newVal) {
-          disableScroll()
-          Object.keys(this.loginTypes).forEach(key => {
-            if (!this.$store.state.webSiteInfo.loginTypeList.includes(key)) {
-              delete this.loginTypes[key]
-            }
-          })
-        } else {
-          enableScroll()
-        }
       },
-      immediate: true
+      rememberMe: false,
     }
   },
 
+  created() {
+    Object.keys(this.loginTypes).forEach(key => {
+      if (!this.$store.state.webSiteInfo?.loginTypeList?.includes(key)) {
+        delete this.loginTypes[key]
+      }
+    })
+    this.getWechatLoginCode()
+  },
   methods: {
     /**
      * 
@@ -282,25 +277,10 @@ export default {
     switchForm(form) {
       this.currentForm = form
       this.loading = false
-    },
-    /**
-     * 关闭登录弹窗
-     */
-    handleClose() {
-      this.$store.commit('SET_LOGIN_VISIBLE', false)
-      this.resetForm()
       this.clearTimer()
-    },
-    /**
-     * 重置表单
-     */
-    resetForm() {
-      this.currentForm = 'login'
-      this.wechatForm.showQrcode = false
-      this.wechatForm.code = ''
-      this.loginForm = { nickname: '', password: '', source: 'PC' }
-      this.registerForm = { nickname: '', email: '', password: '', code: '' }
-      this.forgotForm = { email: '', code: '', password: '' }
+      if (form === 'login') {
+        this.getWechatLoginCode()
+      }
     },
     /**
      * 登录
@@ -319,7 +299,6 @@ export default {
             this.loading = false
           }
         } else {
-          console.log('error submit!!')
           return false;
         }
       })
@@ -397,19 +376,12 @@ export default {
       }
       getAuthRenderApi(type).then(res => {
         //将当前地址存到cookie中
-        setCookie('redirectUrl', window.location.href)
+        if (!window.location.href.includes('login')) {
+          setCookie('redirectUrl', window.location.href)
+        }
         window.open(res.data, "_self")
       })
     },
-    /**
-     * 关闭微信二维码弹窗
-     */
-    handleCloseWechat() {
-      this.wechatForm.showQrcode = false
-      this.wechatForm.code = ''
-      this.clearTimer()
-    },
-
     /**
      * 获取微信登录验证码
      */
@@ -444,6 +416,13 @@ export default {
           }
         })
       }, 1000)
+    },
+
+    /**
+     * 关闭登录弹窗
+     */
+    handleClose() {
+      this.$router.go(-1)
     },
 
 
@@ -506,371 +485,210 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-:deep(.el-dialog__header) {
-  padding: 0 !important;
-}
-
-.login-header {
-  border-top-left-radius: $border-radius-lg;
-  border-top-right-radius: $border-radius-lg;
-  text-align: center;
-  position: relative;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-
-  h3 {
-    margin: 0;
-    font-size: 24px;
-    letter-spacing: -0.5px;
-    color: #fff;
-    font-weight: 500;
-  }
-}
-
-
-.login-body {
-  background: var(--card-bg);
-}
-
-.welcome-text {
-  text-align: center;
-  color: #666;
-  margin-bottom: 25px;
-  font-size: 14px;
-}
-
-
-.third-party-login {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  margin-top: 25px;
-}
-
-.login-icon-wrapper {
-  position: relative;
-}
-
-.login-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba($text-secondary, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 20px;
-}
-
-.login-icon:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.github {
-  color: #24292e;
-}
-
-.github:hover {
-  background: #24292e;
-  color: #fff;
-}
-
-.qq {
-  color: #12B7F5;
-}
-
-.qq:hover {
-  background: #12B7F5;
-  color: #fff;
-}
-
-.wechat {
-  color: #07C160;
-}
-
-.wechat:hover {
-  background: #07C160;
-  color: #fff;
-}
-
-.gitee {
-  color: #C71D23;
-}
-
-.gitee:hover {
-  background: #C71D23;
-  color: #fff;
-}
-
-.weibo {
-  color: #C71D23;
-}
-
-.weibo:hover {
-  background: #C71D23;
-  color: #fff;
-}
-
-.login-decoration {
-  position: absolute;
-  top: 10px;
-  left: 20px;
-  display: flex;
-  gap: 8px;
-}
-
-.decoration-circle {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.decoration-circle:nth-child(1) {
-  background: #ff5f57;
-}
-
-.decoration-circle:nth-child(2) {
-  background: #ffbd2e;
-}
-
-.decoration-circle:nth-child(3) {
-  background: #28c940;
-}
-
-.login-header {
-  padding: 30px 24px;
-  text-align: center;
-  position: relative;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-}
-
-.subtitle {
-  margin: 8px 0 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-}
-
-
-.form-options {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-
-.forgot-password {
-  font-size: 13px;
-  color: #6366f1;
-  text-decoration: none;
-  transition: color 0.3s;
-  cursor: pointer;
-}
-
-.forgot-password:hover {
-  color: #4f46e5;
-}
-
-.qrcode-modal {
+.login-container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100;
+  background: url('@/assets/login-bg.svg') no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  z-index: 2000;
 }
 
-.qrcode-container {
+.login-body {
+  width: 420px;
+  padding: 32px;
   background: #fff;
-  width: 300px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
 }
 
-.qrcode-header {
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f8f9fa;
+.form-container {
+  animation: fadeIn 0.3s ease;
 }
 
-.close-qrcode {
-  cursor: pointer;
-  font-size: 20px;
-  color: #999;
-  transition: color 0.3s;
-}
+.form-item {
+  margin-bottom: 20px;
 
-.close-qrcode:hover {
-  color: #666;
-}
-
-.qrcode-content {
-  padding: 20px;
-  text-align: center;
-}
-
-.qrcode-box {
-  width: 200px;
-  height: 200px;
-  margin: 0 auto;
-  background: #f5f5f5;
-  border: 1px solid #eee;
-  border-radius: 4px;
-
-  img {
-    width: 100%;
-    height: 100%;
+  :deep(.el-input__inner) {
+    height: 44px;
+    font-size: 14px;
+    
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+  
+  :deep(.el-input__prefix) {
+    left: 12px;
+    color: #6b7280;
   }
 }
 
-.qrcode-tip {
-  margin-top: 15px;
-  color: #666;
-  font-size: 14px;
-
-  i {
-    cursor: pointer;
-    color: #b71828;
-    font-size: 12px;
-  }
-}
-
-.code-text {
-  color: #6366f1;
-  font-weight: 600;
-  margin-right: 5px;
-}
-
-
-.code-btn {
-  padding: 0 15px;
+.submit-btn {
+  width: 100%;
   height: 42px;
   border: none;
   border-radius: 8px;
   background: #6366f1;
   color: #fff;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s;
-  white-space: nowrap;
-}
+  transition: all 0.2s;
 
-.code-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.form-switch {
-  text-align: center;
-  margin-top: 25px;
-  font-size: 14px;
-  color: #666;
-}
-
-.form-switch a {
-  color: #6366f1;
-  text-decoration: none;
-  cursor: pointer;
-  margin-left: 5px;
-  transition: color 0.3s;
-}
-
-.form-switch a:hover {
-  color: #4f46e5;
-}
-
-.submit-btn {
-  width: 100%;
-  color: #fff;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  transition: all 0.3s;
-
-  :hover {
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+  &:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
   }
 
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  25% {
-    transform: translateX(-5px);
-  }
-
-  75% {
-    transform: translateX(5px);
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
+  &:active {
     transform: translateY(0);
   }
 }
 
-/* 优化按钮样式 */
-.submit-btn {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  border: none;
-  outline: none;
-  transition: all 0.2s ease;
+.divider {
+  margin: 24px 0;
+  color: #9ca3af;
+  
+  :deep(.el-divider__text) {
+    background-color: #fff;
+    padding: 0 12px;
+    font-size: 14px;
+  }
 }
 
-.submit-btn:focus {
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+.third-party-login {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
+.login-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f3f4f6;
 
-/* 优化输入框动画 */
-.input-wrapper {
-  position: relative;
-  overflow: hidden;
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &.github { color: #24292e; }
+  &.qq { color: #12B7F5; }
+  &.wechat { color: #07C160; }
+  &.gitee { color: #C71D23; }
+  &.weibo { color: #E6162D; }
 }
 
-/* 优化过渡动画 */
-.login-wrapper,
-.submit-btn,
-.login-icon,
-.form-switch a,
-.forgot-password {
-  transition: all 0.2s ease;
+.form-switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  color: #6b7280;
+  font-size: 14px;
+
+  a {
+    color: $primary;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    
+    &:hover {
+      color: darken($primary, 10%);
+    }
+  }
 }
 
-/* 其他样式保持不变 */
+.divider-line {
+  color: #e5e7eb;
+  margin: 0 12px;
+}
+
+.qrcode-content {
+  padding: 24px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.qrcode-box {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 16px;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.qrcode-tip {
+  margin: 8px 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.code-text {
+  color: #6366f1;
+  font-weight: 500;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.form-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.forgot-link {
+  color: $primary;
+  font-size: 14px;
+  cursor: pointer;
+  
+  &:hover {
+    color: darken($primary, 10%);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 </style>

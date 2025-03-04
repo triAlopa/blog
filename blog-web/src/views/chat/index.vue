@@ -213,7 +213,7 @@
       <div class="chat-input" style="position: relative;">
         <!-- 新增被回复消息显示 -->
         <div v-if="selectedReplyMessage" class="reply-preview">
-          <span>回复: {{ selectedReplyMessage.content }}</span>
+          <span class="reply-title">回复: {{ selectedReplyMessage.content }}</span>
           <i class="fas fa-times" @click="cancelReply"></i>
         </div>
         <div class="input-toolbar">
@@ -475,7 +475,7 @@ export default {
         if (newVal) {
           this.init();
         } else {
-          this.$store.commit("SET_LOGIN_VISIBLE", true);
+          this.$router.push('/login')
           if (this.ws) {
             this.ws.close();
           }
@@ -487,7 +487,7 @@ export default {
   created() {
     // 如果用户信息存在，则连接WebSocket
     if (!this.$store.state.userInfo) {
-      this.$store.commit("SET_LOGIN_VISIBLE", true);
+      this.$router.push('/login')
       return;
     }
     this.init();
@@ -1028,6 +1028,7 @@ export default {
           this.$nextTick(() => {
             const newScrollHeight = container.scrollHeight;
             container.scrollTop = newScrollHeight - oldScrollHeight;
+            this.handlePreCode();
           });
         } else {
           this.hasMore = false;
@@ -2741,7 +2742,14 @@ export default {
   left: 50%; /* 水平居中 */
   transform: translateX(-50%); /* 水平居中调整 */
   width: calc(100% - 2 * $spacing-md); /* 与输入框宽度一致 */
-
+  
+  // 超出隐藏
+  .reply-title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
   i {
     cursor: pointer;
     color: var(--text-primary);
@@ -2763,7 +2771,6 @@ export default {
     border-radius: 6px;
     padding-top: 2.5em;
     overflow: auto;
-    max-height: 500px;
 
 
     /* 调整代码内容的样式 */
@@ -2779,6 +2786,8 @@ export default {
       font-size: 14px;
       line-height: 1.5;
       position: relative;
+      max-height: 500px;
+
     }
 
     /* 添加仿 macOS 风格的按钮 */

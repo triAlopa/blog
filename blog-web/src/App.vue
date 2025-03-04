@@ -2,7 +2,7 @@
   <div id="app">
     <TheHeader />
     <MobileMenu />
-    <Login />
+    <!-- <Login /> -->
     <SearchDialog />
     <router-view class="main-container" />
     <TheFooter />
@@ -70,7 +70,6 @@ export default {
      * 处理第三方登录用回调逻辑
      */
      async handleThirdPartyLogin() {
-      this.$store.commit('SET_LOGIN_VISIBLE', false);
       let flag = window.location.href.indexOf("token") != -1;
       if (flag) {
         let token = window.location.href.split("token=")[1];
