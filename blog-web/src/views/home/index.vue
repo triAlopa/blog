@@ -15,6 +15,7 @@
           :params="params"
           @article-click="goToPost"
           @page-change="changePage"
+          class="article-list"
         />
       </main>
       <Sidebar />
@@ -108,6 +109,15 @@ export default {
   margin: 0 auto;
   width: 100%;
   padding: $spacing-lg;
+
+  @include responsive(lg) {
+    padding: $spacing-sm;
+  }
+  .article-list {
+    @include responsive(lg) {
+      padding: $spacing-md;
+    }
+  }
 }
 
 .content-layout {

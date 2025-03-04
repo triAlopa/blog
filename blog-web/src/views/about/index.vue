@@ -44,7 +44,9 @@ export default {
   margin: 0 auto;
   margin-top: $spacing-lg;
   margin-bottom: $spacing-md;
-
+  @include responsive(lg) {
+    padding: $spacing-sm;
+  }
   .about-content {
     line-height: 1.8;
     color: var(--text-primary);

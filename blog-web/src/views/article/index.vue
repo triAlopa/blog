@@ -924,6 +924,9 @@ export default {
   max-width: 1300px;
   margin: 0 auto;
   padding: $spacing-lg;
+  @include responsive(lg) {
+    padding: $spacing-sm;
+  }
 }
 
 .content-layout {
@@ -1458,6 +1461,10 @@ export default {
   padding: $spacing-md * 2;
   border-top: 1px solid var(--border-color);
 
+  @include responsive(lg) {
+    padding: $spacing-sm;
+  }
+
   .copyright-notice {
     margin-bottom: $spacing-xl;
     background: var(--hover-bg);
@@ -1882,78 +1889,6 @@ export default {
   }
 }
 
-.copyright-notice {
-  margin: 0 0 $spacing-xl;
-  border-radius: $border-radius-lg;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  overflow: hidden;
-
-  .notice-header {
-    padding: $spacing-md;
-    background: var(--hover-bg);
-    color: var(--text-primary);
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    border-bottom: 1px solid var(--border-color);
-
-    i {
-      color: $primary;
-      font-size: 1.1em;
-    }
-  }
-
-  .notice-content {
-    padding: $spacing-md $spacing-lg;
-
-    .notice-item {
-      display: flex;
-      align-items: center;
-      gap: $spacing-sm;
-      padding: $spacing-xs 0;
-      color: var(--text-secondary);
-      font-size: 0.95em;
-      line-height: 1.6;
-
-      i {
-        color: $primary;
-        font-size: 1em;
-        width: 16px;
-        text-align: center;
-      }
-
-      a {
-        color: $primary;
-        text-decoration: none;
-        border-bottom: 1px dashed $primary;
-        transition: all 0.2s ease;
-
-        &:hover {
-          border-bottom-style: solid;
-        }
-      }
-
-      &.notice-warning {
-        margin-top: $spacing-sm;
-        padding: $spacing-sm;
-        background: rgba($primary, 0.05);
-        border-radius: $border-radius-sm;
-
-        i {
-          color: #ff9800;
-        }
-      }
-    }
-  }
-
-  @include responsive(md) {
-    margin: $spacing-md;
-  }
-}
-
 @keyframes shareMenuIn {
   from {
     opacity: 0;
@@ -2099,6 +2034,10 @@ export default {
   border: 1px solid rgba(0, 150, 136, 0.1);
   transition: all 0.3s ease;
   overflow: hidden;
+
+  @include responsive(sm) {
+    margin: $spacing-sm;
+  }
   
 
 

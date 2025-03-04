@@ -237,6 +237,9 @@ export default {
   padding: $spacing-lg;
   min-height: calc(100vh - 200px);
   animation: fadeIn 0.8s ease-out;
+  @include responsive(lg) {
+    padding: $spacing-sm;
+  }
 }
 
 .content-card {
