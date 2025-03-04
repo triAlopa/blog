@@ -1,18 +1,13 @@
 package com.mojian.init;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mojian.entity.SysFileOss;
 import com.mojian.enums.FileOssEnum;
 import com.mojian.mapper.SysFileOssMapper;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileStorageProperties;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.dromara.x.file.storage.core.FileStorageServiceBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
@@ -98,24 +93,6 @@ public class FileStorageInit {
                 service.getProperties().setDefaultPlatform(sysFileOss.getPlatform());
             }
         }
-    }
-
-    @Bean
-    public WebMvcConfigurer myFileStorageWebMvcConfigurer() {
-        SysFileOss sysFileOss = sysFileOssMapper.selectOne(new LambdaQueryWrapper<SysFileOss>()
-                .eq(SysFileOss::getPlatform, FileOssEnum.LOCAL.getValue()));
-
-        return new WebMvcConfigurer() {
-            @Override
-            public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-                if (sysFileOss != null) {
-                    //本地存储升级版
-                    registry.addResourceHandler(sysFileOss.getPathPatterns())
-                            .addResourceLocations("file:" + sysFileOss.getStoragePath());
-                }
-
-            }
-        };
     }
 
 }

@@ -1,5 +1,10 @@
 package com.mojian.config;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mojian.entity.SysFileOss;
+import com.mojian.enums.FileOssEnum;
+import com.mojian.mapper.SysFileOssMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
@@ -12,7 +17,10 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  */
 @Configuration
 @EnableWebMvc
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final SysFileOssMapper sysFileOssMapper;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -20,6 +28,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+        SysFileOss sysFileOss = sysFileOssMapper.selectOne(new LambdaQueryWrapper<SysFileOss>()
+                .eq(SysFileOss::getPlatform, FileOssEnum.LOCAL.getValue()));
+
+        if (sysFileOss != null) {
+            //本地存储升级版
+            registry.addResourceHandler(sysFileOss.getPathPatterns())
+                    .addResourceLocations("file:" + sysFileOss.getStoragePath());
+        }
     }
 
     /**
