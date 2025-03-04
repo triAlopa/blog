@@ -1369,6 +1369,7 @@ export default {
      * 格式化消息内容
      */
     formatMessageContent(content) {
+      if (content === '***') return content;
       // 使用 marked 解析 Markdown 内容
       const htmlContent = marked(content);
 

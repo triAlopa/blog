@@ -2,8 +2,8 @@ package com.mojian.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.mojian.service.CommentService;
+import com.mojian.utils.SensitiveUtil;
 import com.mojian.vo.comment.CommentListVo;
 import com.mojian.entity.SysComment;
 import com.mojian.mapper.SysCommentMapper;
@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
         sysComment.setIp(ip);
         sysComment.setIpSource(IpUtil.getIp2region(ip));
         sysComment.setUserId(StpUtil.getLoginIdAsInt());
-        sysComment.setContent(SensitiveWordHelper.replace(sysComment.getContent()));
+        sysComment.setContent(SensitiveUtil.filter(sysComment.getContent()));
 
         sysCommentMapper.insert(sysComment);
     }

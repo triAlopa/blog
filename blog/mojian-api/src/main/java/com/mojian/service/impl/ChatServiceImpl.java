@@ -4,20 +4,16 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.mojian.common.Constants;
 import com.mojian.entity.SysUser;
 import com.mojian.enums.ChatTypeEnum;
 import com.mojian.exception.ServiceException;
 import com.mojian.mapper.SysUserMapper;
-import com.mojian.utils.AiUtil;
-import com.mojian.utils.BeanCopyUtil;
-import com.mojian.utils.IpUtil;
+import com.mojian.utils.*;
 import com.mojian.vo.chat.ChatSendMsgVo;
 import com.mojian.entity.ChatMsg;
 import com.mojian.mapper.SysChatMsgMapper;
 import com.mojian.service.ChatService;
-import com.mojian.utils.PageUtil;
 import com.mojian.websocket.WebSocketServer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -48,7 +44,7 @@ public class ChatServiceImpl implements ChatService {
 
         //如果是文字类型的，就先敏感词过滤
         if (ChatTypeEnum.TEXT.getType().equals(chatSendMsgVo.getType())){
-            chatSendMsgVo.setContent(SensitiveWordHelper.replace(chatSendMsgVo.getContent()));
+            chatSendMsgVo.setContent(SensitiveUtil.filter(chatSendMsgVo.getContent()));
         }
 
         ChatMsg chatMsg = BeanCopyUtil.copyObj(chatSendMsgVo, ChatMsg.class);
