@@ -1306,7 +1306,7 @@ export default {
 
   :deep(img.lazy-image) {
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+  
     
     &.loaded {
       opacity: 1;

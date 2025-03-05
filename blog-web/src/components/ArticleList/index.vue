@@ -119,7 +119,7 @@ export default {
 
     .post-image {
       order: 2;
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 15% 100%);
+      // clip-path: polygon(0 0, 100% 0, 100% 100%, 15% 100%);
 
       .category-tag {
         left: 18%;
@@ -142,7 +142,7 @@ export default {
     position: relative;
     height: 240px;
     overflow: hidden;
-    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+    // clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
     cursor: pointer;
 
     &::after {
@@ -366,7 +366,7 @@ export default {
 
     .post-image {
       height: 240px;
-      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      // clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
 
       &::after {
         display: none;

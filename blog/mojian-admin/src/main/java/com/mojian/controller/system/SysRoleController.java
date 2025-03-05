@@ -70,7 +70,7 @@ public class SysRoleController {
     @ApiOperation(value = "修改角色权限")
     @OperationLogger(value = "修改角色权限")
     @SaCheckPermission("sys:role:menus")
-    public Result<Void> updateRoleMenus(@PathVariable Integer id,@RequestBody List<Integer> menuIds) {
+    public Result<Boolean> updateRoleMenus(@PathVariable Integer id,@RequestBody List<Integer> menuIds) {
         return Result.success(sysRoleService.updateRoleMenus(id,menuIds));
     }
 

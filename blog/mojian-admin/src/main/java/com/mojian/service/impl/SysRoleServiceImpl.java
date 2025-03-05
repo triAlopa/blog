@@ -64,10 +64,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Void updateRoleMenus(Integer id, List<Integer> menuIds) {
+    public Boolean updateRoleMenus(Integer id, List<Integer> menuIds) {
         baseMapper.deleteMenuByRoleId(Collections.singletonList(id));
-        baseMapper.insertRoleMenus(id, menuIds);
-        return null;
+        if (!menuIds.isEmpty()) {
+            baseMapper.insertRoleMenus(id, menuIds);
+        }
+        return Boolean.TRUE;
     }
 
     /**

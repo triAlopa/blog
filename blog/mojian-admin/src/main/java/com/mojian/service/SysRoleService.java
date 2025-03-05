@@ -11,17 +11,17 @@ public interface SysRoleService extends IService<SysRole> {
      * 分页查询角色
      */
     IPage<SysRole> listRoles(String name);
-    
+
     /**
      * 新增角色
      */
     void addRole(SysRole role);
-    
+
     /**
      * 更新角色
      */
     void updateRole(SysRole role);
-    
+
     /**
      * 删除角色
      */
@@ -41,6 +41,6 @@ public interface SysRoleService extends IService<SysRole> {
      * @param menuIds
      * @return
      */
-    Void updateRoleMenus(Integer id, List<Integer> menuIds);
+    Boolean updateRoleMenus(Integer id, List<Integer> menuIds);
 
 }
