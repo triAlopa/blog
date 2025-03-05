@@ -31,6 +31,9 @@ export function getUserInfoApi() {
   return request({
     url: `/auth/info`,
     method: 'get',
+    params:{
+        source:'web'
+    }
   })
 } 
 

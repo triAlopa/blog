@@ -15,7 +15,9 @@ export function removeToken() {
   return Cookies.remove(TokenKey)
 } 
 
-
+export function setCookieExpires(key,value,expires) {
+  return Cookies.set(key,value,{expires:expires})
+} 
 export function setCookie(key,value) {
   return Cookies.set(key,value)
 } 

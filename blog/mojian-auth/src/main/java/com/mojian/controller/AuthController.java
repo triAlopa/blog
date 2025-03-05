@@ -85,8 +85,8 @@ public class AuthController {
     }
 
     @GetMapping("/auth/info")
-    public Result<LoginUserInfo> getUserInfo() {
-        return Result.success(authService.getLoginUserInfo());
+    public Result<LoginUserInfo> getUserInfo(@RequestParam(defaultValue = "admin") String source) {
+        return Result.success(authService.getLoginUserInfo(source));
     }
 
 }

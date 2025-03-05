@@ -34,10 +34,6 @@
                 {{ Math.ceil(post.contentMd.split(" ").length / 300) }}分钟阅读
               </span>
             </div>
-            <!-- <button class="read-more" @click="$emit('article-click', post.id)">
-              阅读全文
-              <i class="fas fa-arrow-right"></i>
-            </button> -->
           </div>
         </div>
       </article>
@@ -145,14 +141,6 @@ export default {
     // clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
     cursor: pointer;
 
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 15%;
-      bottom: 0;
-      width: 1px;
-    }
 
     .image-placeholder {
       position: absolute;
@@ -315,25 +303,6 @@ export default {
         }
       }
 
-      .read-more {
-        display: inline-flex;
-        align-items: center;
-        gap: $spacing-sm;
-        padding: $spacing-sm $spacing-lg;
-        background: $primary;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        cursor: pointer;
-
-        &:hover {
-          background: darken($primary, 10%);
-          transform: translateX(5px);
-        }
-      }
     }
   }
 }
@@ -415,11 +384,6 @@ export default {
 
         .meta-left {
           gap: $spacing-sm;
-        }
-
-        .read-more {
-          width: 100%;
-          justify-content: center;
         }
       }
     }

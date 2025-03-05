@@ -20,7 +20,7 @@ public interface AuthService {
     /**
      * 获取当前登录用户信息
      */
-    LoginUserInfo getLoginUserInfo();
+    LoginUserInfo getLoginUserInfo(String source);
 
     /**
      * 发送注册邮箱验证码

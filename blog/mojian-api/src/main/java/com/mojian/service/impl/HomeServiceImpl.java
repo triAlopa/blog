@@ -35,9 +35,16 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public Result<SysWebConfig> getWebConfig() {
-        LambdaQueryWrapper<SysWebConfig> wrapper = new LambdaQueryWrapper<>();
-        wrapper.last("limit 1");
-        SysWebConfig sysWebConfig = sysWebConfigMapper.selectOne(wrapper);
+
+        SysWebConfig sysWebConfig = new SysWebConfig();
+        Object value = redisUtil.get(RedisConstants.WEB_CONFIG_KEY);
+        if (value == null) {
+            LambdaQueryWrapper<SysWebConfig> wrapper = new LambdaQueryWrapper<>();
+            wrapper.last("limit 1");
+            sysWebConfig = sysWebConfigMapper.selectOne(wrapper);
+        }else {
+            sysWebConfig = JSONObject.parseObject(value.toString(), SysWebConfig.class);
+        }
 
         //获取浏览量和访问量
         long blogViewsCount = 0;

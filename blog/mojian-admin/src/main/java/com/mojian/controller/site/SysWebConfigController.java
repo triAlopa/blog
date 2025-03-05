@@ -27,7 +27,8 @@ public class SysWebConfigController {
     @PutMapping("/update")
     @ApiOperation(value = "修改网站配置")
     @SaCheckPermission("sys:web:update")
-    public Result<Boolean> update(@RequestBody SysWebConfig sysWebConfig) {
-        return Result.success(sysWebConfigService.updateById(sysWebConfig));
+    public Result<Void> update(@RequestBody SysWebConfig sysWebConfig) {
+        sysWebConfigService.update(sysWebConfig);
+        return Result.success();
     }
 }

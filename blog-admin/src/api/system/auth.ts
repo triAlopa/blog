@@ -28,7 +28,10 @@ export function logoutApi() {
 export function getUserInfoApi() {
   return request({
     url: "/auth/info",
-    method: "get"
+    method: "get",
+    params: {
+      source: "admin"
+    }
   })
 }
 

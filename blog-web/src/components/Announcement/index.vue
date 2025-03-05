@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { setCookie,getCookie } from '@/utils/cookie'
+import { setCookieExpires,getCookie } from '@/utils/cookie'
 export default {
   name: 'Announcement',
   data() {
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     close() {
-      setCookie('notice',this.notice.id)
+      setCookieExpires('notice',this.notice.id,365)
       this.visible = false
     }
   }

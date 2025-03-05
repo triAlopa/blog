@@ -23,6 +23,7 @@ import com.mojian.exception.ServiceException;
 import com.mojian.mapper.SysMenuMapper;
 import com.mojian.mapper.SysRoleMapper;
 import com.mojian.mapper.SysUserMapper;
+import com.mojian.utils.BeanCopyUtil;
 import com.mojian.utils.EmailUtil;
 import com.mojian.utils.IpUtil;
 import com.mojian.utils.RedisUtil;
@@ -98,8 +99,7 @@ public class AuthServiceImpl implements AuthService {
         String tokenValue = StpUtil.getTokenValue();
 
         // 返回用户信息
-        LoginUserInfo loginUserInfo = new LoginUserInfo();
-        BeanUtils.copyProperties(user, loginUserInfo);
+        LoginUserInfo loginUserInfo = BeanCopyUtil.copyObj(user, LoginUserInfo.class);
         loginUserInfo.setToken(tokenValue);
 
         StpUtil.getSession().set(Constants.CURRENT_USER, loginUserInfo);
@@ -127,7 +127,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginUserInfo getLoginUserInfo() {
+    public LoginUserInfo getLoginUserInfo(String source) {
         // 获取当前登录用户ID
         Integer userId = StpUtil.getLoginIdAsInt();
         SysUser user = userMapper.selectById(userId);
@@ -135,20 +135,21 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("用户不存在");
         }
 
+        LoginUserInfo loginUserInfo = BeanCopyUtil.copyObj(user, LoginUserInfo.class);
+
         //获取菜单权限列表
-        List<String> permissions;
-        List<String> roles = roleMapper.selectRolesCodeByUserId(userId);
-        if (roles.contains(Constants.ADMIN)) {
-            permissions = menuMapper.getPermissionList(MenuTypeEnum.BUTTON.getCode());
-        } else {
-            permissions = menuMapper.getPermissionListByUserId(userId, MenuTypeEnum.BUTTON.getCode());
+        if (source.equalsIgnoreCase(Constants.ADMIN)) {
+            List<String> permissions;
+            List<String> roles = roleMapper.selectRolesCodeByUserId(userId);
+            if (roles.contains(Constants.ADMIN)) {
+                permissions = menuMapper.getPermissionList(MenuTypeEnum.BUTTON.getCode());
+            } else {
+                permissions = menuMapper.getPermissionListByUserId(userId, MenuTypeEnum.BUTTON.getCode());
+            }
+            loginUserInfo.setRoles(roles);
+            loginUserInfo.setPermissions(permissions);
         }
 
-        LoginUserInfo loginUserInfo = new LoginUserInfo();
-        BeanUtils.copyProperties(user, loginUserInfo);
-
-        loginUserInfo.setRoles(roles);
-        loginUserInfo.setPermissions(permissions);
         return loginUserInfo;
     }
 
@@ -317,8 +318,7 @@ public class AuthServiceImpl implements AuthService {
             }
         }
 
-        LoginUserInfo loginUserInfo = new LoginUserInfo();
-        BeanUtils.copyProperties(user,loginUserInfo);
+        LoginUserInfo loginUserInfo = BeanCopyUtil.copyObj(user, LoginUserInfo.class);
 
         StpUtil.login(loginUserInfo.getId());
         loginUserInfo.setToken(StpUtil.getTokenValue());
@@ -358,10 +358,7 @@ public class AuthServiceImpl implements AuthService {
             this.insertRole(user);
         }
 
-        LoginUserInfo loginUserInfo = new LoginUserInfo();
-        BeanUtils.copyProperties(user,loginUserInfo);
-
-        return loginUserInfo;
+        return BeanCopyUtil.copyObj(user, LoginUserInfo.class);
     }
 
     /**

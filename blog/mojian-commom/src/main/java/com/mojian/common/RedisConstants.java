@@ -131,4 +131,5 @@ public class RedisConstants {
 
     public static final String ARTICLE_QUANTITY = "article_quantity";
 
+    public static final String WEB_CONFIG_KEY = "sys_webconfig";
 }
