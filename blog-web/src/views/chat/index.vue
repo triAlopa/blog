@@ -119,11 +119,6 @@
           </button>
         </div>
 
-        <div v-if="loading" class="loading-messages">
-          <i class="fas fa-spinner fa-spin"></i>
-          加载中...
-        </div>
-
         <div
           v-for="(msg, index) in currentChat.messages"
           :key="generateUniqueKey(msg, index)"
@@ -2223,6 +2218,7 @@ export default {
             background: $primary;
             color: white;
             border-radius: 16px 16px 4px 16px;
+            white-space: pre-wrap;
           }
 
           .message-header {
@@ -2286,21 +2282,15 @@ export default {
         }
 
         .message-text {
+          display: inline-block;
+          min-width: 40px; // 添加最小宽度
+          max-width: fit-content; // 让宽度适应内容
           background: var(--hover-bg);
           padding: $spacing-sm $spacing-md;
           border-radius: 16px 16px 16px 4px;
           color: var(--text-primary);
           word-break: break-word;
-
-          :deep(mention) {
-            color: rgb(84, 214, 231);
-            font-weight: 500;
-            cursor: pointer;
-
-            &:hover {
-              text-decoration: underline;
-            }
-          }
+        
         }
       }
     }
@@ -2426,8 +2416,8 @@ export default {
 }
 
 .message-image {
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 100%; // 确保图片不会超出容器
+  height: auto; // 保持图片比例
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -2521,17 +2511,6 @@ export default {
   }
 }
 
-.loading-messages {
-  text-align: center;
-  padding: $spacing-md;
-  color: var(--text-secondary);
-  font-size: 0.9em;
-
-  i {
-    margin-right: $spacing-sm;
-  }
-}
-
 .location {
   font-size: 12px;
   color: var(--text-secondary);
@@ -2557,10 +2536,13 @@ export default {
 
 // 对于自己发送的消息，修改@样式的颜色
 .message-self {
-  .message-text {
-    :deep(mention) {
+  .message-content {
+    align-items: flex-end;
+
+    .message-text {
+      background: $primary;
       color: white;
-      font-weight: 600;
+      border-radius: 16px 16px 4px 16px;
     }
   }
 }
@@ -2612,7 +2594,7 @@ export default {
   border-radius: 8px;
   color: var(--text-primary);
   cursor: pointer;
-  max-width: 500px;
+  max-width: 100%; // 确保文件框不会超出容器
 
   i {
     font-size: 1.5em;
@@ -2675,7 +2657,7 @@ export default {
   padding: 8px 12px;
   border-radius: 16px;
   cursor: pointer;
-  max-width: 250px;
+  max-width: 100%; // 确保语音消息不会超出容器
   position: relative;
   overflow: hidden;
   margin: 5px 0;
@@ -2887,6 +2869,19 @@ export default {
 
   i {
     font-size: 0.9em;
+  }
+}
+
+// 添加响应式样式
+@media screen and (max-width: 768px) {
+  .message {
+    .message-content {
+      max-width: 85%; // 在移动端可以适当增加最大宽度
+
+      .message-text {
+        font-size: 0.95em; // 移动端可以稍微调整字体大小
+      }
+    }
   }
 }
 </style>
