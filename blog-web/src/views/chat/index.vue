@@ -111,6 +111,14 @@
       </div>
 
       <div class="messages" ref="messageContainer">
+        <!-- 添加加载更多按钮 -->
+        <div v-if="hasMore" class="load-more-wrapper">
+          <button class="load-more-btn" @click="loadMoreMessages" :disabled="loading">
+            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+            {{ loading ? '加载中...' : '加载更多' }}
+          </button>
+        </div>
+
         <div v-if="loading" class="loading-messages">
           <i class="fas fa-spinner fa-spin"></i>
           加载中...
@@ -983,37 +991,22 @@ export default {
     },
 
     /**
-     * 监听消息容器的滚动
-     */
-    handleScroll() {
-      const container = this.$refs.messageContainer;
-      // 当滚动到接近顶部时加载更多消息
-      if (container.scrollTop <= 100 && !this.loading && this.hasMore) {
-        this.loadMoreMessages();
-      }
-    },
-
-    /**
      * 加载更多历史消息
      */
     async loadMoreMessages() {
       if (this.loading || !this.hasMore) return;
 
       this.loading = true;
-      this.shouldScrollToBottom = false; // 加载历史消息时设置为false
+      this.shouldScrollToBottom = false;
+      
       try {
         const container = this.$refs.messageContainer;
         const oldScrollHeight = container.scrollHeight;
 
         this.params.pageNum++;
-
         const response = await getChatMsgListApi(this.params);
 
-        if (
-          response.data &&
-          response.data.records &&
-          response.data.records.length > 0
-        ) {
+        if (response.data && response.data.records && response.data.records.length > 0) {
           const formattedMessages = response.data.records.map((msg) => ({
             ...msg,
             time: formatTime(msg.time),
@@ -2861,6 +2854,39 @@ export default {
 :deep(body) {
   &.scroll-disabled {
     overflow: hidden !important;
+  }
+}
+
+.load-more-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.load-more-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: $spacing-sm $spacing-lg;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--hover-bg);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  i {
+    font-size: 0.9em;
   }
 }
 </style>
