@@ -1355,6 +1355,8 @@ export default {
      */
     formatMessageContent(content) {
       if (content === '***') return content;
+
+      content = content.replace(/\n/g, '<br>')
       // 使用 marked 解析 Markdown 内容
       const htmlContent = marked(content);
 
@@ -1362,6 +1364,7 @@ export default {
       if (htmlContent.includes("<mention>")) {
         return htmlContent;
       }
+      console.log(htmlContent)
 
       // 否则处理普通文本中的@格式
       return htmlContent.replace(/@(\S+)\s/g, "<mention>@$1</mention> ");
