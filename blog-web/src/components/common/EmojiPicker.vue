@@ -7,7 +7,7 @@
       <div v-if="show" class="emoji-panel" v-click-outside="closePanel" @wheel.stop>
         <div class="emoji-tabs">
           <button 
-            v-for="(category, key) in categories" 
+            v-for="(category, key) in emojiList" 
             :key="key"
             class="tab-btn"
             :class="{ active: currentTab === key }"
@@ -15,37 +15,18 @@
           >
             {{ category.title }}
           </button>
-          <button 
-            class="tab-btn"
-            :class="{ active: currentTab === 'gif' }"
-            @click="currentTab = 'gif'"
-          >
-            动图
-          </button>
         </div>
         
-        <div class="emoji-content" :class="{ 'gif-grid': currentTab === 'gif' }">
-          <template v-if="currentTab !== 'gif'">
+        <div class="emoji-content" :class="{ 'gif-grid': emojiList[currentTab]?.type === 'image' }">
             <div 
               v-for="emoji in emojiList[currentTab].emojis" 
               :key="emoji"
-              class="emoji-item"
+              :class="emojiList[currentTab]?.type !== 'image' ? 'emoji-item' : 'gif-item'"
               @click="selectEmoji(emoji)"
             >
-              {{ emoji }}
+              <span v-if="emojiList[currentTab]?.type !== 'image'">{{ emoji }}</span>
+              <img v-else :src="emoji" :alt="emoji" />
             </div>
-          </template>
-          
-          <template v-else>
-            <div
-              v-for="(url, name) in emojiList.gif"
-              :key="name"
-              class="gif-item"
-              @click="selectGif(name, url)"
-            >
-              <img :src="url" :alt="name" />
-            </div>
-          </template>
         </div>
       </div>
     </transition>
@@ -70,12 +51,6 @@ export default {
       emojiList
     }
   },
-  computed: {
-    categories() {
-      const { gif, ...rest } = this.emojiList
-      return rest
-    }
-  },
   methods: {
     togglePanel(e) {
       e.stopPropagation()
@@ -85,13 +60,13 @@ export default {
       this.show = false
     },
     selectEmoji(emoji) {
-      this.$emit('select', emoji)
+      if(emojiList[this.currentTab].type === 'image') {
+        this.$emit('select', `![${emoji}](${emoji})`)
+      }else{
+        this.$emit('select', emoji)
+      }
       this.closePanel()
     },
-    selectGif(name, url) {
-      this.$emit('select', `![${name}](${url})`)
-      this.closePanel()
-    }
   }
 }
 </script>

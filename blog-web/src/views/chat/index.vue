@@ -260,13 +260,6 @@
           >
             <i class="fas fa-microphone"></i>
           </label>
-          <!-- <button
-            class="toolbar-btn voice-toggle-btn"
-            @click="toggleVoiceMode"
-            title="语音输入"
-          >
-            <i class="fas fa-microphone"></i>
-          </button> -->
         </div>
 
         <div class="input-area">
@@ -569,14 +562,18 @@ export default {
         this.currentChat.lastTime = formatTime(
           this.currentChat.messages[0].time
         );
-        this.currentChat.lastMessage =
-          this.currentChat.messages[0].type === "text"
+        if(this.currentChat.messages[0].isRecalled){
+          this.currentChat.lastMessage = "消息已撤回";
+        }else{
+          this.currentChat.lastMessage =
+            this.currentChat.messages[0].type === "text"
             ? this.currentChat.messages[0].content
             : this.currentChat.messages[0].type === "image"
             ? "[图片]"
             : this.currentChat.messages[0].type === "audio"
             ? "[语音] " + this.currentChat.messages[0].duration + "秒"
             : "[文件]";
+        }
       }
       //获取到的数据是最新时间的，应该要把这个顺序反过来
       this.currentChat.messages.reverse();
@@ -2218,7 +2215,6 @@ export default {
             background: $primary;
             color: white;
             border-radius: 16px 16px 4px 16px;
-            white-space: pre-wrap;
           }
 
           .message-header {
@@ -2416,8 +2412,8 @@ export default {
 }
 
 .message-image {
-  max-width: 100%; // 确保图片不会超出容器
-  height: auto; // 保持图片比例
+  max-width: 200px;
+  height: auto;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.3s ease;
