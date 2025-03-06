@@ -9,6 +9,7 @@
     <Lantern />
     <RandomVideo />
     <div class="cursor-container"></div>
+    <ContextMenu ref="contextMenuRef" />
   </div>
 </template>
 
@@ -24,6 +25,9 @@ import MobileMenu from '@/layout/MobileMenu/index.vue'
 import Lantern from '@/components/Lanterns/index.vue'
 import RandomVideo from '@/components/RandomVideo/index.vue'
 import { getCookie,removeCookie } from '@/utils/cookie'
+import ContextMenu from '@/components/ContextMenu/index.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
 export default {
   name: 'App',
   components: {
@@ -34,6 +38,7 @@ export default {
     MobileMenu,
     Lantern,
     RandomVideo,
+    ContextMenu,
   },
 
   async created() {
@@ -88,10 +93,30 @@ export default {
           cursor.remove()
         })
       })
+    },
+
+    initContextMenu() {
+      const handleContextMenu = (e) => {
+        this.$refs.contextMenuRef.show(e)
+      }
+
+      const handleClick = () => {
+        this.$refs.contextMenuRef.hide()
+      }
+
+      document.addEventListener('contextmenu', handleContextMenu)
+      document.addEventListener('click', handleClick)
+
+      // 在组件销毁时移除事件监听
+      this.$once('hook:beforeDestroy', () => {
+        document.removeEventListener('contextmenu', handleContextMenu)
+        document.removeEventListener('click', handleClick)
+      })
     }
   },
   mounted() {
     this.initCursorEffect()
+    this.initContextMenu()
   }
 }
 </script>

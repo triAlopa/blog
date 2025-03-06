@@ -110,7 +110,7 @@
         </div>
       </div>
 
-      <div class="messages" ref="messageContainer">
+      <div class="messages chat-messages" ref="messageContainer">
         <!-- 添加加载更多按钮 -->
         <div v-if="hasMore" class="load-more-wrapper">
           <button class="load-more-btn" @click="loadMoreMessages" :disabled="loading">
