@@ -1,6 +1,11 @@
 <template>
   <div>
     <div class="login-container">
+      <!-- 添加回到首页按钮 -->
+      <!-- <el-button class="back-home-btn" icon="el-icon-back" @click="backToHome">
+        回到首页
+      </el-button> -->
+      
       <!-- 登录表单 -->
       <div class="login-body">
         <el-tooltip class="item" effect="dark" :content="currentForm === 'login' ? '账号密码登录' : '扫码登录'" placement="top">
@@ -265,6 +270,9 @@ export default {
       }
     })
     this.getWechatLoginCode()
+    this.$nextTick(() => {
+      disableScroll()
+    })
   },
   methods: {
     /**
@@ -483,8 +491,14 @@ export default {
       } else {
         this.switchForm('login')
       }
-    }
+    },
 
+    /**
+     * 回到首页
+     */
+    backToHome() {
+      this.$router.push('/')
+    },
   },
   beforeDestroy() {
     this.clearTimer()
@@ -727,6 +741,23 @@ export default {
   
   i {
     font-size: 20px;
+  }
+}
+
+.back-home-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s;
+  
+  &:hover {
+    background: #fff;
+    transform: translateY(-2px);
   }
 }
 </style>

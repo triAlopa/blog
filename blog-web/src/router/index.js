@@ -15,16 +15,7 @@ import store from '@/store';
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import('@/components/Login/index.vue'),
-    meta: {
-      title: '登录',
-      hidden: true,
-      fullscreen: true
-    }
-  },
+
     {
         path: "/",
         component: Layout,
@@ -182,6 +173,15 @@ const routes = [
                   title: '聊天 - 拾壹博客',
                   icon: 'fas fa-comments',
                   hidden: true
+                }
+              }, {
+                path: '/login',
+                name: 'Login',
+                component: () => import('@/views/login/index.vue'),
+                meta: {
+                  title: '登录',
+                  hidden: true,
+                  fullscreen: true
                 }
               },
               {

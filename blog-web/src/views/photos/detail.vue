@@ -84,7 +84,7 @@
 
 <script>
 import { getAlbumPhotosApi, verifyAlbumPasswordApi,getAlbumDetailApi } from '@/api/album'
-import AlbumPasswordDialog from '@/components/AlbumPassword/index.vue'
+import AlbumPasswordDialog from '@/views/photos/components/password.vue'
 
 export default {
   name: 'AlbumDetail',

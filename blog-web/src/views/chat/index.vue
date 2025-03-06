@@ -3,7 +3,7 @@
     <div class="nav-sidebar">
       <div class="nav-header">
         <div class="user-avatar">
-          <img :src="$store.state.userInfo.avatar" />
+          <img :src="$store.state.userInfo?.avatar" />
         </div>
       </div>
       <div class="nav-menu">
@@ -124,7 +124,7 @@
           :key="generateUniqueKey(msg, index)"
           :class="[
             'message',
-            { 'message-self': msg.userId === $store.state.userInfo.id },
+            { 'message-self': msg.userId === $store.state.userInfo?.id },
             { 'active-message': msg.id === currentChat.id }
           ]"
         >
@@ -139,7 +139,7 @@
             <div class="message-header">
               <div
                 v-if="
-                  currentChat.isGroup && msg.userId !== $store.state.userInfo.id
+                  currentChat.isGroup && msg.userId !== $store.state.userInfo?.id
                 "
                 class="sender-name"
               >
@@ -309,12 +309,12 @@
     >
       <template v-if="selectedMessage">
         <!-- 新增回复选项 -->
-        <div class="action-item" v-if="selectedMessage.userId !== $store.state.userInfo.id"" @click="replyToMessage">
+        <div class="action-item" v-if="selectedMessage.userId !== $store.state.userInfo?.id"" @click="replyToMessage">
           <i class="fas fa-reply"></i>
           回复
         </div>
         <div
-          v-if="selectedMessage.userId !== $store.state.userInfo.id"
+          v-if="selectedMessage.userId !== $store.state.userInfo?.id"
           class="action-item"
           @click="mentionUser"
         >
@@ -324,7 +324,7 @@
         <div
           v-if="
             !selectedMessage.isRecalled &&
-            selectedMessage.userId === $store.state.userInfo.id
+            selectedMessage.userId === $store.state.userInfo?.id
           "
           class="action-item"
           @click="recallMessage"
@@ -420,13 +420,12 @@ export default {
         lastMessage: "",
         lastTime: "12:30",
         isGroup: true,
-        members: [],
         messages: [
           {
             id: 1,
-            type: "audio",
-            content: "audio_url_here",
-            isPlaying: false, // 确保初始化时存在
+            type: "",
+            content: "",
+            isPlaying: false, 
           },
         ],
       },

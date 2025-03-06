@@ -2,7 +2,6 @@
   <div id="app">
     <TheHeader />
     <MobileMenu />
-    <!-- <Login /> -->
     <SearchDialog />
     <router-view class="main-container" />
     <TheFooter />
@@ -10,7 +9,6 @@
     <Lantern />
     <RandomVideo />
     <div class="cursor-container"></div>
-    <!-- <Fireworks /> -->
   </div>
 </template>
 
@@ -21,12 +19,10 @@ import FloatingButtons from '@/components/common/FloatingButtons.vue'
 import { getWebConfigApi, reportApi,getNoticeApi } from '@/api/site'
 import { mapActions } from 'vuex'
 import { initTheme } from '@/utils/theme'
-import Login from '@/components/Login/index.vue'
 import SearchDialog from '@/components/Search/index.vue'
 import MobileMenu from '@/layout/MobileMenu/index.vue'
 import Lantern from '@/components/Lanterns/index.vue'
 import RandomVideo from '@/components/RandomVideo/index.vue'
-//import Fireworks from '@/components/Fireworks/index.vue'
 import { getCookie,removeCookie } from '@/utils/cookie'
 export default {
   name: 'App',
@@ -34,12 +30,10 @@ export default {
     TheHeader,
     TheFooter,
     FloatingButtons,
-    Login,
     SearchDialog,
     MobileMenu,
     Lantern,
     RandomVideo,
- //   Fireworks
   },
 
   async created() {

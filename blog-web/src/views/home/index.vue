@@ -25,9 +25,9 @@
 
 <script>
 import ArticleList from '@/components/ArticleList/index.vue'
-import Carousel from '@/components/common/Carousel.vue'
+import Carousel from '@/views/home/components/carousel.vue'
 import Sidebar from '@/components/Sidebar/index.vue'
-import MomentsList from '@/components/MomentsList/index.vue'
+import MomentsList from '@/views/home/components/moments.vue'
 import { getArticlesApi,getCarouselArticlesApi } from '@/api/article'
 
 export default {
