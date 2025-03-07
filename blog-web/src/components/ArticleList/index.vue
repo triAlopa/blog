@@ -194,6 +194,15 @@ export default {
   padding-top: $spacing-md;
   border-top: 1px solid var(--border-color);
   color: var(--text-secondary);
+  .fa-calendar{
+    color: $primary;
+  }
+  .fa-eye{
+    color: #67c23a;
+  }
+  .fa-clock{
+    color: #2fa9e1;
+  }
   .footer-left {
     display: flex;
     align-items: center;

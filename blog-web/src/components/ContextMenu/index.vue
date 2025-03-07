@@ -39,7 +39,7 @@ export default {
       menuWidth: 0,
       menuHeight: 0,
       isDark: false,
-      excludeSelectors: ['.chat-messages']
+      excludeSelectors: ['.chat-messages','.image-preview']
     }
   },
   computed: {
