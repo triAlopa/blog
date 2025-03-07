@@ -309,7 +309,7 @@
     >
       <template v-if="selectedMessage">
         <!-- 新增回复选项 -->
-        <div class="action-item" v-if="selectedMessage.userId !== $store.state.userInfo?.id"" @click="replyToMessage">
+        <div class="action-item" v-if="selectedMessage.userId !== $store.state.userInfo?.id" @click="replyToMessage">
           <i class="fas fa-reply"></i>
           回复
         </div>
@@ -1356,9 +1356,13 @@ export default {
     formatMessageContent(content) {
       if (content === '***') return content;
 
-      content = content.replace(/\n/g, '<br>')
+
       // 使用 marked 解析 Markdown 内容
       const htmlContent = marked(content);
+
+      if(!content.includes('code')){
+        content = content.replace(/\n/g, '<br>')
+      }
 
       // 如果内容已经包含<mention>标签，说明是发送时已经处理过的
       if (htmlContent.includes("<mention>")) {

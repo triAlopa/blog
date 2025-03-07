@@ -30,7 +30,7 @@ export const useSettingsStore = defineStore({
     dynamicTitle: false,
     greyMode: false,
     showFooter: true,
-    title: 'Neat Admin'
+    title: '拾壹博客管理系统'
   }),
 
   actions: {

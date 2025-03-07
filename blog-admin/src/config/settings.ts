@@ -6,10 +6,10 @@ interface Settings {
 }
 
 const settings: Settings = {
-  title: 'NEAT-ADMIN',
-  shortTitle: 'NEAT-ADMIN后台管理',
-  description: '一个现代化的后台管理系统',
-  repository: 'https://gitee.com/quequnlong/vue-neat-admin'
+  title: '拾壹博客管理系统',
+  shortTitle: '拾壹博客管理系统',
+  description: '一个现代化的博客管理系统',
+  repository: 'https://gitee.com/quequnlong/shiyi-blog'
 }
 
 export default settings 

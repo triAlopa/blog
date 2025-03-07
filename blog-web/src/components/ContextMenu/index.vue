@@ -1,6 +1,7 @@
 <template>
   <div v-show="visible" 
        class="context-menu"
+       :class="{ 'menu-show': visible }"
        :style="{ left: adjustedX + 'px', top: adjustedY + 'px' }">
     <div class="menu-item" @click="handleRefresh">
       <i class="fas fa-sync" style="color: #409EFF"></i>
@@ -139,6 +140,24 @@ export default {
   border-radius: 4px;
   padding: 5px 0;
   z-index: 9999;
+  opacity: 0;
+  transform: scale(0.95);
+  transform-origin: top left;
+}
+
+.menu-show {
+  animation: showMenu 0.2s ease forwards;
+}
+
+@keyframes showMenu {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .menu-item {
@@ -164,6 +183,4 @@ export default {
   background-color: var(--border-color);
   margin: 5px 0;
 }
-
-
 </style> 
