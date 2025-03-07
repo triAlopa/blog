@@ -8,7 +8,7 @@
         </div>
         <transition name="fade" mode="out-in">
           <div class="moment-item" :key="currentIndex">
-            <span class="moment-text" @click="goToMoments">{{ moments[currentIndex].content }}</span>
+            <span class="moment-text" @click="goToMoments" v-html="moments[currentIndex].content" />
           </div>
         </transition>
       </div>
@@ -99,7 +99,8 @@ export default {
   display: flex;
   align-items: center;
   min-width: 0;
-  
+  max-height: 20px;
+  overflow: hidden;
   .moment-text {
     color: var(--text-secondary);
     white-space: nowrap;

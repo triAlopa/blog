@@ -58,27 +58,25 @@
       </div>
     </el-card>
 
-    <!-- <div class="section">
-      <h3>标签</h3>
-      <div class="tags">
-        <a 
-          v-for="tag in tags" 
-          :key="tag.name"
-          :href="`#${tag.name}`"
-          class="tag"
-        >
-          {{ tag.name }}
-        </a>
-      </div>
-    </div> -->
+    <el-card class="section">
+      <h3>
+        <i class="fas fa-tags"></i>
+        标签云
+      </h3>
+      <Tag />
+    </el-card>
   </aside>
 </template>
 
 <script>
 import { getRecommendArticlesApi } from '@/api/article'
+import Tag from './components/tagCloud.vue'
 
 export default {
   name: 'Sidebar',
+  components: {
+    Tag
+  },
   data() {
     return {
       hot: [],
@@ -549,32 +547,6 @@ export default {
       }
     }
   }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-
-    .tag {
-      font-size: 0.9rem;
-      color: #6366f1;
-      text-decoration: none;
-      padding: 4px 12px;
-      border-radius: 16px;
-      background: rgba(99, 102, 241, 0.05);
-      border: 1px solid rgba(99, 102, 241, 0.1);
-      font-weight: 500;
-      transition: all 0.2s;
-
-      &:hover {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: white;
-        border-color: transparent;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-      }
-    }
-  }
 }
 
 .announcement {
@@ -725,5 +697,9 @@ export default {
 
 .fa-star {
   color: #ef5151;
+}
+
+.fa-tags {
+  color: #e329d3;
 }
 </style>
