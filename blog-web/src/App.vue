@@ -26,7 +26,6 @@ import Lantern from '@/components/Lanterns/index.vue'
 import RandomVideo from '@/components/RandomVideo/index.vue'
 import { getCookie,removeCookie } from '@/utils/cookie'
 import ContextMenu from '@/components/ContextMenu/index.vue'
-import { ref, onMounted, onUnmounted } from 'vue'
 
 export default {
   name: 'App',

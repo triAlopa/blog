@@ -115,6 +115,7 @@ export default {
      */
     handleCopyUrl() {
       navigator.clipboard.writeText(window.location.href)
+      this.$message.success('链接已复制到剪贴板')
       this.hide()
     },
     /**
