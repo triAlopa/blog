@@ -13,6 +13,7 @@ export interface SettingsState {
   greyMode: boolean
   showFooter: boolean
   title: string
+  sidebarStyle: 'dark' | 'light'
 }
 
 export const useSettingsStore = defineStore({
@@ -30,7 +31,8 @@ export const useSettingsStore = defineStore({
     dynamicTitle: false,
     greyMode: false,
     showFooter: true,
-    title: '拾壹博客管理系统'
+    title: '拾壹博客管理系统',
+    sidebarStyle: 'dark'
   }),
 
   actions: {
@@ -165,7 +167,8 @@ export const useSettingsStore = defineStore({
         dynamicTitle: false,
         greyMode: false,
         showFooter: true,
-        title: 'Neat Admin'
+        title: 'Neat Admin',
+        sidebarStyle: 'dark'
       }
       this.saveSettings(defaultSettings)
     },
