@@ -13,8 +13,8 @@ public class SysArticleDetailVo {
     @ApiModelProperty(value = "主键id")
     private Long id;
 
-    @ApiModelProperty(value = "分类id")
-    private Long categoryId;
+    @ApiModelProperty(value = "分类名称")
+    private String categoryName;
 
     @ApiModelProperty(value = "文章标题")
     private String title;
@@ -56,5 +56,5 @@ public class SysArticleDetailVo {
     private String keywords;
 
     @ApiModelProperty(value = "标签集合")
-    private List<Integer> tagIds;
+    private List<String> tags;
 }

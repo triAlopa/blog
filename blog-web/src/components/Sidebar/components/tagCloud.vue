@@ -11,6 +11,9 @@
         :key="index"
         ref="tag"
         @click="clickTag(item)"
+        @mouseenter="handleTagHover(index)"
+        @mouseleave="handleTagLeave"
+        :class="{ 'tag-dimmed': hoveredIndex !== null && hoveredIndex !== index }"
       >
         {{ item.name }}
       </p>
@@ -33,6 +36,7 @@ export default {
       },
       tagList: [],
       isRotating: true,
+      hoveredIndex: null,
     };
   },
   beforeDestroy() {
@@ -185,6 +189,12 @@ export default {
         }
       }, 20);
     },
+    handleTagHover(index) {
+      this.hoveredIndex = index;
+    },
+    handleTagLeave() {
+      this.hoveredIndex = null;
+    },
   },
 };
 </script>
@@ -214,8 +224,14 @@ export default {
   padding: 4px 9px;
   display: inline-block;
   border-radius: 3px;
+  transition: opacity 0.3s ease;
 }
+
 .tag-cloud p:hover {
   cursor: pointer;
+}
+
+.tag-dimmed {
+  opacity: 0.05 !important;
 }
 </style>

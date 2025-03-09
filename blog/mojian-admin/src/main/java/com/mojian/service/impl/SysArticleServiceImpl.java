@@ -10,9 +10,11 @@ import com.mojian.common.Constants;
 import com.mojian.common.ResultCode;
 import com.mojian.dto.article.ArticleQueryDto;
 import com.mojian.entity.SysArticle;
+import com.mojian.entity.SysCategory;
 import com.mojian.entity.SysTag;
 import com.mojian.exception.ServiceException;
 import com.mojian.mapper.SysArticleMapper;
+import com.mojian.mapper.SysCategoryMapper;
 import com.mojian.mapper.SysTagMapper;
 import com.mojian.service.SysArticleService;
 import com.mojian.utils.AiUtil;
@@ -42,6 +44,7 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
     private final SysTagMapper sysTagMapper;
 
     private final AiUtil aiUtil;
+    private final SysCategoryMapper sysCategoryMapper;
 
     @Override
     public IPage<ArticleListVo> selectPage(ArticleQueryDto articleQueryDto) {
@@ -55,9 +58,12 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
         SysArticleDetailVo sysArticleDetailVo = new SysArticleDetailVo();
         BeanUtils.copyProperties(sysArticle, sysArticleDetailVo);
 
+        SysCategory sysCategory = sysCategoryMapper.selectById(sysArticle.getCategoryId());
+        sysArticleDetailVo.setCategoryName(sysCategory.getName());
+
         //获取标签
-        List<Integer> tags = sysTagMapper.getTagIdsByArticleId(id);
-        sysArticleDetailVo.setTagIds(tags);
+        List<String> tags = sysTagMapper.getTagNameByArticleId(id);
+        sysArticleDetailVo.setTags(tags);
         return sysArticleDetailVo;
     }
 
@@ -67,12 +73,13 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
 
         SysArticle obj = new SysArticle();
         BeanUtils.copyProperties(sysArticle, obj);
-
         obj.setUserId(StpUtil.getLoginIdAsLong());
+
+        //添加分类
+        addCategory(sysArticle, obj);
         baseMapper.insert(obj);
 
-        //添加标签
-        sysTagMapper.addArticleTagRelations(obj.getId(), sysArticle.getTagIds());
+        addTags(sysArticle, obj);
 
         ThreadUtil.execAsync(() -> {
             String res = aiUtil.send(obj.getContent() + "请提供一段简短的介绍描述该文章的内容");
@@ -83,6 +90,9 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
         });
         return true;
     }
+
+
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -99,12 +109,12 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
             }
         }
 
+        addCategory(sysArticle, obj);
         baseMapper.updateById(obj);
 
         //先删除标签在新增标签
         sysTagMapper.deleteArticleTagsByArticleIds(Collections.singletonList(obj.getId()));
-        //添加标签
-        sysTagMapper.addArticleTagRelations(obj.getId(), sysArticle.getTagIds());
+        addTags(sysArticle, obj);
         return true;
     }
 
@@ -166,5 +176,29 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
         } catch (IOException e) {
             throw new ServiceException(e.getMessage());
         }
+    }
+
+    private void addCategory(SysArticleDetailVo sysArticle, SysArticle obj) {
+        SysCategory sysCategory = sysCategoryMapper.selectOne(new LambdaQueryWrapper<SysCategory>()
+                .eq(SysCategory::getName, sysArticle.getCategoryName()));
+        if (sysCategory == null) {
+            sysCategory = SysCategory.builder().name(sysArticle.getCategoryName()).build();
+            sysCategoryMapper.insert(sysCategory);
+        }
+        obj.setCategoryId(sysCategory.getId());
+    }
+
+    private void addTags(SysArticleDetailVo sysArticle, SysArticle obj) {
+        //添加标签
+        List<Integer> tagIds = new ArrayList<>();
+        for (String tag : sysArticle.getTags()) {
+            SysTag sysTag = sysTagMapper.selectOne(new LambdaQueryWrapper<SysTag>().eq(SysTag::getName, tag));
+            if (sysTag == null) {
+                sysTag = SysTag.builder().name(tag).build();
+                sysTagMapper.insert(sysTag);
+            }
+            tagIds.add(sysTag.getId());
+        }
+        sysTagMapper.addArticleTagRelations(obj.getId(), tagIds);
     }
 }

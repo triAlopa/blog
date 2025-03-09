@@ -31,7 +31,7 @@ public class SysArticle implements Serializable {
     private Long userId;
 
     @ApiModelProperty(value = "分类id")
-    private Long categoryId;
+    private Integer categoryId;
 
     @ApiModelProperty(value = "文章标题")
     private String title;

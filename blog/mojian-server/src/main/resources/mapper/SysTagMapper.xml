@@ -23,9 +23,9 @@
         GROUP BY tag.id
     </select>
 
-    <select id="getTagIdsByArticleId" resultType="java.lang.Integer">
+    <select id="getTagNameByArticleId" resultType="java.lang.String">
         SELECT
-            tag.id
+            tag.name
         FROM
             sys_tag tag
             LEFT JOIN sys_article_tag sat ON tag.id = sat.tag_id

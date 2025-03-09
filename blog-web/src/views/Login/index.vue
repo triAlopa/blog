@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="login-container">
-      <!-- 添加回到首页按钮 -->
-      <!-- <el-button class="back-home-btn" icon="el-icon-back" @click="backToHome">
-        回到首页
-      </el-button> -->
-      
       <!-- 登录表单 -->
       <div class="login-body">
+        <el-tooltip class="item" effect="dark" content="回到首页" placement="top">
+          <button class="back-btn" @click="backToHome">
+            <i class="el-icon-back"></i>
+          </button>
+        </el-tooltip>
         <el-tooltip class="item" effect="dark" :content="currentForm === 'login' ? '账号密码登录' : '扫码登录'" placement="top">
           <button class="switch-form-btn" @click="handleSwitchForm">
             <i :class="currentForm === 'login' ? 'el-icon-user' : 'fas fa-qrcode'"></i>
@@ -501,6 +501,7 @@ export default {
     },
   },
   beforeDestroy() {
+    enableScroll()
     this.clearTimer()
   }
 }
@@ -744,20 +745,31 @@ export default {
   }
 }
 
-.back-home-btn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  font-size: 14px;
-  padding: 10px 20px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  transition: all 0.3s;
+.back-btn {
+  position: absolute;
+  top: 16px;
+  right: 60px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f3f4f6;
+  border: none;
+  color: #6b7280;
+  z-index: 1;
   
   &:hover {
-    background: #fff;
-    transform: translateY(-2px);
+    background: #e5e7eb;
+    transform: translateX(-4px);
+    color: #6366f1;
+  }
+  
+  i {
+    font-size: 20px;
   }
 }
 </style>

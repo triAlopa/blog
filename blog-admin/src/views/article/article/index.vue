@@ -127,17 +127,93 @@
 
         <el-row :gutter="20" class="mb-20">
           <el-col :span="12">
-            <el-form-item label="文章分类" prop="categoryId">
-              <el-select v-model="form.categoryId" placeholder="请选择分类">
-                <el-option v-for="item in categoryOptions" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
+            <el-form-item label="分类" prop="categoryName">
+              <el-tag
+                type="success"
+                v-show="form.categoryName"
+                style="margin: 0 1rem 0 0"
+                :closable="true"
+                @close="removeCategory()"
+              >
+                {{ form.categoryName }}
+              </el-tag>
+              <!-- 分类选项 -->
+              <el-popover
+                placement="bottom-start"
+                width="460"
+                trigger="click"
+                v-if="!form.categoryName"
+              >
+                <div class="popover-title">分类</div>
+                <!-- 输入框 -->
+                <el-input
+                  style="width: 100%"
+                  v-model="categoryName"
+                  placeholder="请输入分类名,enter添加自定义分类"
+                  @keyup.enter="saveCategory"
+                />
+                <!-- 分类 -->
+                <div class="popover-container">
+                  <div>添加分类</div>
+                  <el-tag
+                    v-for="(item, index) of categoryOptions"
+                    :key="index"
+                    style="margin-left: 3px; margin-top: 2px"
+                    class="category-item"
+                    @click="addCategory(item.name)"
+                  >
+                    {{ item.name }}
+                  </el-tag>
+                </div>
+                <template #reference>
+                  <el-button type="success" plain> 添加分类 </el-button>
+                </template>
+              </el-popover>
             </el-form-item>
+
           </el-col>
           <el-col :span="12">
-            <el-form-item label="文章标签" prop="tagIds">
-              <el-select v-model="form.tagIds" multiple placeholder="请选择标签">
-                <el-option v-for="item in tagOptions" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
+            <el-form-item label="标签" prop="tags">
+              <el-tag
+                v-for="(item, index) of form.tags"
+                :key="index"
+                style="margin: 0 1rem 0 0"
+                :closable="true"
+                @close="removeTag(item)"
+              >
+                {{ item }}
+              </el-tag>
+              <!-- 标签选项 -->
+              <el-popover
+                placement="bottom-start"
+                width="460"
+                trigger="click"
+                v-if="form.tags && form.tags.length < 3"
+              >
+                <div class="popover-title">标签</div>
+                <!-- 搜索框 -->
+                <el-input
+                  style="width: 100%"
+                  v-model="tagName"
+                  placeholder="请输入标签名,enter添加自定义标签"
+                  @keyup.enter="saveTag"
+                />
+                <!-- 标签 -->
+                <div class="popover-container">
+                  <div>添加标签</div>
+                  <el-tag
+                    v-for="(item, index) of tagOptions"
+                    :key="index"
+                    style="margin-left: 3px; margin-top: 2px"
+                    @click="addTag(item.name)"
+                  >
+                    {{ item.name }}
+                  </el-tag>
+                </div>
+                <template #reference>
+                  <el-button type="primary" plain> 添加标签 </el-button>
+                </template>
+              </el-popover>
             </el-form-item>
           </el-col>
         </el-row>
@@ -328,13 +404,13 @@ const reptileDialog = reactive({
 })
 
 // 表单数据
-const form = reactive({
+const form = reactive<any>({
   id: undefined,
   title: '',
   cover: '',
   summary: '',
-  categoryId: undefined,
-  tagIds: [],
+  categoryName: '',
+  tags: [],
   content: '',
   contentMd: '',
   readType: 1,
@@ -357,6 +433,12 @@ const yesNoOptions = ref<any>([])
 const dialogVisible = ref(false)
 const videoInput = ref('')
 
+const tagName = ref('')
+const categoryName = ref('')
+
+
+
+
 
 // 表单校验规则
 const rules = reactive<FormRules>({
@@ -364,7 +446,7 @@ const rules = reactive<FormRules>({
     { required: true, message: '请输入文章标题', trigger: 'blur' },
     { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
   ],
-  categoryId: [
+  categoryName: [
     { required: true, message: '请选择文章分类', trigger: 'change' }
   ],
   contentMd: [
@@ -380,7 +462,7 @@ const rules = reactive<FormRules>({
   isOriginal: [
     { required: true, message: '请选择文章类型', trigger: 'change' }
   ],
-  tagIds: [
+  tags: [
     { required: true, message: '请选择文章标签', trigger: 'change' }
   ],
   originalUrl: [
@@ -398,6 +480,46 @@ const rules = reactive<FormRules>({
     }
   ]
 })
+
+const removeTag = (tag: string) => {
+  form.tags = form.tags.filter((item: string) => item !== tag)
+}
+
+const addTag = (tag: any) => {
+  if (form.tags.includes(tag)) {
+    ElMessage.warning('标签已存在')
+    return
+  }
+  form.tags.push(tag)
+}
+
+const saveTag = () => {
+  if (tagName.value.trim() !== "") {
+    addTag(tagName.value);
+    tagName.value = "";
+  }
+}
+
+const removeCategory = () => {
+  form.categoryName = ''
+}
+
+const addCategory = (category: any) => {
+  if (form.categoryName.includes(category)) {
+    ElMessage.warning('分类已存在')
+    return
+  }
+  form.categoryName = category
+}
+
+const saveCategory = () => {
+  if (categoryName.value.trim() !== "") {
+    addCategory(categoryName.value);
+    categoryName.value = "";
+  }
+}
+
+
 
 //删除图片
 function imgDel(pos: any, $file: any) {
@@ -547,12 +669,18 @@ const resetQuery = () => {
 const clearForm = () => {
   form.id = undefined
   form.title = ''
-  form.cover = ''
+  form.cover = undefined
   form.summary = ''
-  form.categoryId = undefined
-  form.tagIds = []
+  form.categoryName = ''
+  form.tags = []
   form.content = ''
   form.contentMd = ''
+  form.originalUrl = ''
+  form.isStick = 0
+  form.status = 1
+  form.isCarousel = 0
+  form.isRecommend = 0
+  form.keywords = ''
 }
 
 // 新增用户

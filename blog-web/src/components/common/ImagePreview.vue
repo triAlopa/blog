@@ -75,7 +75,9 @@ export default {
       rotation: 0,
       position: { x: 0, y: 0 },
       isDragging: false,
-      lastMousePosition: { x: 0, y: 0 }
+      lastMousePosition: { x: 0, y: 0 },
+      initialDistance: 0,
+      initialScale: 1
     }
   },
   computed: {
@@ -197,7 +199,16 @@ export default {
      * @param e 触摸事件
      */
     startTouch(e) {
-      if (e.target.tagName.toLowerCase() === 'img' && e.touches.length === 1) {
+      if (e.touches.length === 2) {
+        e.preventDefault()
+        const touch1 = e.touches[0]
+        const touch2 = e.touches[1]
+        this.initialDistance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        )
+        this.initialScale = this.scale
+      } else if (e.touches.length === 1 && e.target.tagName.toLowerCase() === 'img') {
         e.preventDefault()
         this.isDragging = true
         this.lastMousePosition = {
@@ -211,17 +222,29 @@ export default {
      * @param e 触摸事件
      */
     onTouch(e) {
-      if (!this.isDragging || e.touches.length !== 1) return
-      
-      const deltaX = e.touches[0].clientX - this.lastMousePosition.x
-      const deltaY = e.touches[0].clientY - this.lastMousePosition.y
-      
-      this.position.x += deltaX
-      this.position.y += deltaY
-      
-      this.lastMousePosition = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY
+      if (e.touches.length === 2) {
+        const touch1 = e.touches[0]
+        const touch2 = e.touches[1]
+        const currentDistance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        )
+        
+        const scale = (currentDistance / this.initialDistance) * this.initialScale
+        if (scale >= 0.1 && scale <= 3) {
+          this.scale = scale
+        }
+      } else if (this.isDragging && e.touches.length === 1) {
+        const deltaX = e.touches[0].clientX - this.lastMousePosition.x
+        const deltaY = e.touches[0].clientY - this.lastMousePosition.y
+        
+        this.position.x += deltaX
+        this.position.y += deltaY
+        
+        this.lastMousePosition = {
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY
+        }
       }
     },
     /**

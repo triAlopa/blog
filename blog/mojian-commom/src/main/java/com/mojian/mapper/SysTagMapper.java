@@ -16,7 +16,7 @@ public interface SysTagMapper extends BaseMapper<SysTag> {
 
     List<TagListVo> getTagsApi();
 
-    List<Integer> getTagIdsByArticleId(Integer id);
+    List<String> getTagNameByArticleId(Integer id);
 
     List<TagListVo> getTagByArticleId(Long id);
 

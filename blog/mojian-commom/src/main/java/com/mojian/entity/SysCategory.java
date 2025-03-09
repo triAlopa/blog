@@ -5,7 +5,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.utils.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -13,6 +17,9 @@ import java.time.LocalDateTime;
  * 分类表
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("sys_category")
 @ApiModel(value = "分类表对象 gen_table")
 public class SysCategory implements Serializable {
