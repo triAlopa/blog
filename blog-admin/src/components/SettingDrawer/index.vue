@@ -16,7 +16,7 @@
           inline-prompt
           active-icon="Moon"
           inactive-icon="Sunny"
-          @change="val => handlePreview('theme', val)"
+          @change="val => handleSave('theme', val)"
         />
       </div>
       <div class="setting-item">
@@ -33,7 +33,7 @@
         <span>灰色模式</span>
         <el-switch 
           v-model="tempSettings.greyMode"
-          @change="val => handlePreview('greyMode', val)"
+          @change="val => handleSave('greyMode', val)"
         />
       </div>
 
@@ -42,21 +42,21 @@
         <span>显示 Logo</span>
         <el-switch 
           v-model="tempSettings.showLogo"
-          @change="val => handlePreview('showLogo', val)"
+          @change="val => handleSave('showLogo', val)"
         />
       </div>
       <div class="setting-item">
         <span>折叠菜单</span>
         <el-switch 
           :model-value="isCollapse"
-          @update:model-value="(val: boolean) => emit('update:isCollapse', val)"
+          @update:model-value="(val) => emit('update:isCollapse', val as boolean)"
         />
       </div>
       <div class="setting-item">
         <span>显示标签页</span>
         <el-switch 
           v-model="tempSettings.showTags"
-          @change="val => handlePreview('showTags', val)"
+          @change="val => handleSave('showTags', val)"
         />
       </div>
  
@@ -64,21 +64,21 @@
         <span>动态标题</span>
         <el-switch 
           v-model="tempSettings.dynamicTitle"
-          @change="val => handlePreview('dynamicTitle', val)"
+          @change="val => handleSave('dynamicTitle', val)"
         />
       </div>
       <div class="setting-item">
         <span>开启水印</span>
         <el-switch 
           v-model="tempSettings.watermark"
-          @change="val => handlePreview('watermark', val)"
+          @change="val => handleSave('watermark', val)"
         />
       </div>
       <div class="setting-item">
         <span>显示页脚</span>
         <el-switch 
           v-model="tempSettings.showFooter"
-          @change="val => handlePreview('showFooter', val)"
+          @change="val => handleSave('showFooter', val)"
         />
       </div>
 
@@ -87,7 +87,7 @@
         <el-radio-group 
           v-model="tempSettings.fontSize" 
           size="small"
-          @change="val => handlePreview('fontSize', val)"
+          @change="val => handleSave('fontSize', val)"
         >
           <el-radio-button value="small">小</el-radio-button>
           <el-radio-button value="default">中</el-radio-button>
@@ -104,10 +104,11 @@
           v-model="tempSettings.pageAnimation" 
           size="small" 
           style="width: 120px"
-          @change="val => handlePreview('pageAnimation', val)"
+          @change="val => handleSave('pageAnimation', val)"
         >
           <el-option label="滑动" value="slide" />
           <el-option label="淡入淡出" value="fade" />
+          <el-option label="消退" value="dissolve" />
           <el-option label="无" value="none" />
         </el-select>
       </div>
@@ -119,7 +120,7 @@
           :key="style.value"
           class="style-item"
           :class="{ active: settingsStore.tagsStyle === style.value }"
-          @click="handlePreview('tagsStyle', style.value)"
+          @click="handleSave('tagsStyle', style.value)"
         >
           <div class="style-preview" :class="style.value">
             <span class="tag">首页</span>
@@ -161,6 +162,7 @@ const drawerVisible = computed({
   set: (value) => emit('update:visible', value)
 })
 
+
 // 临时设置状态
 const tempSettings = ref<Partial<SettingsState>>({
   theme: settingsStore.theme as 'light' | 'dark',
@@ -187,8 +189,8 @@ const predefineColors = ref([
   '#c71585',
 ])
 
-// 处理预览
-const handlePreview = (key: keyof SettingsState, value: any) => {
+// 处理保存
+const handleSave = (key: keyof SettingsState, value: any) => {
   tempSettings.value[key] = value
   settingsStore.saveSettings(tempSettings.value)
   
@@ -320,5 +322,23 @@ const tagsStyles = [
 .style-name {
   font-size: 13px;
   color: var(--el-text-color-regular);
+}
+
+// 添加消退动画样式
+:global(.dissolve-enter-active),
+:global(.dissolve-leave-active) {
+  transition: all 0.3s ease-in-out;
+}
+
+:global(.dissolve-enter-from),
+:global(.dissolve-leave-to) {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+:global(.dissolve-enter-to),
+:global(.dissolve-leave-from) {
+  opacity: 1;
+  transform: scale(1);
 }
 </style> 

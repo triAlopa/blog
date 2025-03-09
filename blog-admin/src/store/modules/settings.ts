@@ -6,7 +6,7 @@ export interface SettingsState {
   showTags: boolean
   showLogo: boolean
   fontSize: 'small' | 'default' | 'large'
-  pageAnimation: 'slide' | 'fade' | 'none'
+  pageAnimation: 'slide' | 'fade' | 'dissolve' | 'none'
   watermark: boolean
   tagsStyle: 'card' | 'border' | 'modern'
   dynamicTitle: boolean
@@ -24,7 +24,7 @@ export const useSettingsStore = defineStore({
     showTags: true,
     showLogo: true,
     fontSize: 'default',
-    pageAnimation: 'slide',
+    pageAnimation: 'dissolve',
     watermark: false,
     tagsStyle: 'border',
     dynamicTitle: false,

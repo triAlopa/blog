@@ -11,19 +11,21 @@
     <div class="navbar-right">
       <!-- 菜单全局搜索 -->
       <global-search/>
-      <!-- 主题切换 -->
-      <el-icon class="setting-icon" @click="handleThemeClick">
-        <Setting />
-      </el-icon>
       <!-- 全屏切换 -->
-      <el-icon class="setting-icon" @click="toggleFullscreen">
-        <FullScreen v-if="!isFullscreen" />
-        <svg-icon v-else name="exitFullScreen" />
-      </el-icon>
+      <el-tooltip content="全屏切换" placement="bottom">  
+        <el-icon class="setting-icon" @click="toggleFullscreen">
+          <FullScreen v-if="!isFullscreen" />
+          <svg-icon v-else name="exitFullScreen" />
+        </el-icon>
+      </el-tooltip>
+
+
       <!-- 通知中心 -->
-      <notification />
+      <el-tooltip content="通知中心" placement="bottom">  
+        <notification />
+      </el-tooltip>
       <!-- 用户信息 -->
-      <user-tool @lock="handleLock" />
+        <user-tool @lock="handleLock" />
     </div>
 
     <!-- 添加锁屏组件 -->
@@ -37,7 +39,7 @@ import screenfull from 'screenfull'
 import { useSettingsStore } from '@/store/modules/settings'
 import GlobalSearch from '@/components/GlobalSearch/index.vue'
 import Breadcrumb from './Breadcrumb/index.vue'
-import UserTool from './userTool/index.vue'
+import UserTool from './UserTool/index.vue'
 import LockScreen from '@/components/LockScreen/index.vue'
 import Notification from './Notification/index.vue'
 import { FullScreen, Setting } from '@element-plus/icons-vue'
@@ -53,15 +55,13 @@ defineProps({
   }
 })
 
-const emit = defineEmits(['toggle-collapse', 'theme-click'])
+const emit = defineEmits(['toggle-collapse'])
 
 const toggleCollapse = () => {
   emit('toggle-collapse')
 }
 
-const handleThemeClick = () => {
-  emit('theme-click')
-}
+
 
 const handleLock = () => {
   lockScreenRef.value?.lock()
@@ -113,7 +113,7 @@ const toggleFullscreen = () => {
     height: 100%;
     
     .setting-icon {
-      font-size: 20px;
+      font-size: 20px !important;
       cursor: pointer;
       padding: 6px;
       border-radius: 50%;
@@ -125,6 +125,7 @@ const toggleFullscreen = () => {
         color: v-bind('settingsStore.themeColor');
       }
     }
+
   }
 }
 </style>

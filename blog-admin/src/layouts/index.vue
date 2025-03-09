@@ -35,6 +35,12 @@
 
       </el-main>
 
+      <!-- 主题切换按钮 -->
+      <div class="theme-icon-container" @click="handleThemeClick">
+        <el-icon class="theme-icon" >
+          <Setting />
+        </el-icon>
+      </div>
       <!-- 添加页脚 -->
       <Footer v-if="settingsStore.showFooter" />
     </el-container>
@@ -65,34 +71,33 @@ import Footer from '@/components/Footer/index.vue'
 import { useSettingsStore, usePermissionStore } from "@/store";
 import { useTagsViewStore } from '@/store/modules/tagsView'
 
-const route = useRoute()
+const settingsStore = useSettingsStore()
 const tagsViewStore = useTagsViewStore()
-
 const isCollapse = ref<boolean>(false)
-
-const activeMenu = computed(() => route.path)
+const drawerVisible = ref(false)
+const lockScreenRef = ref()
 
 const toggleCollapse = () => {
   isCollapse.value = !isCollapse.value
 }
 
-const drawerVisible = ref(false)
-
-const settingsStore = useSettingsStore()
-
 // 缓存的视图
 const cachedViews = computed(() => tagsViewStore.cachedViews)
+
+// 修改 handleThemeClick 函数
+const handleThemeClick = () => {
+  drawerVisible.value = true
+}
+
+const handleLock = () => {
+  lockScreenRef.value?.lock()
+}
 
 // 初始化固定标签
 onMounted(() => {
   tagsViewStore.initTags()
 })
 
-const lockScreenRef = ref()
-
-const handleLock = () => {
-  lockScreenRef.value?.lock()
-}
 </script>
 
 <style scoped>
@@ -128,5 +133,25 @@ const handleLock = () => {
   padding: 16px;
   overflow-y: auto;
   background-color: var(--el-bg-color);
+}
+
+.theme-icon-container {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--el-color-primary);
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  z-index: 1000;
+
+  
+  .theme-icon {
+    font-size: 20px;
+    color: #fff;
+  }
 }
 </style> 
