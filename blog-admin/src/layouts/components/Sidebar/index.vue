@@ -2,14 +2,14 @@
     <div class="sidebar-container" :class="settingsStore.sidebarStyle">
       <div v-if="settingsStore.showLogo" class="logo-container" :class="{ 'dark': settingsStore.theme === 'dark' }">
         <Logo :size="32" class="logo-icon" :color="settingsStore.themeColor" />
-        <span v-show="!isCollapse" class="logo-text" :class="{ 'light': settingsStore.sidebarStyle === 'light' }">{{ settings.title }}</span>
+        <span v-show="!isCollapse" class="logo-text" :class="{ 'light': settingsStore.theme === 'dark' ? false : settingsStore.sidebarStyle === 'light' }">{{ settings.title }}</span>
       </div>
       <el-scrollbar>
         <el-menu style="height: 100%;"
           :default-active="activeMenu"
           :collapse="isCollapse"
-          :background-color="settingsStore.sidebarStyle === 'light' ? '#ffffff' : (settingsStore.theme === 'dark' ? '#1d1e1f' : '#304156')"
-          :text-color="settingsStore.sidebarStyle === 'light' ? '#303133' : '#bfcbd9'"
+          :background-color="settingsStore.theme === 'dark' ? '#1d1e1f' : (settingsStore.sidebarStyle === 'light' ? '#ffffff' : '#304156')"
+          :text-color="settingsStore.theme === 'dark' ? '#bfcbd9' : (settingsStore.sidebarStyle === 'light' ? '#303133' : '#bfcbd9')"
           :active-text-color="settingsStore.themeColor"
           :collapse-transition="false"
           @select="handleSelect"
@@ -112,14 +112,14 @@
   <style lang="scss" scoped>
   .sidebar-container {
     height: 100%;
-    background-color: v-bind('settingsStore.sidebarStyle === "light" ? "#ffffff" : (settingsStore.theme === "dark" ? "#1d1e1f" : "#304156")');
+    background-color: v-bind('settingsStore.theme === "dark" ? "#1d1e1f" : (settingsStore.sidebarStyle === "light" ? "#ffffff" : "#304156")');
     
     .logo-container {
       height: 60px;
       display: flex;
       align-items: center;
       padding: 0 20px;
-      background-color: v-bind('settingsStore.sidebarStyle === "light" ? "#ffffff" : (settingsStore.theme === "dark" ? "#1d1e1f" : "#304156")');
+      background-color: v-bind('settingsStore.theme === "dark" ? "#1d1e1f" : (settingsStore.sidebarStyle === "light" ? "#ffffff" : "#304156")');
       
       .logo-icon {
         flex-shrink: 0;
@@ -175,36 +175,6 @@
         background-color: v-bind('`${settingsStore.themeColor}0a`');
       }
     }
-
-    &.light {
-      background-color: #ffffff;
-      
-      :deep(.el-menu) {
-        background-color: #ffffff;
-        
-        .el-menu-item {
-          &:hover {
-            background-color: #f6f6f6;
-          }
-          
-          &.is-active {
-            background-color: #ecf5ff;
-            color: #409EFF;
-          }
-        }
-        
-        .el-sub-menu__title {
-          &:hover {
-            background-color: #f6f6f6;
-          }
-        }
-
-        // 子菜单背景色
-        .el-menu {
-          background-color: #ffffff;
-        }
-      }
-    }
   }
 
   // 折叠状态样式
@@ -235,7 +205,7 @@
 
   // 子菜单样式
   :deep(.el-menu .el-menu) {
-    background-color: v-bind('settingsStore.sidebarStyle === "light" ? "#ffffff" : (settingsStore.theme === "dark" ? "#181818" : "#263445")');
+    background-color: v-bind('settingsStore.theme === "dark" ? "#181818" : (settingsStore.sidebarStyle === "light" ? "#ffffff" : "#263445")');
     .el-menu-item {
       height: 50px;
       line-height: 50px;
