@@ -20,7 +20,7 @@
   
           <!-- 说说内容 -->
           <view class="content">
-            <text class="text">{{item.content}}</text>
+            <view class="text" v-html="item.content"></view>
             <!-- 图片展示 -->
             <u-album :urls=" item.images" keyName="src2"></u-album>
           </view>

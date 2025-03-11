@@ -50,6 +50,9 @@ wechat:
   # 公众号AES Key
   aesKey:
 
+  appletAppId:
+  appletSecret:
+
 #==============================豆包推理AI配置=======================================
 ai:
   # API Key

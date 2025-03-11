@@ -2,15 +2,13 @@ package com.mojian.service.impl;
 
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mojian.common.Constants;
 import com.mojian.common.RedisConstants;
-import com.mojian.config.properties.GiteeConfigProperties;
-import com.mojian.config.properties.GithubConfigProperties;
-import com.mojian.config.properties.QqConfigProperties;
-import com.mojian.config.properties.WeiboConfigProperties;
+import com.mojian.config.properties.*;
 import com.mojian.dto.EmailRegisterDto;
 import com.mojian.dto.LoginDTO;
 import com.mojian.dto.user.LoginUserInfo;
@@ -84,6 +82,8 @@ public class AuthServiceImpl implements AuthService {
     private final QqConfigProperties qqConfigProperties;
 
     private final WeiboConfigProperties weiboConfigProperties;
+
+    private final WechatProperties wechatProperties;
 
 
     @Override
@@ -292,14 +292,23 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginUserInfo appletLogin(String code) {
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + wechatProperties.getAppletAppId()
+                + "&secret=" + wechatProperties.getAppletSecret() + "&js_code=" + code + "&grant_type=authorization_code";
+        String result = HttpUtil.get(url);
+        com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(result);
+        Object openid = jsonObject.get("openid");
+        if (openid == null) {
+            throw new ServiceException("登录失败");
+        }
+
         // 查询用户
-        SysUser user = userMapper.selectByUsername(code);
+        SysUser user = userMapper.selectByUsername(openid.toString());
 
         if (user == null) {
             String ip = IpUtil.getIp();
             String avatar = avatarList[(int) (Math.random() * avatarList.length)];
             user = SysUser.builder()
-                    .username(code)
+                    .username(openid.toString())
                     .password(UUID.randomUUID().toString())
                     .loginType(LoginTypeEnum.APPLET.getType())
                     .lastLoginTime(LocalDateTime.now())

@@ -309,7 +309,8 @@
     >
       <template v-if="selectedMessage">
         <!-- 新增回复选项 -->
-        <div class="action-item" v-if="selectedMessage.userId !== $store.state.userInfo?.id" @click="replyToMessage">
+        <div class="action-item" v-if="selectedMessage.userId !== $store.state.userInfo?.id 
+          && selectedMessage.isRecalled === false" @click="replyToMessage">
           <i class="fas fa-reply"></i>
           回复
         </div>

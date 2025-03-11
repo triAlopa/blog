@@ -33,21 +33,21 @@
             <view v-for="(item, index) in articleList" :key="index" class="article-item" @click="navigateToDetail(item)"
                 :style="{ 'animation-delay': index * 0.1 + 's' }">
                 <view class="article-main">
+                    <image :src="item.cover" mode="aspectFill" class="article-image"></image>
                     <view class="article-content">
                         <text class="article-title u-line-2">{{ item.title }}</text>
                         <text class="article-desc u-line-2">{{ item.summary }}</text>
-                        <view class="article-meta">
-                            <view class="meta-left">
-                                <text class="category text-ellipsis">{{ item.categoryName }}</text>
-                                <text class="date text-ellipsis">{{ formatTime(item.createTime) }}</text>
-                            </view>
-                            <view class="read-btn">
-                                阅读全文
-                                <u-icon name="arrow-right" size="12" color="#2979ff"></u-icon>
-                            </view>
+                    </view>
+                    <view class="article-meta">
+                        <view class="meta-left">
+                            <text class="category text-ellipsis">{{ item.categoryName }}</text>
+                            <text class="date text-ellipsis">{{ formatTime(item.createTime) }}</text>
+                        </view>
+                        <view class="read-btn">
+                            阅读全文
+                            <u-icon name="arrow-right" size="12" color="#2979ff"></u-icon>
                         </view>
                     </view>
-                    <image :src="item.cover" mode="aspectFill" class="article-image"></image>
                 </view>
             </view>
         </view>
@@ -94,7 +94,7 @@ export default {
         }
     },
     onPullDownRefresh() {
-        this.params.page = 1
+        this.params.pageNum = 1
         this.articleList = []
         this.loadStatus = 'loadmore'
         Promise.all([
@@ -262,20 +262,19 @@ export default {
 }
 
 .article-list {
+    padding: 0 20rpx;
 
     .article-item {
         margin-bottom: 20rpx;
-        animation: fadeInUp 0.5s ease-out forwards;
-        opacity: 0;
-        transform: translateY(20rpx);
 
         .article-main {
             background-color: #fff;
-            border-radius: 12rpx;
+            border-radius: 16rpx;
             overflow: hidden;
-            box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-            display: flex;
             padding: 24rpx;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 
             &:active {
                 transform: scale(0.98);
@@ -284,13 +283,12 @@ export default {
 
             .article-content {
                 flex: 1;
-                margin-right: 24rpx;
                 display: flex;
                 flex-direction: column;
 
                 .article-title {
                     font-size: 32rpx;
-                    font-weight: 600;
+                    font-weight: bold;
                     color: #303133;
                     margin-bottom: 16rpx;
                     line-height: 1.4;
@@ -301,72 +299,55 @@ export default {
                     color: #606266;
                     margin-bottom: 20rpx;
                     line-height: 1.5;
-                    flex: 1;
-                }
-
-                .article-meta {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-
-                    .meta-left {
-                        display: flex;
-                        align-items: center;
-                        flex: 1;
-                        min-width: 0;
-                        margin-right: 20rpx;
-
-                        .category {
-                            font-size: 24rpx;
-                            color: #2979ff;
-                            background-color: rgba(41, 121, 255, 0.1);
-                            padding: 4rpx 12rpx;
-                            border-radius: 4rpx;
-                            margin-right: 16rpx;
-                            max-width: 160rpx;
-                            white-space: nowrap;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                        }
-
-                        .date {
-                            font-size: 24rpx;
-                            color: #909399;
-
-                        }
-                    }
-
-                    .read-btn {
-                        display: flex;
-                        align-items: center;
-                        font-size: 24rpx;
-                        color: #2979ff;
-                        flex-shrink: 0;
-                    }
                 }
             }
 
             .article-image {
-                width: 200rpx;
-                height: 200rpx;
+                width: 100%;
+                height: 300rpx;
                 border-radius: 8rpx;
-                flex-shrink: 0;
+                margin-bottom: 16rpx;
+            }
+
+            .article-meta {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .meta-left {
+                    display: flex;
+                    align-items: center;
+                    flex: 1;
+                    min-width: 0;
+
+                    .category {
+                        font-size: 24rpx;
+                        color: #2979ff;
+                        background-color: rgba(41, 121, 255, 0.1);
+                        padding: 4rpx 12rpx;
+                        border-radius: 4rpx;
+                        margin-right: 16rpx;
+                        max-width: 160rpx;
+                    }
+
+                    .date {
+                        font-size: 24rpx;
+                        color: #909399;
+                    }
+                }
+
+                .read-btn {
+                    display: flex;
+                    align-items: center;
+                    font-size: 24rpx;
+                    color: #2979ff;
+                    flex-shrink: 0;
+                }
             }
         }
     }
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20rpx);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 .text-ellipsis {
     white-space: nowrap;
