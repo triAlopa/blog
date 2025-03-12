@@ -83,15 +83,23 @@
     }
 }
 
+
 //分页
-.el-pagination {
+.el-pager li,.el-pagination button{
+    background: var(--card-bg) !important;
+    color: var(--text-secondary) !important;
+    &.is-active,&.active{
+        color: $primary !important;
+    }
+}
+
+.is-background {
     font-weight: normal !important;
     padding: 12px 0 !important;
     
     .btn-prev,
     .btn-next,
     .el-pager li {
-        background: var(--card-bg) !important;
         color: var(--text-secondary) !important;
         border: 1px solid var(--border-color) !important;
         border-radius: $border-radius-sm * 2.5 !important;
@@ -171,12 +179,6 @@
             margin: 0 4px !important;
         }
     }
-}
-
-.pagination-box {
-    text-align: center;
-    margin: $spacing-lg 0 !important;
-    padding: 8px 0 !important;
 }
 
 //消息提示

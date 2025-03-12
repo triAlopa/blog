@@ -51,10 +51,6 @@ public class RedisConstants {
      */
     public static final String PWD_ERR_CNT_KEY = "pwd_err_cnt:";
 
-    /**
-     * 在线用户 cache key
-     */
-    public static final String ONLINE_USER_KEY = "online_user:";
 
     /**
      * 过期时间 1分钟
@@ -96,40 +92,24 @@ public class RedisConstants {
      */
     public static final long MONTH_EXPIRE = 30 * 24 * 60 * 60;
 
-    /**
-     * 验证码有效期（分钟）
-     */
-    public static final Integer CAPTCHA_EXPIRATION = 1;
 
-    /**
-     * 验证码有效期（分钟）
-     */
-    public static final String CAPTCHA_CODE = "captcha_code:";
-
-    /**
-     * 令牌有效期（小时）
-     */
-    public static final Integer TOKEN_EXPIRE = 2;
     /**
      * 微信登录用户状态
      */
     public static final String WX_LOGIN_USER_CODE = "wx_login_user_statue:";
 
+    /**
+     * 微信登录用户信息
+     */
     public static final String WX_LOGIN_USER = "wx_login_user:";
 
     /**
-     * 用户点赞文章
+     * 文章阅读量
      */
-    public static final String ARTICLE_USER_LIKE = "article_user_like:";
-
-
-    /**
-     * 文章点赞量
-     */
-    public static final String ARTICLE_LIKE_COUNT = "article_like_count";
-
-
     public static final String ARTICLE_QUANTITY = "article_quantity";
 
+    /**
+     * 网站配置
+     */
     public static final String WEB_CONFIG_KEY = "sys_webconfig";
 }

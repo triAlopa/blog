@@ -16,8 +16,10 @@ import com.mojian.mapper.SysChatMsgMapper;
 import com.mojian.service.ChatService;
 import com.mojian.websocket.WebSocketServer;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -40,6 +42,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void sendMsg(ChatSendMsgVo chatSendMsgVo) {
 
         //如果是文字类型的，就先敏感词过滤
@@ -64,6 +67,9 @@ public class ChatServiceImpl implements ChatService {
         if (chatSendMsgVo.getContent().contains(SHINY_XIA_ASSISTANT)) {
             ThreadUtil.execAsync(() -> {
                 String replaceContent = chatSendMsgVo.getContent().replace(SHINY_XIA_ASSISTANT, "");
+                if (StringUtils.isBlank(replaceContent)) {
+                    return;
+                }
                 String aiContent = aiUtil.send(replaceContent);
 
                 SysUser sysUser = sysUserMapper.selectById(Constants.XIAO_ASSISTANT_ID);

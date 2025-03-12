@@ -1,6 +1,7 @@
 package com.mojian.aspect;
 
 import com.mojian.annotation.AccessLimit;
+import com.mojian.common.RedisConstants;
 import com.mojian.exception.ServiceException;
 import com.mojian.utils.IpUtil;
 import com.mojian.utils.RedisUtil;
@@ -33,7 +34,7 @@ public class AccessLimitAspect {
 
         HttpServletRequest request = IpUtil.getRequest();
         // 拼接redis key = IP + Api限流
-        String key = IpUtil.getIp() + request.getRequestURI();
+        String key = RedisConstants.RATE_LIMIT_KEY + IpUtil.getIp() + request.getRequestURI();
         // 获取redis的value
         Integer maxTimes = null;
         Object value = redisUtil.get(key);

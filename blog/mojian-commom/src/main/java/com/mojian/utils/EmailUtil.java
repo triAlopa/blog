@@ -122,8 +122,8 @@ public class EmailUtil {
         this.send(email, content);
         log.info("邮箱验证码发送成功,邮箱:{},验证码:{}",email,code);
 
-        redisUtil.set(RedisConstants.CAPTCHA_CODE + email, code +"");
-        redisUtil.expire(RedisConstants.CAPTCHA_CODE + email, RedisConstants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        redisUtil.set(RedisConstants.CAPTCHA_CODE_KEY + email, code +"");
+        redisUtil.expire(RedisConstants.CAPTCHA_CODE_KEY + email, RedisConstants.MINUTE_EXPIRE, TimeUnit.SECONDS);
     }
 
     private void send(String email, String template) throws MessagingException {

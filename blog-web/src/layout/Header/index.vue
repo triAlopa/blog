@@ -158,6 +158,12 @@ export default {
           colorClass: 'hot-link'
         },
         { 
+          name: '资源', 
+          path: '/resources', 
+          icon: 'fas fa-cloud-download-alt',
+          colorClass: 'resource-link'
+        },
+        { 
           name: '相册', 
           path: '/photos', 
           icon: 'fas fa-images',
@@ -478,6 +484,7 @@ export default {
     &.about-me-link i { color: #8BC34A; }
     &.github-link i { color: #333333; }
     &.changelog-link i { color: #673AB7; }
+    &.resource-link i { color: #009688; }
 
     &:hover {
       i {

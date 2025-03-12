@@ -197,6 +197,7 @@
   --border-color-rgb: 0, 0, 0;
   --about-me: linear-gradient(135deg, #409efff2, #a855f7f2);
   --reply-message-bg: #f9f6f6;
+  --resources-bg: linear-gradient(135deg, #f8faff 0%, #f1f5ff 100%);
 }
 
 :root[data-theme='dark'] {
@@ -213,4 +214,5 @@
   --border-color-rgb: 255, 255, 255;
   --about-me:linear-gradient(135deg, #1f2937, #000000);
   --reply-message-bg: #333; 
+  --resources-bg: linear-gradient(135deg, #1f2937 0%, #000000 100%);
 }

@@ -1,10 +1,10 @@
 <template>
     <view class="container">
       <!-- 发布说说按钮 -->
-      <view class="publish-btn" @click="handlePublish">
+<!--      <view class="publish-btn" @click="handlePublish">
         <u-icon name="edit-pen" color="#fff" size="24"></u-icon>
         <text>发布说说</text>
-      </view>
+      </view> -->
   
       <!-- 说说列表 -->
       <view class="moments-list">

@@ -19,9 +19,8 @@ public class SysWebConfigServiceImpl extends ServiceImpl<SysWebConfigMapper, Sys
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int update(SysWebConfig sysWebConfig) {
+    public void update(SysWebConfig sysWebConfig) {
         baseMapper.updateById(sysWebConfig);
         redisUtil.set(RedisConstants.WEB_CONFIG_KEY, JSONObject.toJSONString(sysWebConfig));
-        return 0;
     }
 }

@@ -339,7 +339,7 @@
         </div>
         <div class="action-item" @click="handleDownloadFile" v-if="selectedMessage.type === 'file'">
           <i class="fas fa-download"></i>
-          下载文件
+          下载
         </div>
       </template>
     </div>
@@ -1427,7 +1427,13 @@ export default {
 
         // 发送文件消息
         if (response.data) {
-          await this.sendFile(response.data, file.name, file.size);
+          //获取文件类型，如果是图片则是发送图片接口
+          const fileType = file.type;
+          if(fileType.includes('image')){
+            await this.sendImage(response.data);
+          }else{
+            await this.sendFile(response.data, file.name, file.size);
+          }
         }
       } catch (error) {
         console.error("文件上传失败:", error);

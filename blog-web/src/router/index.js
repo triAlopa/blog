@@ -98,11 +98,19 @@ const routes = [
               {
                 path: '/hotSearch',
                 name: 'HotSearch',
-                component: () => import(/* webpackPrefetch: true */ '@/views/hotSearch/index2.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/hotSearch/index.vue'),
                 meta: { 
                   transition: 'fade',
                   title: '热搜 - 拾壹博客',
                   icon: 'fas fa-fire'
+                }
+              },
+              {
+                path: '/resources',
+                name: 'Resources',
+                component: () => import('@/views/resources/index.vue'),
+                meta: {
+                  title: '资源'
                 }
               },
               {
@@ -184,6 +192,7 @@ const routes = [
                   fullscreen: true
                 }
               },
+
               {
                 path: '/:pathMatch(.*)*',
                 name: 'NotFound',

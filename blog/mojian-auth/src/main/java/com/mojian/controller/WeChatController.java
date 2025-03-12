@@ -1,6 +1,9 @@
 package com.mojian.controller;
 
+import cn.hutool.core.util.RandomUtil;
+import com.mojian.common.RedisConstants;
 import com.mojian.service.AuthService;
+import com.mojian.utils.RedisUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +36,8 @@ public class WeChatController {
     private final WxMpService wxMpService;
 
     private final AuthService authService;
+
+    private final RedisUtil redisUtil;
 
     private final Pattern pattern = Pattern.compile("(?i)^DL\\d{4}$");
 
@@ -55,14 +62,14 @@ public class WeChatController {
             String content = message.getContent();
             log.info("公众号请求类型:{};内容为:{}", message.getMsgType(), content);
             if (WxConsts.XmlMsgType.TEXT.equals(message.getMsgType())){
-//                if ("验证码".equals(content)) {
-//                    String code = RandomUtil.generationNumberChar(6);
-//                    String msg = MessageFormat.format("您的本次验证码:{0},该验证码30分钟内有效。", code);
-//                    redisService.setCacheObject(RedisConstants.WECHAT_CODE+code,code,30, TimeUnit.MINUTES);
-//                    return returnMsg(msg, message);
-//                }
+                if ("验证码".equals(content)) {
+                    String code = RandomUtil.randomNumbers(4);
+                    String msg = MessageFormat.format("您的本次验证码:{0},该验证码3分钟内有效。", code);
+                    redisUtil.set(RedisConstants.CAPTCHA_CODE_KEY + code,code,3, TimeUnit.MINUTES);
+                    return returnMsg(msg, message);
+                }
                 //登录逻辑
-                if (content.contains("DL")) {
+                if (content.toLowerCase().contains("dl")) {
                     Matcher matcher = pattern.matcher(content);
                     if (!matcher.matches()) {
                         return returnMsg("验证不正确或已过期", message);

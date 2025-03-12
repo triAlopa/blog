@@ -24,19 +24,19 @@ FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `chat_msg`;
 CREATE TABLE `chat_msg`
 (
-    `id`          bigint NOT NULL AUTO_INCREMENT,
-    `chat_id`     bigint NULL DEFAULT NULL,
-    `sender_id`   bigint NOT NULL COMMENT '发送人id',
-    `type`        enum('text','image')  NULL DEFAULT 'text' COMMENT '消息类型',
-    `content`     text NULL COMMENT '内容',
-    `is_recalled` tinyint(1) NULL DEFAULT 0 COMMENT '是否撤回',
-    `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
-    `ip`          varchar(200) NULL DEFAULT NULL COMMENT 'ip地址',
-    `location`    varchar(200) NULL DEFAULT NULL COMMENT 'ip归属地',
-    `file_name` varchar(255) DEFAULT NULL COMMENT '消息是文件时，存的文件名',
+    `id`            bigint NOT NULL AUTO_INCREMENT,
+    `chat_id`       bigint NULL DEFAULT NULL,
+    `sender_id`     bigint NOT NULL COMMENT '发送人id',
+    `type`          enum('text','image')  NULL DEFAULT 'text' COMMENT '消息类型',
+    `content`       text NULL COMMENT '内容',
+    `is_recalled`   tinyint(1) NULL DEFAULT 0 COMMENT '是否撤回',
+    `create_time`   datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
+    `ip`            varchar(200) NULL DEFAULT NULL COMMENT 'ip地址',
+    `location`      varchar(200) NULL DEFAULT NULL COMMENT 'ip归属地',
+    `file_name`     varchar(255) DEFAULT NULL COMMENT '消息是文件时，存的文件名',
     `file_size` double DEFAULT NULL COMMENT '文件大小',
-    `duration` int(11) DEFAULT NULL COMMENT '语音时长',
-    `reply_id` bigint(20) DEFAULT NULL COMMENT '回复消息id',
+    `duration`      int(11) DEFAULT NULL COMMENT '语音时长',
+    `reply_id`      bigint(20) DEFAULT NULL COMMENT '回复消息id',
     `reply_content` text COMMENT '回复消息内容',
     `reply_user_id` bigint(20) DEFAULT NULL COMMENT '回复用户id',
     PRIMARY KEY (`id`) USING BTREE
@@ -523,6 +523,8 @@ INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`,
 VALUES (36, '存储平台', 'sys_file_oss', 1, '', '2025-02-14 08:47:01', '2025-02-14 08:47:01', 0);
 INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
 VALUES (37, '文章状态', 'article_status', 1, NULL, '2025-01-16 09:56:49', '2025-01-16 09:56:49', 0);
+INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
+VALUES (38, '资源分类', 'sys_resource_category', 1, NULL, '2025-03-12 10:04:22', '2025-03-12 10:04:22', 0);
 
 
 
@@ -560,6 +562,8 @@ VALUES (5, 26, 'QQ', 'qq', 'success', '1', 2, 1, 'QQ登录'),
        (8, 26, '微信', 'wechat', 'success', '1', 0, 1, '微信登录'),
        (9, 26, 'github', 'github', 'info', '1', 4, 1, 'github登录');
 
+
+
 INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
 VALUES (38, 31, '问题反馈', 'bug', 'danger', 0, 1, '', 1);
 INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
@@ -596,7 +600,12 @@ INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_def
 VALUES (62, 36, '腾讯云', 'tencent', 'primary', 0, 3, '', 1);
 INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
 VALUES (63, 36, 'minio', 'minio', 'danger', 0, 4, '', 1);
-
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (66, 37, 'Office文档', '3', 'info', 0, 2, 'doc', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (65, 37, 'PDF电子书', '2', 'danger', 0, 3, 'pdf', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (64, 37, '软件安装包', '1', 'primary', 0, 1, 'zip', 1);
 -- ----------------------------
 -- Table structure for sys_friend
 -- ----------------------------
@@ -1300,7 +1309,7 @@ CREATE TABLE `sys_user`
     `email`           varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
     `sex`             int NULL DEFAULT NULL COMMENT '性别',
     `login_type`      varchar(20) NULL DEFAULT NULL COMMENT '登录方式',
-    `signature` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '个性签名',
+    `signature`       varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '个性签名',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `username`(`username` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1811 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
@@ -1312,7 +1321,7 @@ INSERT INTO `sys_user`
 VALUES (1, 'admin', '$2a$10$GSHv.XwqBkizplz5j2pcmu73IRY2rgtxCYQwAvSXMvu9SryzydLpe', '2024-12-27 14:16:17',
         '2024-12-30 13:43:25', 1, '134.160.135.229', '日本|埼玉县', 'Windows', '2025-01-02 11:01:04', 'Chrome', '墨笺',
         'https://img2.baidu.com/it/u=3029837478,1144772205&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1731862800&t=a82c956c5d1b9ded3bcd9ffe204802f5',
-        '', NULL, 1, 'email',null);
+        '', NULL, 1, 'email', null);
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -1520,6 +1529,22 @@ INSERT INTO `sys_file_oss` (`id`, `domain`, `access_key`, `secret_key`, `bucket`
 VALUES (1, 'http://127.0.0.1:8800/localFile/', '', '', '', 'local-plus/', 'local', 1, 'D:/Temp/', 1, 'localFile/**',
         null,
         '2025-02-14 10:52:33');
+
+CREATE TABLE `sys_resource`
+(
+    `id`          bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `user_id`     bigint NOT NULL COMMENT '用户id',
+    `name`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '资源名',
+    `category`    varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '分类',
+    `downloads`   int                                                           DEFAULT NULL COMMENT '下载量',
+    `is_free`     int                                                           DEFAULT NULL COMMENT '是否免费',
+    `pay_type`    int                                                           DEFAULT NULL COMMENT '付费方式',
+    `pan_path`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '网盘地址',
+    `pan_code`    varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '网盘验证码',
+    `status`      int                                                           DEFAULT NULL COMMENT '状态',
+    `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源表';
 
 SET
 FOREIGN_KEY_CHECKS = 1;

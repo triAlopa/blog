@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ${packageName}.mapper.${className}Mapper;
 import ${packageName}.entity.${className};
 import ${packageName}.service.${className}Service;
-import ${packageName}.utils.PageUtils;
+import ${packageName}.utils.PageUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -30,7 +30,7 @@ public class ${className}ServiceImpl extends ServiceImpl<${className}Mapper, ${c
         wrapper.eq(${classname}.get${column.javaField.substring(0,1).toUpperCase()}${column.javaField.substring(1)}() != null, ${className}::get${column.javaField.substring(0,1).toUpperCase()}${column.javaField.substring(1)}, ${classname}.get${column.javaField.substring(0,1).toUpperCase()}${column.javaField.substring(1)}());
 #end
 #end
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     /**
@@ -71,4 +71,4 @@ public class ${className}ServiceImpl extends ServiceImpl<${className}Mapper, ${c
     public boolean deleteByIds(List<${primaryKey.javaType}> ids) {
         return removeByIds(ids);
     }
-} 
+}
