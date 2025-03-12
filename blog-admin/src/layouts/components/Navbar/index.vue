@@ -12,10 +12,10 @@
       <!-- 菜单全局搜索 -->
       <global-search/>
       <!-- 全屏切换 -->
-      <el-tooltip content="全屏切换" placement="bottom">  
-        <el-icon class="setting-icon" @click="toggleFullscreen">
+      <el-tooltip content="全屏切换" placement="bottom" >  
+        <el-icon class="setting-icon"  @click="toggleFullscreen">
           <FullScreen v-if="!isFullscreen" />
-          <svg-icon v-else name="exitFullScreen" />
+          <svg-icon name="exitFullscreen" v-else />
         </el-icon>
       </el-tooltip>
 

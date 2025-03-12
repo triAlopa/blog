@@ -80,7 +80,7 @@ html, body {
     --el-table-border-color: var(--el-border-color);
     --el-table-header-bg-color: var(--el-bg-color-container);
     --el-table-row-hover-bg-color: var(--el-fill-color-light);
-    
+
     th, td {
       background-color: var(--el-bg-color-container);
       border-bottom-color: var(--el-border-color);
@@ -248,4 +248,4 @@ h6 { font-size: var(--el-font-size-base); }
   font-family: 'Handwriting', sans-serif !important;
 }
 
-</style> 
+</style>
