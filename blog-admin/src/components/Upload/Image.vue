@@ -53,7 +53,7 @@ const props = defineProps({
   },
   source: {
     type: String,
-    default: null
+    default: 'default'
   }
 })
 
