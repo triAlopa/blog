@@ -8,15 +8,30 @@
           @click="goToPost"
         />
         <MomentsList />
-        <ArticleList
-          :articles="articleList"
-          :loading="loading"
-          :total="total"
-          :params="params"
-          @article-click="goToPost"
-          @page-change="changePage"
-          class="article-list"
-        />
+
+        <div>
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane v-for="category in categories" :key="category.id" :name="String(category.id)">
+              <template slot="label">
+                <span class="label-info">
+                  <i :class="category.icon"></i>
+                  {{ category.name }}
+                </span>
+              </template>
+              <ArticleList
+                :articles="articleList"
+                :loading="loading"
+                :total="total"
+                :params="params"
+                @article-click="goToPost"
+                @page-change="changePage"
+                class="article-list"
+              />
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+
+
       </main>
       <Sidebar />
     </div>
@@ -28,7 +43,7 @@ import ArticleList from '@/components/ArticleList/index.vue'
 import Carousel from '@/views/home/components/carousel.vue'
 import Sidebar from '@/components/Sidebar/index.vue'
 import MomentsList from '@/views/home/components/moments.vue'
-import { getArticlesApi,getCarouselArticlesApi } from '@/api/article'
+import { getArticlesApi,getCarouselArticlesApi,getAllCategoriesApi } from '@/api/article'
 
 export default {
   name: 'Home',
@@ -47,10 +62,28 @@ export default {
       },
       articleList: [],
       carouselSlides: [],
-      loading: false
+      loading: false,
+      activeName: 'all',
+      categories: [
+        {
+          id: 'all',
+          name: '全部',
+          icon: 'el-icon-menu'
+        }
+      ]
     }
   },
   methods: {
+    /**
+     * 切换标签
+     * @param {string} tab 标签
+     * @param {Event} event 事件
+     */
+    handleClick(tab) {
+      this.params.categoryId = tab.name === 'all' ? null : tab.name
+      this.params.pageNum = 1
+      this.getArticleList()
+    },
     /**
      * 跳转到文章详情
      * @param {number} id 文章id
@@ -93,11 +126,32 @@ export default {
       getCarouselArticlesApi().then(res => {
         this.carouselSlides = res.data
       })
-    }
+    },
+    /**
+     * 获取所有分类
+     */
+    getAllCategories() {
+      getAllCategoriesApi().then(res => {
+        const icons = [
+          'el-icon-document',
+          'el-icon-collection',
+          'el-icon-reading',
+          'el-icon-coffee-cup',
+          'el-icon-notebook-2',
+          'el-icon-edit'
+        ]
+        const categoriesWithIcons = res.data.map(category => ({
+          ...category,
+          icon: icons[Math.floor(Math.random() * icons.length)]
+        }))
+        this.categories.push(...categoriesWithIcons)
+      })
+    } 
   },
   created() {
     this.getArticleList()
     this.getCarouselArticles()
+    this.getAllCategories()
   },
 
 }
@@ -150,5 +204,27 @@ export default {
     }
   }
 }
+
+:deep(.el-tabs__nav-scroll) {
+     overflow-x: scroll !important;
+
+     &::-webkit-scrollbar {
+         display: none !important;
+     }
+ }
+ :deep(.el-tabs__nav-wrap::after){
+  display: none;
+ }
+.label-info{
+  display: flex;
+  align-items: center;
+  gap: $spacing-base;
+  color: var(--text-primary);
+  // .el-icon{
+  //   margin-right: 4px;
+  //   vertical-align: middle;
+  // }
+}
+
 
 </style> 

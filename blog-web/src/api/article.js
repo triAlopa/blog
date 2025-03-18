@@ -53,6 +53,18 @@ export function getCategoriesApi() {
 }
 
 /**
+ * 获取所有分类
+ */
+export function getAllCategoriesApi() {
+  return request({
+    url: '/api/article/categorie-all',
+    method: 'get'
+  })
+}
+
+
+
+/**
  * 添加评论
  */
 export function addCommentApi(data) {

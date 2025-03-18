@@ -113,7 +113,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<SysCategory> getCategoryAll() {
-        return sysCategoryMapper.selectList(null);
+        return sysCategoryMapper.selectList(new LambdaQueryWrapper<SysCategory>()
+                .orderByAsc(SysCategory::getSort));
     }
 
     private List<ArticleListVo> getArticlesByCondition(SFunction<SysArticle, Object> conditionField) {
