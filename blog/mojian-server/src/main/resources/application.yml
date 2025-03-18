@@ -56,24 +56,3 @@ springdoc:
       paths-to-match: '/**'
       packages-to-scan: com.mojian.controller
 
-
-
-#============================第三方登录配置信息===================================
-qq:
-  app-id: 101995894
-  app-secret: 238689485c7d930b7da82545505471aa
-  redirect-url: https://www.shiyit.com/mojian/api/auth/callback/qq
-weibo:
-  app-id: 2285022919
-  app-secret: a380fef0743e38cad12125902b204fab
-  redirect-url: https://www.shiyit.com/mojian/api/auth/weibo
-
-gitee:
-  app-id: d029020a6839273e0e82d853783874bf1f4f34b95da6ebcbc230e6603ff9b656
-  app-secret: e94dfa5baaa5ac896bd01d077d742020504910a0a4c974a83d40d51a0d8377b8
-  redirect-url: https://www.shiyit.com/mojian/api/auth/callback/gitee
-
-github:
-  app-id: befd660732a0844e225a
-  app-secret: c444b625f3463e9419cb36ef41acb59b2ef36228
-  redirect-url: https://www.shiyit.com/shiyi/mojian/api/auth/callback/github
