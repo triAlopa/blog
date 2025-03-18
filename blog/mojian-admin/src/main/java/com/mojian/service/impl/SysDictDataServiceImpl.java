@@ -10,6 +10,7 @@ import com.mojian.mapper.SysDictDataMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
@@ -36,17 +37,17 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     }
 
     @Override
-    public boolean addDictData(SysDictData sysDictData) {
-        return save(sysDictData);
+    public void addDictData(SysDictData sysDictData) {
+        save(sysDictData);
     }
 
     @Override
-    public boolean updateDictData(SysDictData sysDictData) {
-        return updateById(sysDictData);
+    public void updateDictData(SysDictData sysDictData) {
+        updateById(sysDictData);
     }
 
     @Override
-    public Map<String, Map<String, Object>> getDiceDataByDictType(List<String> dictTypes) {
+    public Map<String, Map<String, Object>> getDictDataByDictType(List<String> dictTypes) {
         Map<String, Map<String, Object>> map = new HashMap<>();
 
         List<SysDict> dictList = dictMapper.selectList(new LambdaQueryWrapper<SysDict>().in(SysDict::getType,dictTypes)
@@ -71,5 +72,11 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
             map.put(item.getType(),result);
         });
         return map;
+    }
+
+    @Override
+    @Cacheable(cacheNames = "sys_dict", key = "#dictType")
+    public List<SysDictData> selectDataByDictTypeCache(String dictType) {
+        return baseMapper.selectDataByDictType(dictType);
     }
 }

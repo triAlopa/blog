@@ -238,7 +238,7 @@ export default {
             this.tags = res.data
         })
         getDictDataApi(['article_status']).then(res => {
-            this.statusList = res.data.article_status.list
+            this.statusList = res.data
         })
         this.articleForm.id = this.$route.query.id
         if (this.articleForm.id) {

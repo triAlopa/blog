@@ -1,6 +1,7 @@
 package com.mojian.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mojian.annotation.OperationLogger;
 import com.mojian.common.Result;
@@ -31,8 +32,14 @@ public class SysDictDataController {
 
     @GetMapping("getDiceData/{dictType}")
     @ApiOperation(value = "获取字典数据列表")
-    public Result<Map<String, Map<String, Object>>> getDiceDataByDictType(@PathVariable List<String> dictType) {
-        return Result.success(sysDictDataService.getDiceDataByDictType(dictType));
+    public Result<Map<String, Map<String, Object>>> getDictDataByDictType(@PathVariable List<String> dictType) {
+        return Result.success(sysDictDataService.getDictDataByDictType(dictType));
+    }
+
+    @ApiOperation(value = "获取字典数据列表")
+    @GetMapping("selectDataByDictTypeCache/{dictType}")
+    public Result<List<SysDictData>> selectDataByDictTypeCache(@PathVariable String dictType) {
+        return Result.success(sysDictDataService.selectDataByDictTypeCache(dictType));
     }
 
     @PostMapping("add")

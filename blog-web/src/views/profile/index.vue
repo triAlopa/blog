@@ -578,9 +578,12 @@ export default {
      * 获取反馈类型字典
      */
     getFeedbackDict() {
-      getDictDataApi(['feedback_type', 'feedback_status']).then(res => {
-        this.feedbackTypes = res.data.feedback_type.list
-        this.feedbackStatus = res.data.feedback_status.list
+      getDictDataApi(['feedback_type']).then(res => {
+        this.feedbackTypes = res.data
+      })
+
+      getDictDataApi(['feedback_status']).then(res => {
+        this.feedbackStatus = res.data
       })
     },
     /**

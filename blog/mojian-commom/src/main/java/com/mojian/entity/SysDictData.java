@@ -7,13 +7,15 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 字典数据表
  */
 @Data
 @TableName("sys_dict_data")
 @ApiModel(value = "字典数据")
-public class SysDictData {
+public class SysDictData implements Serializable {
 
 
     @TableId(type = IdType.AUTO)

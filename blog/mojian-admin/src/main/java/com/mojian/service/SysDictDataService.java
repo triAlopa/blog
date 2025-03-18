@@ -19,17 +19,24 @@ public interface SysDictDataService extends IService<SysDictData> {
     /**
      * 新增字典数据
      */
-    boolean addDictData(SysDictData sysDictData);
+    void addDictData(SysDictData sysDictData);
 
     /**
      * 修改字典数据
      */
-    boolean updateDictData(SysDictData sysDictData);
+    void updateDictData(SysDictData sysDictData);
 
     /**
      * 根据字典类型查询字典数据
      * @param dictTypes
      * @return
      */
-    Map<String, Map<String, Object>> getDiceDataByDictType(List<String> dictTypes);
+    Map<String, Map<String, Object>> getDictDataByDictType(List<String> dictTypes);
+
+    /**
+     * 根据字典类型获取字典数据-缓存版
+     * @param dictType
+     * @return
+     */
+    List<SysDictData> selectDataByDictTypeCache(String dictType);
 }

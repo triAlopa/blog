@@ -5,7 +5,7 @@ import request from '@/utils/request'
  */
 export function getDictDataApi(dictType) {
   return request({
-    url: `/sys/dictData/getDiceData/${dictType}`,
+    url: `/sys/dictData/selectDataByDictTypeCache/${dictType}`,
     method: 'get'
   })
-} 
+}

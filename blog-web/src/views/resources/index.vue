@@ -221,7 +221,7 @@ export default {
      getCategory() {
       //1. 首先获取资源分类
       getDictDataApi('sys_resource_category').then(res => {
-        this.categories = res.data.sys_resource_category.list
+        this.categories = res.data
         this.getResources()
       })
     
