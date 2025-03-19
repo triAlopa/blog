@@ -13,8 +13,10 @@ import com.mojian.dto.Captcha;
 import com.mojian.dto.EmailRegisterDto;
 import com.mojian.dto.LoginDTO;
 import com.mojian.dto.user.LoginUserInfo;
+import com.mojian.entity.SysConfig;
 import com.mojian.entity.SysRole;
 import com.mojian.enums.LoginTypeEnum;
+import com.mojian.mapper.SysConfigMapper;
 import com.mojian.service.AuthService;
 import com.mojian.entity.SysUser;
 import com.mojian.enums.MenuTypeEnum;
@@ -83,12 +85,18 @@ public class AuthServiceImpl implements AuthService {
 
     private final WechatProperties wechatProperties;
 
+    private final SysConfigMapper sysConfigMapper;
+
 
     @Override
     public LoginUserInfo login(LoginDTO loginDTO) {
 
-        //校验验证码
-        CaptchaUtil.checkImageCode(loginDTO.getNonceStr(), loginDTO.getValue());
+        SysConfig verifySwitch = sysConfigMapper.selectOne(new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getConfigKey, "slider_verify_switch"));
+        if (verifySwitch != null && verifySwitch.getConfigValue().equals("Y")) {
+            //校验验证码
+            CaptchaUtil.checkImageCode(loginDTO.getNonceStr(), loginDTO.getValue());
+        }
+
 
         // 查询用户
         SysUser user = userMapper.selectByUsername(loginDTO.getUsername());

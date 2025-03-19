@@ -1034,6 +1034,24 @@ INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`,
 VALUES (131, '128', '', '', '保存oss配置', 2, '', 'BUTTON', '2025-02-13 17:05:09', NULL, '', '', 1, 'sys:oss:submit',
         0);
 
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (136, '1', '/config', '/system/config/index', '参数管理', 4, 'Film', 'MENU', '2025-03-19 15:56:07', NULL, '', '',
+        0, '', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (137, '136', '', '', '列表', 1, '', 'BUTTON', '2025-03-19 16:55:57', NULL, '', '', 1, 'sys:config:list', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (138, '136', '', '', '添加', 2, '', 'BUTTON', '2025-03-19 16:56:09', NULL, '', '', 1, 'sys:config:add', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (139, '136', '', '', '修改', 3, '', 'BUTTON', '2025-03-19 16:56:20', NULL, '', '', 1, 'sys:config:update', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (140, '136', '', '', '删除', 4, '', 'BUTTON', '2025-03-19 16:56:34', NULL, '', '', 1, 'sys:config:delete', 0);
+
+
 
 -- ----------------------------
 -- Table structure for sys_message
@@ -1545,6 +1563,24 @@ CREATE TABLE `sys_resource`
     `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源表';
+
+CREATE TABLE `sys_config`
+(
+    `id`           bigint NOT NULL AUTO_INCREMENT COMMENT '参数主键',
+    `config_name`  varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT '' COMMENT '参数名称',
+    `config_key`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT '' COMMENT '参数键名',
+    `config_value` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT '' COMMENT '参数键值',
+    `config_type`  varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci    DEFAULT 'N' COMMENT '系统内置（Y是 N否）',
+    `create_time`  datetime                                                       DEFAULT NULL COMMENT '创建时间',
+    `update_time`  datetime                                                       DEFAULT NULL COMMENT '更新时间',
+    `remark`       varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='参数配置表';
+INSERT INTO `sys_config` (`id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_time`,
+                          `update_time`, `remark`)
+VALUES (1, '滑块验证码开关', 'slider_verify_switch', 'Y', 'Y', NULL, '2025-03-19 16:33:27', '开启：Y,关闭：N');
+
+
 
 SET
 FOREIGN_KEY_CHECKS = 1;

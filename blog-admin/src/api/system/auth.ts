@@ -49,3 +49,12 @@ export function getCaptchaApi() {
     method: 'get'
   })
 }
+
+
+// 获取验证码开关
+export function getCaptchaSwitchApi() {
+  return request({
+    url: '/sys/config/getConfigByKey/slider_verify_switch',
+    method: 'get'
+  })
+}

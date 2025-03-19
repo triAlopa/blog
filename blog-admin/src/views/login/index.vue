@@ -174,6 +174,7 @@ import { useSettingsStore } from "@/store/modules/settings";
 import Logo from "@/layouts/components/Sidebar/Logo.vue";
 import settings from "@/config/settings";
 import SliderVerify from "./components/SliderVerify.vue";
+import { getCaptchaSwitchApi } from "@/api/system/auth";
 
 const QrCode = markRaw({
   name: "QrCode",
@@ -206,7 +207,6 @@ const qrCodeExpired = ref(false);
 const showSliderVerify = ref(false);
 const sliderVerifyRef = ref();
 
-
 const loginForm = reactive({
   username: "test",
   password: "123456",
@@ -234,30 +234,37 @@ const refresh = () => {
 };
 
 const onSuccess = (captcha: any) => {
-  loginForm.nonceStr = captcha.nonceStr
-  loginForm.value = captcha.value
+  loginForm.nonceStr = captcha.nonceStr;
+  loginForm.value = captcha.value;
 
+  login();
+};
+
+const login = () => {
   loading.value = true;
-  userStore.login(loginForm).then(() => {
-      sliderVerifyRef.value?.verifySuccessEvent()
+  userStore
+    .login(loginForm)
+    .then(() => {
+      sliderVerifyRef?.value?.verifySuccessEvent();
       router.push("/");
       ElMessage.success("登录成功");
     })
     .catch(() => {
-      refresh()
+      refresh();
     })
     .finally(() => {
       loading.value = false;
     });
 };
 
+
 /* 滑动验证失败*/
 const onFail = (msg: string) => {
-  refresh()
+  refresh();
 };
 /* 滑动验证异常*/
 const onAgain = () => {
-  ElMessage.error('滑动操作异常，请重试');
+  ElMessage.error("滑动操作异常，请重试");
 };
 
 const toggleTheme = () => {
@@ -267,7 +274,13 @@ const toggleTheme = () => {
 
 const handleLogin = async () => {
   loginFormRef.value?.validate((flag) => {
-    showSliderVerify.value = flag;
+    getCaptchaSwitchApi().then((res) => {
+      if (!res.data || res.data.configValue === "Y") {
+        showSliderVerify.value = true;
+      } else {
+        login();
+      }
+    });
   });
 };
 
@@ -295,7 +308,6 @@ watch(loginType, (newVal) => {
 onUnmounted(() => {
   clearInterval(qrCodeTimer);
 });
-
 
 // 添加 logo 颜色计算
 const logoColor = computed(() => {

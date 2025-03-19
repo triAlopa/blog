@@ -1146,6 +1146,17 @@ export default {
     }
   }
 
+  :deep(code:not([class])) {
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+    color:rgb(239, 89, 84);
+    background:rgb(243, 244, 244);
+    border-radius: 6px;
+    padding: $spacing-xs;
+    margin: 0 $spacing-xs;
+  }
+
   :deep(pre) {
     margin: 1em 0;
     position: relative;
