@@ -22,6 +22,11 @@ public class RedisConstants {
     public static final String CAPTCHA_CODE_KEY = "captcha_code:";
 
     /**
+     * 滑块验证码 redis key
+     */
+    public static final String SLIDER_CAPTCHA_CODE_KEY = "slider_captcha_code:";
+
+    /**
      * 访客
      */
     public static final String UNIQUE_VISITOR = "unique_visitor";

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mojian.common.Constants;
 import com.mojian.common.RedisConstants;
 import com.mojian.config.properties.*;
+import com.mojian.dto.Captcha;
 import com.mojian.dto.EmailRegisterDto;
 import com.mojian.dto.LoginDTO;
 import com.mojian.dto.user.LoginUserInfo;
@@ -21,10 +22,7 @@ import com.mojian.exception.ServiceException;
 import com.mojian.mapper.SysMenuMapper;
 import com.mojian.mapper.SysRoleMapper;
 import com.mojian.mapper.SysUserMapper;
-import com.mojian.utils.BeanCopyUtil;
-import com.mojian.utils.EmailUtil;
-import com.mojian.utils.IpUtil;
-import com.mojian.utils.RedisUtil;
+import com.mojian.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -88,6 +86,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginUserInfo login(LoginDTO loginDTO) {
+
+        //校验验证码
+        CaptchaUtil.checkImageCode(loginDTO.getNonceStr(), loginDTO.getValue());
+
         // 查询用户
         SysUser user = userMapper.selectByUsername(loginDTO.getUsername());
 
@@ -333,6 +335,13 @@ public class AuthServiceImpl implements AuthService {
         loginUserInfo.setToken(StpUtil.getTokenValue());
 
         return loginUserInfo;
+    }
+
+    @Override
+    public Captcha getCaptcha() {
+        Captcha captcha = new Captcha();
+        CaptchaUtil.getCaptcha(captcha);
+        return captcha;
     }
 
     private void validateEmailCode(EmailRegisterDto dto) {

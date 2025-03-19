@@ -183,7 +183,7 @@
           :page-size="params.pageSize" layout="prev, pager, next" :total="total">
         </el-pagination>
         </div>
-    
+
       </template>
       <div v-else class="empty-state">
         <i class="far fa-comments"></i>
@@ -335,7 +335,7 @@ export default {
 
     /**
      * 回复评论
-     * @param comment 
+     * @param comment
      */
     async submitReply(comment) {
       if (!this.replyContent.trim() || !this.canComment) return;

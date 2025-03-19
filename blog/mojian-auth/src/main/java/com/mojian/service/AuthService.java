@@ -1,5 +1,6 @@
 package com.mojian.service;
 
+import com.mojian.dto.Captcha;
 import com.mojian.dto.EmailRegisterDto;
 import com.mojian.dto.LoginDTO;
 import com.mojian.dto.user.LoginUserInfo;
@@ -84,4 +85,10 @@ public interface AuthService {
      * @return
      */
     LoginUserInfo appletLogin(String code);
+
+    /**
+     * 获取滑块验证码
+     * @return
+     */
+    Captcha getCaptcha();
 }

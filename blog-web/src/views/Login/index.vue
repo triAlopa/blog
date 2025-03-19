@@ -3,14 +3,28 @@
     <div class="login-container">
       <!-- 登录表单 -->
       <div class="login-body">
-        <el-tooltip class="item" effect="dark" content="回到首页" placement="top">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="回到首页"
+          placement="top"
+        >
           <button class="back-btn" @click="backToHome">
             <i class="el-icon-back"></i>
           </button>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="currentForm === 'login' ? '账号密码登录' : '扫码登录'" placement="top">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="currentForm === 'login' ? '账号密码登录' : '扫码登录'"
+          placement="top"
+        >
           <button class="switch-form-btn" @click="handleSwitchForm">
-            <i :class="currentForm === 'login' ? 'el-icon-user' : 'fas fa-qrcode'"></i>
+            <i
+              :class="
+                currentForm === 'login' ? 'el-icon-user' : 'fas fa-qrcode'
+              "
+            ></i>
           </button>
         </el-tooltip>
         <!-- 微信扫码登录 -->
@@ -18,9 +32,14 @@
           <div class="qrcode-content">
             <div class="qrcode-box">
               <!-- 这里放二维码图片 -->
-              <img v-lazy="'https://img.shiyit.com/qrcode.jpg'" :key="'https://img.shiyit.com/qrcode.jpg'" alt="微信二维码">
+              <img
+                v-lazy="'https://img.shiyit.com/qrcode.jpg'"
+                :key="'https://img.shiyit.com/qrcode.jpg'"
+                alt="微信二维码"
+              />
             </div>
-            <p class="qrcode-tip">登录验证码：
+            <p class="qrcode-tip">
+              登录验证码：
               <span class="code-text">{{ wechatForm.code }}</span>
               <span class="code-text" v-if="wechatForm.code === '验证码已失效'">
                 <i class="fas fa-sync-alt" @click="getWechatLoginCode"></i>
@@ -34,8 +53,13 @@
           </div>
 
           <div class="third-party-login">
-            <div v-for="(item, type) in loginTypes" :key="type" class="login-icon-wrapper"
-              @click="handleThirdPartyLogin(type)" v-if="type !== 'wechat'">
+            <div
+              v-for="(item, type) in loginTypes"
+              :key="type"
+              class="login-icon-wrapper"
+              @click="handleThirdPartyLogin(type)"
+              v-if="type !== 'wechat'"
+            >
               <el-tooltip :content="item.title" placement="top">
                 <div :class="['login-icon', type]">
                   <i :class="item.icon"></i>
@@ -54,9 +78,9 @@
 
           <el-form :model="loginForm" :rules="rules" ref="ruleFrom">
             <el-form-item class="form-item" prop="username">
-              <el-input 
-                prefix-icon="el-icon-user-solid" 
-                v-model="loginForm.username" 
+              <el-input
+                prefix-icon="el-icon-user-solid"
+                v-model="loginForm.username"
                 placeholder="请输入用户名"
                 @keyup.enter.native="handleLogin"
                 size="large"
@@ -64,11 +88,11 @@
             </el-form-item>
 
             <el-form-item class="form-item" prop="password">
-              <el-input 
-                prefix-icon="el-icon-lock" 
-                v-model="loginForm.password" 
+              <el-input
+                prefix-icon="el-icon-lock"
+                v-model="loginForm.password"
                 placeholder="请输入密码"
-                @keyup.enter.native="handleLogin" 
+                @keyup.enter.native="handleLogin"
                 show-password
                 size="large"
               />
@@ -79,12 +103,17 @@
             </div>
 
             <el-form-item class="form-item">
-              <el-button class="submit-btn ripple" :loading="loading" @click="handleLogin" type="primary">
+              <el-button
+                class="submit-btn ripple"
+                :loading="loading"
+                @click="handleLogin"
+                type="primary"
+              >
                 登 录
               </el-button>
             </el-form-item>
           </el-form>
-          
+
           <div class="form-switch">
             <a @click="switchForm('register')">立即注册</a>
             <span class="divider-line">|</span>
@@ -95,21 +124,32 @@
         <!-- 注册表单 -->
         <div v-show="currentForm === 'register'" class="form-container">
           <div class="form-header">
-                <h2 class="form-title">注册账号</h2>
-                <p class="form-subtitle">欢迎注册,请输入您的账号</p>
+            <h2 class="form-title">注册账号</h2>
+            <p class="form-subtitle">欢迎注册,请输入您的账号</p>
           </div>
           <el-form :model="registerForm" :rules="rules" ref="registerForm">
-
             <el-form-item lable="昵称" prop="nickname">
-              <el-input prefix-icon="el-icon-user-solid" v-model="registerForm.nickname" placeholder="请输入昵称" />
+              <el-input
+                prefix-icon="el-icon-user-solid"
+                v-model="registerForm.nickname"
+                placeholder="请输入昵称"
+              />
             </el-form-item>
 
             <el-form-item class="form-item" prop="email">
-              <el-input prefix-icon="el-icon-message" v-model="registerForm.email" placeholder="请输入邮箱" />
+              <el-input
+                prefix-icon="el-icon-message"
+                v-model="registerForm.email"
+                placeholder="请输入邮箱"
+              />
             </el-form-item>
 
             <el-form-item class="form-item" prop="code">
-              <el-input prefix-icon="el-icon-key" v-model="registerForm.code" placeholder="请输入验证码">
+              <el-input
+                prefix-icon="el-icon-key"
+                v-model="registerForm.code"
+                placeholder="请输入验证码"
+              >
                 <template slot="append">
                   <el-button @click="sendRegisterCode" :disabled="codeSending">
                     {{ codeButtonText }}
@@ -119,11 +159,20 @@
             </el-form-item>
 
             <el-form-item class="form-item" prop="password">
-              <el-input prefix-icon="el-icon-lock" v-model="registerForm.password" placeholder="请输入密码" show-password />
+              <el-input
+                prefix-icon="el-icon-lock"
+                v-model="registerForm.password"
+                placeholder="请输入密码"
+                show-password
+              />
             </el-form-item>
 
             <el-form-item class="form-item">
-              <el-button class="submit-btn" :loading="loading" @click="handleRegister">
+              <el-button
+                class="submit-btn"
+                :loading="loading"
+                @click="handleRegister"
+              >
                 注 册
               </el-button>
             </el-form-item>
@@ -132,24 +181,34 @@
               已有账号？<a @click="switchForm('account')">立即登录</a>
             </div>
           </el-form>
-
         </div>
 
         <!-- 忘记密码表单 -->
         <div v-show="currentForm === 'forgot'" class="form-container">
-             <div class="form-header">
-                <h2 class="form-title">找回账号</h2>
-                <p class="form-subtitle">重置密码,请输入您的邮箱</p>
+          <div class="form-header">
+            <h2 class="form-title">找回账号</h2>
+            <p class="form-subtitle">重置密码,请输入您的邮箱</p>
           </div>
           <el-form :model="forgotForm" :rules="rules" ref="forgotForm">
             <el-form-item class="form-item" prop="email">
-              <el-input prefix-icon="el-icon-message" v-model="forgotForm.email" placeholder="请输入注册邮箱" />
+              <el-input
+                prefix-icon="el-icon-message"
+                v-model="forgotForm.email"
+                placeholder="请输入注册邮箱"
+              />
             </el-form-item>
 
             <el-form-item class="form-item" prop="code">
-              <el-input prefix-icon="el-icon-key" v-model="forgotForm.code" placeholder="请输入验证码">
+              <el-input
+                prefix-icon="el-icon-key"
+                v-model="forgotForm.code"
+                placeholder="请输入验证码"
+              >
                 <template slot="append">
-                  <el-button @click="sendVerificationCode" :disabled="codeSending">
+                  <el-button
+                    @click="sendVerificationCode"
+                    :disabled="codeSending"
+                  >
                     {{ codeButtonText }}
                   </el-button>
                 </template>
@@ -157,11 +216,20 @@
             </el-form-item>
 
             <el-form-item class="form-item" prop="password">
-              <el-input prefix-icon="el-icon-lock" v-model="forgotForm.password" placeholder="请输入新密码" show-password />
+              <el-input
+                prefix-icon="el-icon-lock"
+                v-model="forgotForm.password"
+                placeholder="请输入新密码"
+                show-password
+              />
             </el-form-item>
 
             <el-form-item class="form-item">
-              <el-button class="submit-btn" :loading="loading" @click="handleResetPassword">
+              <el-button
+                class="submit-btn"
+                :loading="loading"
+                @click="handleResetPassword"
+              >
                 重置密码
               </el-button>
             </el-form-item>
@@ -170,305 +238,372 @@
               <a @click="switchForm('account')">返回登录</a>
             </div>
           </el-form>
-
         </div>
       </div>
+
+
     </div>
+
+    <!-- 滑块验证 -->
+    <el-dialog
+      title="请拖动滑块完成拼图"
+      width="360px"
+      :visible.sync="isShowSliderVerify"
+      :close-on-click-modal="false"
+      @close="refresh"
+      append-to-body
+    >
+      <slider-verify
+        ref="sliderVerify"
+        @success="onSuccess"
+        @fail="onFail"
+        @again="onAgain"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { disableScroll, enableScroll } from '@/utils/scroll'
+import { disableScroll, enableScroll } from "@/utils/scroll";
 import {
-  sendEmailCodeApi, registerApi, forgotPasswordApi,
-  getWechatLoginCodeApi, getWechatIsLoginApi, getAuthRenderApi
-} from '@/api/auth'
-import { setCookie } from '@/utils/cookie'
-
+  sendEmailCodeApi,
+  registerApi,
+  forgotPasswordApi,
+  getWechatLoginCodeApi,
+  getWechatIsLoginApi,
+  getAuthRenderApi,
+} from "@/api/auth";
+import { setCookie } from "@/utils/cookie";
+import SliderVerify from "./components/SliderVerify.vue";
 export default {
-  name: 'Login',
+  name: "Login",
+  components: {
+    SliderVerify,
+  },
   data() {
     return {
-      currentForm: 'login',
+      currentForm: "login",
       loading: false,
       wechatForm: {
-        code: '',
+        code: "",
         showQrcode: false,
       },
       countdown: 0,
       loginForm: {
-        username: '',
-        password: '',
-        source: 'PC'
+        username: "",
+        password: "",
+        source: "PC",
       },
       registerForm: {
-        nickname: '',
-        email: '',
-        password: '',
-        code: ''
+        nickname: "",
+        email: "",
+        password: "",
+        code: "",
       },
       forgotForm: {
-        email: '',
-        code: '',
-        password: ''
+        email: "",
+        code: "",
+        password: "",
       },
       loginTypes: {
         github: {
-          title: 'GitHub账号登录',
-          icon: 'fab fa-github'
+          title: "GitHub账号登录",
+          icon: "fab fa-github",
         },
         qq: {
-          title: 'QQ账号登录',
-          icon: 'fab fa-qq'
+          title: "QQ账号登录",
+          icon: "fab fa-qq",
         },
         wechat: {
-          title: '微信扫码登录',
-          icon: 'fab fa-weixin'
+          title: "微信扫码登录",
+          icon: "fab fa-weixin",
         },
         gitee: {
-          title: '码云账号登录',
-          icon: 'fab fa-git-alt'
+          title: "码云账号登录",
+          icon: "fab fa-git-alt",
         },
         weibo: {
-          title: '微博账号登录',
-          icon: 'fab fa-weibo'
-        }
+          title: "微博账号登录",
+          icon: "fab fa-weibo",
+        },
       },
       codeSending: false,
-      codeButtonText: '发送验证码',
+      codeButtonText: "发送验证码",
       codeTimer: null,
       pollingTimer: null,
+      isShowSliderVerify: false,
+      sliderVerify: null,
       rules: {
         nickname: [
-          { required: true, message: '请输入昵称', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+          { required: true, message: "请输入昵称", trigger: "blur" },
+          {
+            min: 3,
+            max: 10,
+            message: "长度在 3 到 10 个字符",
+            trigger: "blur",
+          },
         ],
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 3,
+            max: 50,
+            message: "长度在 3 到 50 个字符",
+            trigger: "blur",
+          },
         ],
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱', trigger: 'blur' }
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          { type: "email", message: "请输入正确的邮箱", trigger: "blur" },
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 16,
+            message: "长度在 6 到 16 个字符",
+            trigger: "blur",
+          },
         ],
-        code: [
-          { required: true, message: '请输入验证码', trigger: 'blur' }
-        ]
+        code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
       },
       rememberMe: false,
-    }
+    };
   },
 
   created() {
-    Object.keys(this.loginTypes).forEach(key => {
+    Object.keys(this.loginTypes).forEach((key) => {
       if (!this.$store.state.webSiteInfo?.loginTypeList?.includes(key)) {
-        delete this.loginTypes[key]
+        delete this.loginTypes[key];
       }
-    })
-    this.getWechatLoginCode()
+    });
+    this.getWechatLoginCode();
     this.$nextTick(() => {
-      disableScroll()
-    })
+      disableScroll();
+    });
   },
   methods: {
     /**
+     * 滑块验证成功
+     */
+    async onSuccess(captcha) {
+      this.loginForm.nonceStr = captcha.nonceStr;
+      this.loginForm.value = captcha.value;
+      this.loading = true;
+      try {
+        await this.$store.dispatch("loginAction", this.loginForm);
+        this.$refs.sliderVerify.verifySuccessEvent();
+        this.$message.success("登录成功");
+        this.handleClose();
+      } catch (error) {
+        this.$message.error(error.message || "登录失败，请重试");
+        this.refresh();
+      } finally {
+        this.loading = false;
+      }
+    },
+    /**
+     * 滑块验证失败
+     */
+    onFail() {
+      this.$message.error("验证失败，请重试");
+    },
+    /**
+     * 滑块验证重新开始
+     */
+    onAgain() {
+      this.$message.error("验证失败，请重试");
+    },
+    /**
+     * 刷新
+     */
+    refresh() {
+      this.$refs.sliderVerify.refresh();
+    },
+    /**
      * 切换表单
-     * @param form 
+     * @param form
      */
     switchForm(form) {
-      this.currentForm = form
-      this.loading = false
-      this.clearTimer()
-      if (form === 'login') {
-        this.getWechatLoginCode()
+      this.currentForm = form;
+      this.loading = false;
+      this.clearTimer();
+      if (form === "login") {
+        this.getWechatLoginCode();
       }
     },
     /**
      * 登录
      */
     async handleLogin() {
-      this.$refs['ruleFrom'].validate(async valid => {
+      this.$refs["ruleFrom"].validate(async (valid) => {
         if (valid) {
-          this.loading = true
-          try {
-            await this.$store.dispatch('loginAction', this.loginForm)
-            this.$message.success('登录成功')
-            this.handleClose()
-          } catch (error) {
-            this.$message.error(error.message || '登录失败，请重试')
-          } finally {
-            this.loading = false
-          }
+          this.isShowSliderVerify = true;
         } else {
           return false;
         }
-      })
+      });
     },
     /**
      * 注册
      */
     async handleRegister() {
-      this.$refs['registerForm'].validate(async valid => {
+      this.$refs["registerForm"].validate(async (valid) => {
         if (valid) {
-          this.loading = true
+          this.loading = true;
           try {
-            await registerApi(this.registerForm)
-            this.$message.success('注册成功')
-            this.switchForm('login')
+            await registerApi(this.registerForm);
+            this.$message.success("注册成功");
+            this.switchForm("login");
           } catch (error) {
-            this.$message.error(error.message || '注册失败，请重试')
+            this.$message.error(error.message || "注册失败，请重试");
           } finally {
-            this.loading = false
+            this.loading = false;
           }
         } else {
-          console.log('error submit!!')
+          console.log("error submit!!");
           return false;
         }
-      })
+      });
     },
     /**
      * 忘记密码
      */
     async handleResetPassword() {
-      this.$refs['forgotForm'].validate(async valid => {
+      this.$refs["forgotForm"].validate(async (valid) => {
         if (valid) {
-          this.loading = true
+          this.loading = true;
           try {
             // 调用重置密码接口
-            await forgotPasswordApi(this.forgotForm)
-            this.$message.success('密码重置成功')
-            this.switchForm('login')
+            await forgotPasswordApi(this.forgotForm);
+            this.$message.success("密码重置成功");
+            this.switchForm("login");
           } catch (error) {
-            this.$message.error(error.message || '重置失败，请重试')
+            this.$message.error(error.message || "重置失败，请重试");
           } finally {
-            this.loading = false
+            this.loading = false;
           }
         } else {
-          console.log('error submit!!')
+          console.log("error submit!!");
           return false;
         }
-      })
-
+      });
     },
     /**
      * 发送忘记密码邮箱验证码
      */
     async sendVerificationCode() {
-      if (this.codeSending) return
+      if (this.codeSending) return;
 
       if (!this.forgotForm.email) {
-        this.$message.error('请先输入邮箱')
-        return
+        this.$message.error("请先输入邮箱");
+        return;
       }
 
-      this.codeSending = true
-      this.sendEmailCode(this.forgotForm.email)
-
+      this.codeSending = true;
+      this.sendEmailCode(this.forgotForm.email);
     },
 
     /**
      * 第三方登录
      */
     handleThirdPartyLogin(type) {
-      if (type === 'wechat') {
-        this.wechatForm.showQrcode = true
-        this.getWechatLoginCode()
-        return
+      if (type === "wechat") {
+        this.wechatForm.showQrcode = true;
+        this.getWechatLoginCode();
+        return;
       }
-      getAuthRenderApi(type).then(res => {
+      getAuthRenderApi(type).then((res) => {
         //将当前地址存到cookie中
-        if (!window.location.href.includes('login')) {
-          setCookie('redirectUrl', window.location.href)
+        if (!window.location.href.includes("login")) {
+          setCookie("redirectUrl", window.location.href);
         }
-        window.open(res.data, "_self")
-      })
+        window.open(res.data, "_self");
+      });
     },
     /**
      * 获取微信登录验证码
      */
     getWechatLoginCode() {
-      getWechatLoginCodeApi().then(res => {
-        this.wechatForm.code = res.data
-        this.pollingWechatIsLogin()
+      getWechatLoginCodeApi().then((res) => {
+        this.wechatForm.code = res.data;
+        this.pollingWechatIsLogin();
         // 开始倒计时
-        let countdown = 60
+        let countdown = 60;
         this.codeTimer = setInterval(() => {
-          countdown--
+          countdown--;
           if (countdown <= 0) {
-            clearInterval(this.codeTimer)
-            clearInterval(this.pollingTimer)
-            this.wechatForm.code = '验证码已失效'
+            clearInterval(this.codeTimer);
+            clearInterval(this.pollingTimer);
+            this.wechatForm.code = "验证码已失效";
           }
-        }, 1000)
-      })
+        }, 1000);
+      });
     },
     /**
      * 定时轮询获取微信登录状态
      */
     pollingWechatIsLogin() {
       this.pollingTimer = setInterval(() => {
-        getWechatIsLoginApi(this.wechatForm.code).then(res => {
+        getWechatIsLoginApi(this.wechatForm.code).then((res) => {
           if (res.code === 200) {
-            this.$store.commit('SET_TOKEN', res.data.token)
-            this.$store.commit('SET_USER_INFO', res.data)
-            clearInterval(this.pollingTimer)
-            this.$message.success('登录成功')
-            this.handleClose()
+            this.$store.commit("SET_TOKEN", res.data.token);
+            this.$store.commit("SET_USER_INFO", res.data);
+            clearInterval(this.pollingTimer);
+            this.$message.success("登录成功");
+            this.handleClose();
           }
-        })
-      }, 1000)
+        });
+      }, 1000);
     },
 
     /**
      * 关闭登录弹窗
      */
     handleClose() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
-
 
     /**
      * 发送邮箱验证码
      */
     sendRegisterCode() {
-      if (this.codeSending) return
+      if (this.codeSending) return;
 
       if (!this.registerForm.email) {
-        this.$message.error('请先输入邮箱')
-        return
+        this.$message.error("请先输入邮箱");
+        return;
       }
-      this.codeSending = true
-      this.sendEmailCode(this.registerForm.email)
+      this.codeSending = true;
+      this.sendEmailCode(this.registerForm.email);
     },
 
     /**
      * 发送邮箱验证码
      */
     sendEmailCode(email) {
-      sendEmailCodeApi(email).then(res => {
-        this.$message.success("发送成功，请前往邮箱查看验证码")
-        // 开始倒计时
-        let countdown = 60
-        this.codeButtonText = `${countdown}秒后重试`
+      sendEmailCodeApi(email)
+        .then((res) => {
+          this.$message.success("发送成功，请前往邮箱查看验证码");
+          // 开始倒计时
+          let countdown = 60;
+          this.codeButtonText = `${countdown}秒后重试`;
 
-        this.codeTimer = setInterval(() => {
-          countdown--
-          if (countdown <= 0) {
-            clearInterval(this.codeTimer)
-            this.codeSending = false
-            this.codeButtonText = '发送验证码'
-          } else {
-            this.codeButtonText = `${countdown}秒后重试`
-          }
-        }, 1000)
-      }).catch(err => {
-        this.$message.error(err.message || "发送失败")
-        this.codeSending = false
-      })
+          this.codeTimer = setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+              clearInterval(this.codeTimer);
+              this.codeSending = false;
+              this.codeButtonText = "发送验证码";
+            } else {
+              this.codeButtonText = `${countdown}秒后重试`;
+            }
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$message.error(err.message || "发送失败");
+          this.codeSending = false;
+        });
     },
 
     /**
@@ -476,20 +611,20 @@ export default {
      */
     clearTimer() {
       if (this.codeTimer) {
-        clearInterval(this.codeTimer)
+        clearInterval(this.codeTimer);
       }
       if (this.pollingTimer) {
-        clearInterval(this.pollingTimer)
+        clearInterval(this.pollingTimer);
       }
     },
 
     handleSwitchForm() {
-      if (this.currentForm === 'login') {
-        this.switchForm('account')
-      } else if (this.currentForm === 'account') {
-        this.switchForm('login')
+      if (this.currentForm === "login") {
+        this.switchForm("account");
+      } else if (this.currentForm === "account") {
+        this.switchForm("login");
       } else {
-        this.switchForm('login')
+        this.switchForm("login");
       }
     },
 
@@ -497,14 +632,14 @@ export default {
      * 回到首页
      */
     backToHome() {
-      this.$router.push('/')
+      this.$router.push("/");
     },
   },
   beforeDestroy() {
-    enableScroll()
-    this.clearTimer()
-  }
-}
+    enableScroll();
+    this.clearTimer();
+  },
+};
 </script>
 <style scoped lang="scss">
 .login-container {
@@ -516,7 +651,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('@/assets/login-bg.svg') no-repeat;
+  background: url("@/assets/login-bg.svg") no-repeat;
   background-size: cover;
   min-height: 100vh;
   z-index: 2000;
@@ -527,7 +662,8 @@ export default {
   padding: 32px;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.95);
   position: relative;
@@ -543,12 +679,12 @@ export default {
   :deep(.el-input__inner) {
     height: 44px;
     font-size: 14px;
-    
+
     &::placeholder {
       color: #9ca3af;
     }
   }
-  
+
   :deep(.el-input__prefix) {
     left: 12px;
     color: #6b7280;
@@ -580,7 +716,7 @@ export default {
 .divider {
   margin: 24px 0;
   color: #9ca3af;
-  
+
   :deep(.el-divider__text) {
     background-color: #fff;
     padding: 0 12px;
@@ -611,11 +747,21 @@ export default {
     transform: translateY(-2px);
   }
 
-  &.github { color: #24292e; }
-  &.qq { color: #12B7F5; }
-  &.wechat { color: #07C160; }
-  &.gitee { color: #C71D23; }
-  &.weibo { color: #E6162D; }
+  &.github {
+    color: #24292e;
+  }
+  &.qq {
+    color: #12b7f5;
+  }
+  &.wechat {
+    color: #07c160;
+  }
+  &.gitee {
+    color: #c71d23;
+  }
+  &.weibo {
+    color: #e6162d;
+  }
 }
 
 .form-switch {
@@ -631,7 +777,7 @@ export default {
     text-decoration: none;
     font-weight: 500;
     cursor: pointer;
-    
+
     &:hover {
       color: darken($primary, 10%);
     }
@@ -656,7 +802,7 @@ export default {
   padding: 8px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -708,15 +854,19 @@ export default {
   color: $primary;
   font-size: 14px;
   cursor: pointer;
-  
+
   &:hover {
     color: darken($primary, 10%);
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .switch-form-btn {
@@ -734,12 +884,12 @@ export default {
   background: #f3f4f6;
   border: none;
   color: #6b7280;
-  
+
   &:hover {
     background: #e5e7eb;
     transform: rotate(180deg);
   }
-  
+
   i {
     font-size: 20px;
   }
@@ -761,13 +911,13 @@ export default {
   border: none;
   color: #6b7280;
   z-index: 1;
-  
+
   &:hover {
     background: #e5e7eb;
     transform: translateX(-4px);
     color: #6366f1;
   }
-  
+
   i {
     font-size: 20px;
   }

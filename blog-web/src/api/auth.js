@@ -101,3 +101,12 @@ export function getAuthRenderApi(source) {
     method: 'get',
   })
 } 
+
+
+// 获取验证码
+export function getCaptchaApi() {
+  return request({
+    url: '/auth/getCaptcha',
+    method: 'get'
+  })
+}

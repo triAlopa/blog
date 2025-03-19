@@ -1,7 +1,9 @@
 package com.mojian.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import com.mojian.common.Result;
+import com.mojian.dto.Captcha;
 import com.mojian.dto.EmailRegisterDto;
 import com.mojian.dto.LoginDTO;
 import com.mojian.service.AuthService;
@@ -9,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthCallback;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.mojian.dto.user.*;
 
@@ -37,8 +40,15 @@ public class AuthController {
 
     @ApiOperation(value = "用户登录")
     @PostMapping("/auth/login")
-    public Result<LoginUserInfo> login(@RequestBody LoginDTO loginDTO) {
+    public Result<LoginUserInfo> login(@Validated @RequestBody LoginDTO loginDTO) {
         return Result.success(authService.login(loginDTO));
+    }
+
+    @SaIgnore
+    @ApiOperation(value = "获取滑块验证码")
+    @GetMapping("/auth/getCaptcha")
+    public Result<Captcha> getCaptcha() {
+        return Result.success(authService.getCaptcha());
     }
 
     @ApiOperation(value = "用户登出")
