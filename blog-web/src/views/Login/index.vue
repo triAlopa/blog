@@ -240,8 +240,6 @@
           </el-form>
         </div>
       </div>
-
-
     </div>
 
     <!-- 滑块验证 -->
@@ -272,6 +270,7 @@ import {
   getWechatLoginCodeApi,
   getWechatIsLoginApi,
   getAuthRenderApi,
+  getCaptchaSwitchApi,
 } from "@/api/auth";
 import { setCookie } from "@/utils/cookie";
 import SliderVerify from "./components/SliderVerify.vue";
@@ -389,10 +388,13 @@ export default {
     async onSuccess(captcha) {
       this.loginForm.nonceStr = captcha.nonceStr;
       this.loginForm.value = captcha.value;
+      this.login();
+    },
+    async login() {
       this.loading = true;
       try {
         await this.$store.dispatch("loginAction", this.loginForm);
-        this.$refs.sliderVerify.verifySuccessEvent();
+        this.$refs.sliderVerify?.verifySuccessEvent();
         this.$message.success("登录成功");
         this.handleClose();
       } catch (error) {
@@ -438,7 +440,13 @@ export default {
     async handleLogin() {
       this.$refs["ruleFrom"].validate(async (valid) => {
         if (valid) {
-          this.isShowSliderVerify = true;
+          getCaptchaSwitchApi().then((res) => {
+            if (!res.data || res.data.configValue === "Y") {
+              this.isShowSliderVerify = true;
+            } else {
+              this.login();
+            }
+          });
         } else {
           return false;
         }
