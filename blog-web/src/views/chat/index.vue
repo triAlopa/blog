@@ -222,21 +222,6 @@
         <div class="input-toolbar">
           <mj-emoji size="1.1rem" class="emoji-picker" @select="insertEmoji" />
 
-          <label
-            class="toolbar-btn image-upload-btn"
-            for="image-upload"
-            title="上传图片"
-          >
-            <i class="fas fa-image"></i>
-          </label>
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            style="display: none"
-            @change="handleImageUpload"
-          />
-
           <!-- 新增文件上传按钮 -->
           <label
             class="toolbar-btn file-upload-btn"
@@ -277,20 +262,29 @@
             </button>
           </template>
           <template v-else>
-            <textarea
-              ref="messageTextarea"
-              v-model="messageText"
-              @keydown.enter.prevent="handleEnterKey"
-              @input="handleInput"
-              @keydown="handleMentionKeydown"
-              placeholder="输入消息..."
-            ></textarea>
+            <div class="input-wrapper">
+              <div class="paste-preview" v-if="pastedImages.length > 0">
+                <div v-for="(image, index) in pastedImages" :key="index" class="pasted-image">
+                  <img :src="image.preview"  @click="previewImage(image.preview)" />
+                  <i class="fas fa-times" @click="removeImage(index)"></i>
+                </div>
+              </div>
+              <textarea
+                ref="messageTextarea"
+                v-model="messageText"
+                @keydown.enter.prevent="handleEnterKey"
+                @input="handleInput"
+                @keydown="handleMentionKeydown"
+                @paste="handlePaste"
+                placeholder="输入消息..."
+              ></textarea>
+            </div>
           </template>
 
           <button
             v-if="!isVoiceMode"
             @click="sendMessage"
-            :disabled="!messageText.trim() || countdown > 0"
+            :disabled="(!messageText.trim() && pastedImages.length === 0) || countdown > 0"
           >
             <template v-if="countdown > 0"> {{ countdown }}s </template>
             <i v-else class="fas fa-paper-plane"></i>
@@ -461,6 +455,7 @@ export default {
       audioEndTime: null, // 新增音频结束时间
       audio: null,
       selectedReplyMessage: null, // 新增字段，用于存储回复的消息
+      pastedImages: [], // 存储粘贴的图片
     };
   },
   //监听this.$store.state.userInfo的变化
@@ -756,41 +751,48 @@ export default {
      * 发送文本消息
      */
     async sendMessage() {
-      if (
-        !this.messageText.trim() ||
-        !this.$store.state.userInfo ||
-        this.countdown > 0
-      )
-        return;
-
-      const mentionedContent = this.messageText.replace(
-        /@(\S+)\s/g,
-        "<mention>@$1</mention> "
-      );
-
-      const message = {
-        type: "text",
-        content: mentionedContent,
-        name: this.$store.state.userInfo.nickname,
-        userId: this.$store.state.userInfo.id,
-        avatar: this.$store.state.userInfo.avatar,
-        sex: this.$store.state.userInfo.sex,
-        replyId: this.selectedReplyMessage?.id || null,
-        replyContent: this.selectedReplyMessage?.content || null,
-        replyUserId: this.selectedReplyMessage?.userId || null,
-        replyUserName: this.selectedReplyMessage?.name || null,
-      };
+      if ((!this.messageText.trim() && this.pastedImages.length === 0) || 
+          !this.$store.state.userInfo || 
+          this.countdown > 0) return;
 
       try {
-        const response = await sendMsg(message);
+        // 先发送文本消息
+        if (this.messageText.trim()) {
+          const textMessage = {
+            type: "text",
+            content: this.messageText,
+            name: this.$store.state.userInfo.nickname,
+            userId: this.$store.state.userInfo.id,
+            avatar: this.$store.state.userInfo.avatar,
+            sex: this.$store.state.userInfo.sex,
+            replyId: this.selectedReplyMessage?.id || null,
+            replyContent: this.selectedReplyMessage?.content || null,
+            replyUserId: this.selectedReplyMessage?.userId || null,
+            replyUserName: this.selectedReplyMessage?.name || null,
+          };
+          await sendMsg(textMessage);
+        }
+
+        // 依次发送图片
+        for (const image of this.pastedImages) {
+          const formData = new FormData();
+          formData.append("file", image.file);
+          
+          const response = await uploadFileApi(formData, "chat");
+          if (response.data) {
+            await this.sendImage(response.data);
+          }
+        }
+
         this.startCountdown();
-        this.shouldScrollToBottom = true; // 发送消息时设置为true
+        this.shouldScrollToBottom = true;
         this.selectedReplyMessage = null;
+        this.messageText = "";
+        this.pastedImages = []; // 清空图片列表
       } catch (error) {
         console.error("发送消息失败:", error);
         this.$message.error("发送失败，请重试");
       }
-      this.messageText = "";
     },
 
     /**
@@ -853,44 +855,7 @@ export default {
         textarea.setSelectionRange(start + emoji.length, start + emoji.length);
       });
     },
-    /**
-     * 上传图片
-     * @param event
-     */
-    async handleImageUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
 
-      if (!file.type.startsWith("image/")) {
-        this.$message.error("请选择图片文件");
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        this.$message.error("图片大小不能超过5MB");
-        return;
-      }
-
-      try {
-        // 创建 FormData 对象
-        const formData = new FormData();
-        formData.append("file", file);
-
-        // 调用上传接口
-        const response = await uploadFileApi(formData, "chat");
-
-        // 发送图片消息
-        if (response.data) {
-          await this.sendImage(response.data);
-        }
-      } catch (error) {
-        console.error("图片上传失败:", error);
-        this.$message.error("图片上传失败");
-      }
-
-      // 清空 input 的值，允许重复选择同一文件
-      event.target.value = "";
-    },
     /**
      * 预览图片
      * @param src
@@ -1688,6 +1653,49 @@ export default {
     generateUniqueKey(msg, index) {
       return msg.id || `msg-${msg.userId}-${index}-${Date.now()}`;
     },
+    /**
+     * 处理粘贴事件
+     * @param {ClipboardEvent} event
+     */
+    async handlePaste(event) {
+      const items = event.clipboardData.items;
+      
+      for (let item of items) {
+        if (item.type.startsWith('image/')) {
+          //最多只能三张
+          if (this.pastedImages.length >= 3) {
+            this.$message.error("最多只能粘贴3张图片");
+            return;
+          }
+          event.preventDefault();
+          const file = item.getAsFile();
+          
+          if (file.size > 5 * 1024 * 1024) {
+            this.$message.error("图片大小不能超过5MB");
+            return;
+          }
+
+          // 创建预览
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.pastedImages.push({
+              file: file,
+              preview: e.target.result
+            });
+          };
+          reader.readAsDataURL(file);
+          break;
+        }
+      }
+    },
+
+    /**
+     * 移除预览图片
+     * @param {number} index
+     */
+    removeImage(index) {
+      this.pastedImages.splice(index, 1);
+    },
   },
 };
 </script>
@@ -2330,9 +2338,7 @@ export default {
       :deep(.emoji-picker i) {
         color: #f1c40f !important;
       }
-      .image-upload-btn {
-        color: $primary;
-      }
+
       .file-upload-btn {
         color: #2daba5;
       }
@@ -2891,6 +2897,69 @@ export default {
         font-size: 0.95em; // 移动端可以稍微调整字体大小
       }
     }
+  }
+}
+
+.input-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.paste-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  background: var(--hover-bg);
+  border-radius: 8px;
+  min-height: 60px;
+}
+
+.pasted-image {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  i {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 4px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+}
+
+textarea {
+  flex: 1;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: $spacing-md;
+  resize: none;
+  height: 60px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
   }
 }
 </style>
