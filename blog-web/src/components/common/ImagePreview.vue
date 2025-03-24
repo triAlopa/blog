@@ -180,8 +180,18 @@ export default {
       const deltaX = e.clientX - this.lastMousePosition.x
       const deltaY = e.clientY - this.lastMousePosition.y
 
-      this.position.x += deltaX
-      this.position.y += deltaY
+      const newX = this.position.x + deltaX
+      const newY = this.position.y + deltaY
+
+      const img = this.$el.querySelector('img')
+      const imgRect = img.getBoundingClientRect()
+      const containerRect = this.$el.getBoundingClientRect()
+
+      const maxX = (containerRect.width - imgRect.width) / 2
+      const maxY = (containerRect.height - imgRect.height) / 2
+
+      this.position.x = Math.min(Math.max(newX, -maxX), maxX)
+      this.position.y = Math.min(Math.max(newY, -maxY), maxY)
 
       this.lastMousePosition = {
         x: e.clientX,
@@ -238,8 +248,18 @@ export default {
         const deltaX = e.touches[0].clientX - this.lastMousePosition.x
         const deltaY = e.touches[0].clientY - this.lastMousePosition.y
 
-        this.position.x += deltaX
-        this.position.y += deltaY
+        const newX = this.position.x + deltaX
+        const newY = this.position.y + deltaY
+
+        const img = this.$el.querySelector('img')
+        const imgRect = img.getBoundingClientRect()
+        const containerRect = this.$el.getBoundingClientRect()
+
+        const maxX = (containerRect.width - imgRect.width) / 2
+        const maxY = (containerRect.height - imgRect.height) / 2
+
+        this.position.x = Math.min(Math.max(newX, -maxX), maxX)
+        this.position.y = Math.min(Math.max(newY, -maxY), maxY)
 
         this.lastMousePosition = {
           x: e.touches[0].clientX,
