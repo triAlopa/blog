@@ -1581,6 +1581,21 @@ INSERT INTO `sys_config` (`id`, `config_name`, `config_key`, `config_value`, `co
 VALUES (1, '滑块验证码开关', 'slider_verify_switch', 'Y', 'Y', NULL, '2025-03-19 16:33:27', '开启：Y,关闭：N');
 
 
+CREATE TABLE `sys_notifications`
+(
+    `id`           bigint                                  NOT NULL AUTO_INCREMENT COMMENT '通知的唯一标识，自增主键',
+    `user_id`      bigint                                  DEFAULT NULL COMMENT '推送用户id',
+    `from_user_id` bigint                                  DEFAULT NULL COMMENT '来自用户id,如评论就存评论的用户id',
+    `type`         varchar(20) COLLATE utf8mb4_general_ci  NOT NULL COMMENT '通知的类型，如 system、comment、like 等',
+    `title`        varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '通知的标题',
+    `message`      text COLLATE utf8mb4_general_ci         NOT NULL COMMENT '通知的具体内容',
+    `is_read`      tinyint(1) NOT NULL DEFAULT '0' COMMENT '标记通知是否已读，0 表示未读，1 表示已读',
+    `article_id`   bigint                                  DEFAULT NULL COMMENT '文章id',
+    `link`         varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '跳转链接',
+    `create_time`  datetime                                NOT NULL COMMENT '通知的创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='消息通知表';
+
 
 SET
 FOREIGN_KEY_CHECKS = 1;
