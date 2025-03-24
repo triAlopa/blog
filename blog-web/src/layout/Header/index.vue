@@ -60,6 +60,12 @@
           <span class="search-text">搜索</span>
         </a>
 
+        <!-- 修改消息按钮的跳转路径 -->
+        <router-link to="/notifications" class="message-btn">
+          <i class="fas fa-bell"></i>
+          <span class="message-count" v-if="showBage()" />
+        </router-link>
+
         <!-- 移动端搜索按钮 -->
         <button class="mobile-search-btn" @click="handleSearch">
           <i class="fas fa-search"></i>
@@ -213,6 +219,7 @@ export default {
       activeDropdown: null,
       showDropdown: false,
       showSearch: false,
+      unreadCount: 0,
     }
   },
   computed: {
@@ -276,6 +283,10 @@ export default {
       this.$store.dispatch('logout')
       this.$message.success('已退出登录')
       this.showDropdown = false
+    },
+    showBage() {
+      console.log(this.$store.state.isUnread)
+     return this.$store.state.isUnread
     },
     handleScroll() {
       const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
@@ -578,6 +589,43 @@ export default {
     }
   }
 
+  .message-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    
+    i {
+      font-size: 1.2em;
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover {
+      color: $primary;
+      background: var(--hover-bg);
+      
+      i {
+        transform: scale(1.1);
+      }
+    }
+    
+    .message-count {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: red;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      transform: none;
+      padding: 0;
+    }
+  }
+
   .user-info {
     .user-section {
       position: relative;
@@ -774,6 +822,10 @@ export default {
   }
 
   .nav-right .user-info {
+    display: none;
+  }
+
+  .nav-right .message-btn {
     display: none;
   }
 }

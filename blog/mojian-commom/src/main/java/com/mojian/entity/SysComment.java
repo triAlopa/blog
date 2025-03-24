@@ -22,13 +22,13 @@ public class SysComment implements Serializable {
     private Integer id;
 
     @ApiModelProperty(value = "关联的文章ID，表明该评论所属的文章")
-    private Integer articleId;
+    private Long articleId;
 
     @ApiModelProperty(value = "发表评论的用户ID")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty(value = "回复人id")
-    private Integer replyUserId;
+    private Long replyUserId;
 
     @ApiModelProperty(value = "父评论ID，用于实现回复评论的层级结构，若为顶级评论则为NULL")
     private Integer parentId;

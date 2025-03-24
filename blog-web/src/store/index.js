@@ -16,7 +16,8 @@ export default new Vuex.Store({
     visitorAccess: 0,
     siteAccess: 0,
     isLoading: false,
-    notice: null
+    notice: null,
+    isUnread: false
   },
   mutations: {
     setSiteInfo(state, info) {

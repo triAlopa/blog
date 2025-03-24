@@ -8,8 +8,10 @@ import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.mojian.common.RedisConstants;
 import com.mojian.entity.SysArticle;
 import com.mojian.entity.SysCategory;
+import com.mojian.entity.SysNotifications;
 import com.mojian.service.ArticleService;
 import com.mojian.utils.IpUtil;
+import com.mojian.utils.NotificationsUtil;
 import com.mojian.utils.RedisUtil;
 import com.mojian.vo.article.ArchiveListVo;
 import com.mojian.vo.article.ArticleDetailVo;
@@ -34,7 +36,10 @@ public class ArticleServiceImpl implements ArticleService {
     private final SysArticleMapper sysArticleMapper;
 
     private final SysCategoryMapper sysCategoryMapper;
+
     private final RedisUtil redisUtil;
+
+    private final NotificationsUtil notificationsUtil;
 
     @Override
     public IPage<ArticleListVo> getArticleList(Integer tagId, Integer categoryId, String keyword) {
@@ -47,24 +52,24 @@ public class ArticleServiceImpl implements ArticleService {
         // 判断是否点赞
         Object userId = StpUtil.getLoginIdDefaultNull();
         if (userId != null) {
-           detailVo.setIsLike(sysArticleMapper.getUserIsLike(id, Integer.parseInt(userId.toString())));
+            detailVo.setIsLike(sysArticleMapper.getUserIsLike(id, Integer.parseInt(userId.toString())));
         }
 
         //添加阅读量
         String ip = IpUtil.getIp();
         ThreadUtil.execAsync(() -> {
             Map<Object, Object> map = redisUtil.hGetAll(RedisConstants.ARTICLE_QUANTITY);
-            List<String> ipList = (List<String> ) map.get(id.toString());
+            List<String> ipList = (List<String>) map.get(id.toString());
             if (ipList != null) {
                 if (!ipList.contains(ip)) {
                     ipList.add(ip);
                 }
-            }else {
+            } else {
                 ipList = new ArrayList<>();
                 ipList.add(ip);
             }
-            map.put(id.toString(),ipList);
-            redisUtil.hSetAll(RedisConstants.ARTICLE_QUANTITY,map);
+            map.put(id.toString(), ipList);
+            redisUtil.hSetAll(RedisConstants.ARTICLE_QUANTITY, map);
         });
         return detailVo;
     }
@@ -105,8 +110,18 @@ public class ArticleServiceImpl implements ArticleService {
         if (isLike) {
             // 点过则取消点赞
             sysArticleMapper.unLike(articleId, userId);
-        }else {
+        } else {
             sysArticleMapper.like(articleId, userId);
+            ThreadUtil.execAsync(() -> {
+                //发送通知事件
+                SysNotifications notifications = SysNotifications.builder()
+                        .title("文章点赞通知")
+                        .articleId(articleId)
+                        .isRead(0)
+                        .type("like")
+                        .build();
+                notificationsUtil.publish(notifications);
+            });
         }
         return true;
     }

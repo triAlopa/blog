@@ -2,36 +2,43 @@
   <div class="comment-section">
     <!-- 评论输入框 -->
     <div class="comment-editor">
-      <div class="editor-header">
-        <img :src="userAvatar" :alt="userName" />
-        <div class="user-info">
-          <span class="user-name">{{ userName }}</span>
-          <span class="tip">支持 Markdown 格式</span>
-        </div>
-      </div>
       <div class="editor-content">
-        <textarea v-model="commentContent" placeholder="写下你的评论... (支持 Markdown 格式)" :rows="6" ref="commentTextarea"
-          maxlength="50"></textarea>
-        <div class="editor-footer">
-          <div class="editor-tools">
-            <mj-emoji @select="insertEmoji" />
-            <mj-color-picker @select="insertMarkdown" @reset="removeColor" />
-            <button class="tool-btn" @click="insertMarkdown('**', '**')" title="加粗">
-              <i class="fas fa-bold"></i>
-            </button>
-            <button class="tool-btn" @click="insertMarkdown('`', '`')" title="行内代码">
-              <i class="fas fa-code"></i>
-            </button>
-            <button class="tool-btn" @click="insertMarkdown('\n```\n', '\n```')" title="代码块">
-              <i class="fas fa-file-code"></i>
-            </button>
-            <button class="tool-btn" @click="insertMarkdown('> ', '')" title="引用">
-              <i class="fas fa-quote-right"></i>
+        <div class="avatar-container">
+          <img :src="userAvatar" :alt="userName" />
+        </div>
+        <div class="input-container">
+          <textarea 
+            v-model="commentContent" 
+            placeholder="写下你的评论... (支持 Markdown 格式)" 
+            :rows="6" 
+            ref="commentTextarea"
+            maxlength="50"
+          ></textarea>
+          <div class="editor-footer">
+            <div class="editor-tools">
+              <mj-emoji @select="insertEmoji" />
+              <mj-color-picker @select="insertMarkdown" @reset="removeColor" />
+              <button class="tool-btn" @click="insertMarkdown('**', '**')" title="加粗">
+                <i class="fas fa-bold"></i>
+              </button>
+              <button class="tool-btn" @click="insertMarkdown('`', '`')" title="行内代码">
+                <i class="fas fa-code"></i>
+              </button>
+              <button class="tool-btn" @click="insertMarkdown('\n```\n', '\n```')" title="代码块">
+                <i class="fas fa-file-code"></i>
+              </button>
+              <button class="tool-btn" @click="insertMarkdown('> ', '')" title="引用">
+                <i class="fas fa-quote-right"></i>
+              </button>
+            </div>
+            <button 
+              class="submit-btn" 
+              :disabled="!commentContent.trim() || !canComment" 
+              @click="submitComment"
+            >
+              {{ canComment ? '发表评论' : `${countdown}秒后可评论` }}
             </button>
           </div>
-          <button class="submit-btn" :disabled="!commentContent.trim() || !canComment" @click="submitComment">
-            {{ canComment ? '发表评论' : `${countdown}秒后可评论` }}
-          </button>
         </div>
       </div>
     </div>
@@ -642,107 +649,96 @@ export default {
   overflow: hidden;
   border: 1px solid var(--border-color);
 
-  .editor-header {
-    padding: $spacing-md $spacing-lg;
-    display: flex;
-    align-items: center;
-    gap: $spacing-md;
-    border-bottom: 1px solid var(--border-color);
-
-    img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .user-info {
-      display: flex;
-      flex-direction: column;
-      gap: $spacing-xs;
-
-      .user-name {
-        color: var(--text-primary);
-        font-weight: 500;
-      }
-
-      .tip {
-        color: var(--text-secondary);
-        font-size: 0.9em;
-      }
-    }
-  }
-
   .editor-content {
+    display: flex;
+    gap: $spacing-lg;
     padding: $spacing-lg;
 
-    textarea {
-      width: 100%;
-      resize: vertical;
-      min-height: 120px;
-      border: 1px solid var(--border-color);
-      background: var(--card-bg);
-      color: var(--text-primary);
-      padding: $spacing-md;
-      border-radius: $border-radius-md;
-      font-size: 1em;
-      line-height: 1.6;
-      transition: all 0.3s ease;
-
-      &:focus {
-        outline: none;
-        border-color: $primary;
-        box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    .avatar-container {
+      flex-shrink: 0;
+      @include responsive(sm) {
+        display: none;
       }
-
-      &::placeholder {
-        color: var(--text-secondary);
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
       }
     }
 
-    .editor-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: $spacing-lg;
+    .input-container {
+      flex: 1;
+      min-width: 0;
 
-      .editor-tools {
-        display: flex;
-        gap: $spacing-xs;
+      textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 120px;
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        color: var(--text-primary);
+        padding: $spacing-md;
+        border-radius: $border-radius-md;
+        font-size: 1em;
+        line-height: 1.6;
+        transition: all 0.3s ease;
 
-        .tool-btn {
-          padding: $spacing-xs $spacing-sm;
-          border: none;
-          background: none;
+        &:focus {
+          outline: none;
+          border-color: $primary;
+          box-shadow: 0 0 0 3px rgba($primary, 0.1);
+        }
+
+        &::placeholder {
           color: var(--text-secondary);
-          cursor: pointer;
-          transition: all 0.3s ease;
-          border-radius: $border-radius-sm;
-
-          &:hover {
-            color: $primary;
-            background: var(--hover-bg);
-          }
         }
       }
 
-      .submit-btn {
-        padding: $spacing-sm $spacing-xl;
-        background: $primary;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        transition: all 0.3s ease;
+      .editor-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: $spacing-lg;
 
-        &:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
+        .editor-tools {
+          display: flex;
+          gap: $spacing-xs;
+
+          .tool-btn {
+            padding: $spacing-xs $spacing-sm;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: $border-radius-sm;
+
+            &:hover {
+              color: $primary;
+              background: var(--hover-bg);
+            }
+          }
         }
 
-        &:not(:disabled):hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba($primary, 0.2);
+        .submit-btn {
+          padding: $spacing-sm $spacing-xl;
+          background: $primary;
+          color: white;
+          border: none;
+          border-radius: 20px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+
+          &:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba($primary, 0.2);
+          }
         }
       }
     }
@@ -798,7 +794,7 @@ export default {
   .comment-item {
     display: flex;
     gap: $spacing-lg;
-    padding: $spacing-lg;
+    padding: $spacing-md;
     border-bottom: 1px dashed var(--border-color);
 
     &:last-child {

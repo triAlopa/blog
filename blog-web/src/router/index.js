@@ -192,7 +192,15 @@ const routes = [
                   fullscreen: true
                 }
               },
-
+              {
+                path: '/notifications',
+                name: 'Notifications',
+                component: () => import('@/views/notifications/index.vue'),
+                meta: {
+                  title: '消息通知',
+                  requiresAuth: true
+                }
+              },
               {
                 path: '/:pathMatch(.*)*',
                 name: 'NotFound',
