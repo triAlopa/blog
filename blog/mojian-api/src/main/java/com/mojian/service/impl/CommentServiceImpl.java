@@ -55,7 +55,8 @@ public class CommentServiceImpl implements CommentService {
                     .articleId(sysComment.getArticleId())
                     .isRead(0)
                     .type("comment")
-                    .fromUserId(sysComment.getReplyUserId())
+                    .userId(sysComment.getReplyUserId())
+                    .fromUserId(sysComment.getUserId())
                     .build();
             notificationsUtil.publish(notifications);
         });

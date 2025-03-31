@@ -56,7 +56,7 @@
                     <span class="article-title" @click="handleArticleClick(notification.articleId)">{{ notification.articleTitle }}</span> 中的评论
                   </span>
                   <span v-else>
-                    {{ notification.toNickname }} 评论了你的文章
+                    {{ notification.fromNickname }} 评论了你的文章
                   </span>
 
                   <div>

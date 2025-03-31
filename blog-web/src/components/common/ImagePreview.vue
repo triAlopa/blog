@@ -1,8 +1,8 @@
 <template>
   <transition name="fade">
-    <div
-      class="image-preview"
-      v-show="visible"
+    <div 
+      class="image-preview" 
+      v-show="visible" 
       @click="close"
       @mousewheel.prevent="handleWheel"
       @mousemove="onDrag"
@@ -15,17 +15,17 @@
       tabindex="-1"
     >
       <div class="preview-wrapper">
-        <img
-          :src="currentImage"
-          :style="{
-            transform: `translate(${position.x}px, ${position.y}px) scale(${scale}) rotate(${rotation}deg)`
+        <img 
+          :src="currentImage" 
+          :style="{ 
+            transform: `translate(${position.x}px, ${position.y}px) scale(${scale}) rotate(${rotation}deg)` 
           }"
           @click.stop
           @mousedown.stop.prevent="startDrag"
           @touchstart.stop="startTouch"
         >
       </div>
-
+      
       <div class="nav-buttons" v-if="images.length > 1">
         <button class="nav-btn prev" @click.stop="prev" :disabled="currentIndex <= 0">
           <i class="fas fa-chevron-left"></i>
@@ -34,7 +34,7 @@
           <i class="fas fa-chevron-right"></i>
         </button>
       </div>
-
+      
       <div class="preview-toolbar" @click.stop>
         <button class="tool-btn" @click="rotate(-90)">
           <i class="fas fa-undo"></i>
@@ -176,23 +176,13 @@ export default {
      */
     onDrag(e) {
       if (!this.isDragging) return
-
+      
       const deltaX = e.clientX - this.lastMousePosition.x
       const deltaY = e.clientY - this.lastMousePosition.y
-
-      const newX = this.position.x + deltaX
-      const newY = this.position.y + deltaY
-
-      const img = this.$el.querySelector('img')
-      const imgRect = img.getBoundingClientRect()
-      const containerRect = this.$el.getBoundingClientRect()
-
-      const maxX = (containerRect.width - imgRect.width) / 2
-      const maxY = (containerRect.height - imgRect.height) / 2
-
-      this.position.x = Math.min(Math.max(newX, -maxX), maxX)
-      this.position.y = Math.min(Math.max(newY, -maxY), maxY)
-
+      
+      this.position.x += deltaX
+      this.position.y += deltaY
+      
       this.lastMousePosition = {
         x: e.clientX,
         y: e.clientY
@@ -239,7 +229,7 @@ export default {
           touch2.clientX - touch1.clientX,
           touch2.clientY - touch1.clientY
         )
-
+        
         const scale = (currentDistance / this.initialDistance) * this.initialScale
         if (scale >= 0.1 && scale <= 3) {
           this.scale = scale
@@ -247,20 +237,10 @@ export default {
       } else if (this.isDragging && e.touches.length === 1) {
         const deltaX = e.touches[0].clientX - this.lastMousePosition.x
         const deltaY = e.touches[0].clientY - this.lastMousePosition.y
-
-        const newX = this.position.x + deltaX
-        const newY = this.position.y + deltaY
-
-        const img = this.$el.querySelector('img')
-        const imgRect = img.getBoundingClientRect()
-        const containerRect = this.$el.getBoundingClientRect()
-
-        const maxX = (containerRect.width - imgRect.width) / 2
-        const maxY = (containerRect.height - imgRect.height) / 2
-
-        this.position.x = Math.min(Math.max(newX, -maxX), maxX)
-        this.position.y = Math.min(Math.max(newY, -maxY), maxY)
-
+        
+        this.position.x += deltaX
+        this.position.y += deltaY
+        
         this.lastMousePosition = {
           x: e.touches[0].clientX,
           y: e.touches[0].clientY
@@ -305,24 +285,24 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-
+  
   .preview-wrapper {
     max-width: 90vw;
     max-height: 90vh;
-
+    
     img {
       max-width: 100%;
       max-height: 90vh;
       object-fit: contain;
       cursor: grab;
       user-select: none;
-
+      
       &:active {
         cursor: grabbing;
       }
     }
   }
-
+  
   .preview-toolbar {
     position: fixed;
     bottom: 30px;
@@ -334,7 +314,7 @@ export default {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border-radius: 8px;
-
+    
     .tool-btn {
       width: 40px;
       height: 40px;
@@ -344,12 +324,12 @@ export default {
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
-
+      
       &:hover {
         background: rgba(255, 255, 255, 0.3);
         transform: translateY(-2px);
       }
-
+      
       i {
         font-size: 16px;
       }
@@ -359,7 +339,7 @@ export default {
 
 .fade-enter-active {
   animation: fadeIn 0.3s ease;
-
+  
   img {
     animation: zoomIn 0.3s ease;
   }
@@ -367,7 +347,7 @@ export default {
 
 .fade-leave-active {
   animation: fadeOut 0.3s ease;
-
+  
   img {
     animation: zoomOut 0.3s ease;
   }
@@ -437,17 +417,17 @@ export default {
     justify-content: center;
     transition: all 0.2s ease;
     pointer-events: auto;
-
+    
     &:hover:not(:disabled) {
       background: rgba(255, 255, 255, 0.3);
       transform: scale(1.1);
     }
-
+    
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-
+    
     i {
       font-size: 20px;
     }
@@ -465,4 +445,4 @@ export default {
   border-radius: 4px;
   font-size: 14px;
 }
-</style>
+</style> 

@@ -23,14 +23,18 @@ public class NotificationsUtil {
 
     public void publish(SysNotifications sysNotifications) {
         SysArticle sysArticle = new SysArticle();
-        if (sysNotifications.getArticleId() != null) {
-            sysArticle = sysArticleMapper.selectById(sysNotifications.getArticleId());
-            sysNotifications.setUserId(sysArticle.getUserId());
-        }
         switch (sysNotifications.getType()) {
             case "comment":
+                if (sysNotifications.getUserId() == null) {
+                    sysArticle = sysArticleMapper.selectById(sysNotifications.getArticleId());
+                    sysNotifications.setUserId(sysArticle.getUserId());
+                }
                 break;
             case "like":
+                if (sysNotifications.getArticleId() != null) {
+                    sysArticle = sysArticleMapper.selectById(sysNotifications.getArticleId());
+                    sysNotifications.setUserId(sysArticle.getUserId());
+                }
                 sysNotifications.setMessage("点赞了文章：" + sysArticle.getTitle());
                 break;
             case "unLike":

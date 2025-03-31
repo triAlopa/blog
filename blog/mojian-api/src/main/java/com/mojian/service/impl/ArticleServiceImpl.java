@@ -119,6 +119,7 @@ public class ArticleServiceImpl implements ArticleService {
                         .articleId(articleId)
                         .isRead(0)
                         .type("like")
+                        .fromUserId(StpUtil.getLoginIdAsLong())
                         .build();
                 notificationsUtil.publish(notifications);
             });
