@@ -62,7 +62,7 @@
 
         <!-- 修改消息按钮的跳转路径 -->
         <router-link to="/notifications" class="message-btn">
-          <i class="fas fa-bell"></i>
+          <i class="far fa-bell"></i>
           <span class="message-count" v-if="showBage()" />
         </router-link>
 
