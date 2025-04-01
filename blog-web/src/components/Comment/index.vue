@@ -646,7 +646,6 @@ export default {
 
 .comment-editor {
   background: var(--card-bg);
-  overflow: hidden;
   border: 1px solid var(--border-color);
 
   .editor-content {
