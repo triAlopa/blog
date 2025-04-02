@@ -1,6 +1,7 @@
 package com.mojian.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mojian.config.interceptor.ApiAccessLogInterceptor;
 import com.mojian.entity.SysFileOss;
 import com.mojian.enums.FileOssEnum;
 import com.mojian.mapper.SysFileOssMapper;
@@ -37,6 +38,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
             registry.addResourceHandler(sysFileOss.getPathPatterns())
                     .addResourceLocations("file:" + sysFileOss.getStoragePath());
         }
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new ApiAccessLogInterceptor());
     }
 
     /**

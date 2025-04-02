@@ -2054,7 +2054,7 @@ export default {
       width: 42px;
       height: 42px;
       flex-shrink: 0;
-
+      user-select: none;
       img {
         width: 100%;
         height: 100%;
@@ -2253,7 +2253,7 @@ export default {
         width: 36px;
         height: 36px;
         flex-shrink: 0;
-
+        user-select: none;
         img {
           width: 100%;
           height: 100%;
