@@ -31,9 +31,6 @@ Vue.use(ElementUI);
 import EmojiPicker from '@/components/common/EmojiPicker.vue'
 Vue.component('mj-emoji', EmojiPicker)
 
-//颜色选择器组件
-import ColorPicker from '@/components/common/ColorPicker.vue'
-Vue.component('mj-color-picker', ColorPicker)
 
 
 import ClickOutside from '@/directives/clickOutside'

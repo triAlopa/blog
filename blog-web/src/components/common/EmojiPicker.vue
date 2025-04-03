@@ -1,72 +1,59 @@
 <template>
   <div class="emoji-picker">
-    <button class="tool-btn" :style="{ fontSize: size }" @click.stop="togglePanel" title="插入表情">
+    <button class="emoji-trigger" @click.stop="togglePanel">
       <i class="far fa-smile"></i>
     </button>
-    <transition name="fade">
-      <div v-if="show" class="emoji-panel" v-click-outside="closePanel" @wheel.stop>
-        <div class="emoji-tabs">
-          <button 
-            v-for="(category, key) in emojiList" 
-            :key="key"
-            class="tab-btn"
-            :class="{ active: currentTab === key }"
-            @click="currentTab = key"
-          >
-            {{ category.title }}
-          </button>
-        </div>
-        
-        <div class="emoji-content" :class="{ 'gif-grid': emojiList[currentTab]?.type === 'image' }">
-            <div 
-              v-for="emoji in emojiList[currentTab].emojis" 
-              :key="emoji"
-              :class="emojiList[currentTab]?.type !== 'image' ? 'emoji-item' : 'gif-item'"
-              @click="selectEmoji(emoji)"
-            >
-              <span v-if="emojiList[currentTab]?.type !== 'image'">{{ emoji }}</span>
-              <img v-else :src="emoji" :alt="emoji" />
-            </div>
+    
+    <div v-if="show" class="emoji-panel" v-click-outside="closePanel">
+      <div class="emoji-grid">
+        <div 
+          v-for="emoji in emojis" 
+          :key="emoji.name"
+          class="emoji-item"
+          @click="selectEmoji(emoji)"
+        >
+          <img 
+            :src="emoji.url" 
+            :alt="emoji.name"
+            :title="emoji.name"
+          />
         </div>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 
 <script>
-import emojiList from '@/assets/emoji.json'
+import emojis from '@/assets/emoji.json'
 
 export default {
   name: 'EmojiPicker',
-  props: {
-    size: {
-      type: String,
-      default: '16px'
-    }
-  },
   data() {
     return {
       show: false,
-      currentTab: 'people',
-      emojiList
+      emojis
     }
   },
   methods: {
-    togglePanel(e) {
-      e.stopPropagation()
+    togglePanel() {
       this.show = !this.show
+      if (window.innerWidth <= 768) {
+        document.body.style.overflow = this.show ? 'hidden' : ''
+      }
     },
     closePanel() {
       this.show = false
+      if (window.innerWidth <= 768) {
+        document.body.style.overflow = ''
+      }
     },
     selectEmoji(emoji) {
-      if(emojiList[this.currentTab].type === 'image') {
-        this.$emit('select', `![${emoji}](${emoji})`)
-      }else{
-        this.$emit('select', emoji)
-      }
+      this.$emit('select', emoji.url)
       this.closePanel()
-    },
+    }
+  },
+  beforeDestroy() {
+    document.body.style.overflow = ''
   }
 }
 </script>
@@ -74,155 +61,106 @@ export default {
 <style lang="scss" scoped>
 .emoji-picker {
   position: relative;
-
-  .tool-btn {
-    padding: $spacing-xs;
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: $border-radius-sm;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    &:hover {
-      color: $primary;
-      background: var(--hover-bg);
-    }
-  }
-
-  .emoji-panel {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 0;
-    background: var(--card-bg);
-    border-radius: $border-radius-lg;
-    box-shadow: $shadow-lg;
-    border: 1px solid var(--border-color);
-    z-index: 1000;
-    width: 320px;
-
-    &::before {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 10px;
-      width: 10px;
-      height: 10px;
-      background: var(--card-bg);
-      border-left: 1px solid var(--border-color);
-      border-top: 1px solid var(--border-color);
-      transform: rotate(225deg);
-    }
-
-    .emoji-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border-color);
-      padding: $spacing-xs;
-      gap: $spacing-xs;
-      flex-wrap: wrap;
-
-      .tab-btn {
-        padding: $spacing-xs $spacing-sm;
-        border: none;
-        background: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border-radius: $border-radius-sm;
-        font-size: 0.9em;
-        white-space: nowrap;
-        flex-shrink: 0;
-
-        &.active {
-          color: $primary;
-          background: var(--hover-bg);
-        }
-
-        &:hover:not(.active) {
-          color: $primary;
-        }
-      }
-    }
-
-    .emoji-content {
-      padding: $spacing-sm;
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: $spacing-xs;
-      overflow-y: auto;
-      height: 200px;
-      overscroll-behavior: contain;
-
-      &.gif-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: $spacing-sm;
-      }
-
-      .emoji-item {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        border-radius: $border-radius-sm;
-        transition: all 0.3s ease;
-        font-size: 1.2em;
-
-        &:hover {
-          background: var(--hover-bg);
-          transform: scale(1.2);
-        }
-      }
-    }
-  }
+  display: inline-block;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.emoji-tabs {
-  display: flex;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 10px;
-}
-
-.tab {
-  padding: 5px 15px;
+.emoji-trigger {
+  padding: 6px;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
   cursor: pointer;
-}
-
-.tab.active {
-  color: #409eff;
-  border-bottom: 2px solid #409eff;
-}
-
-.gif-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 4px;
   
-  img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-    transition: transform 0.2s ease;
+  &:hover {
+    color: $primary;
+    background: var(--hover-bg);
+  }
+
+  i{
+    font-size: 18px;
+  }
+}
+
+.emoji-panel {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  z-index: 1000;
+  
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 16px 16px 0 0;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  width: 450px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    grid-template-columns: repeat(6, 1fr);
+    max-height: 280px;
+    padding: 8px;
+  }
+}
+
+.emoji-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  
+  @media (max-width: 768px) {
+    padding: 8px;
     
     &:hover {
-      transform: scale(1.1);
+      transform: none;
     }
+    
+    &:active {
+      background: var(--hover-bg);
+      transform: scale(0.95);
+    }
+    
+    img {
+      width: 36px;
+      height: 36px;
+    }
+  }
+  
+  &:hover {
+    background: var(--hover-bg);
+    transform: scale(1.1);
+  }
+  
+  img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
   }
 }
 </style> 

@@ -89,6 +89,12 @@ public class SensitiveUtil {
      * @return 过滤后的文本
      */
     public static String filter(String text) {
+
+        //包含img标签则不过滤
+        if (text.contains("<img")) {
+            return text;
+        }
+
         if (StringUtils.isBlank(text)) {
             return null;
         }

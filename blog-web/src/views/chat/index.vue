@@ -72,7 +72,7 @@
             </div>
             <div class="chat-info">
               <div class="name">{{ chat.name }}</div>
-              <div class="last-message">{{ currentChat.lastMessage }}</div>
+              <div class="last-message" v-html="currentChat.lastMessage"></div>
             </div>
             <div class="meta">
               <div class="time">{{ currentChat.lastTime }}</div>
@@ -269,15 +269,16 @@
                   <i class="fas fa-times" @click="removeImage(index)"></i>
                 </div>
               </div>
-              <textarea
-                ref="messageTextarea"
-                v-model="messageText"
-                @keydown.enter.prevent="handleEnterKey"
+              <div
+                ref="messageInput"
+                class="message-input"
+                contenteditable="true"
                 @input="handleInput"
+                @keydown.enter.prevent="handleEnterKey"
                 @keydown="handleMentionKeydown"
                 @paste="handlePaste"
-                placeholder="输入消息..."
-              ></textarea>
+                :placeholder="`输入消息...`"
+              ></div>
             </div>
           </template>
 
@@ -756,11 +757,11 @@ export default {
           this.countdown > 0) return;
 
       try {
-        // 先发送文本消息
+        // 发送文本消息
         if (this.messageText.trim()) {
           const textMessage = {
             type: "text",
-            content: this.messageText,
+            content: this.messageText, // 直接发送包含 HTML 的内容
             name: this.$store.state.userInfo.nickname,
             userId: this.$store.state.userInfo.id,
             avatar: this.$store.state.userInfo.avatar,
@@ -772,6 +773,11 @@ export default {
           };
           await sendMsg(textMessage);
         }
+
+        // 清空输入框
+        this.$refs.messageInput.innerHTML = '';
+        this.messageText = '';
+        this.selectedReplyMessage = null;
 
         // 依次发送图片
         for (const image of this.pastedImages) {
@@ -786,8 +792,6 @@ export default {
 
         this.startCountdown();
         this.shouldScrollToBottom = true;
-        this.selectedReplyMessage = null;
-        this.messageText = "";
         this.pastedImages = []; // 清空图片列表
       } catch (error) {
         console.error("发送消息失败:", error);
@@ -834,26 +838,11 @@ export default {
      * 插入表情
      */
     insertEmoji(emoji) {
-      const match = emoji.match(/\((.*?)\)/);
-      if (match && match.length > 1) {
-        const imgUrl = match[1];
-        this.sendImage(imgUrl);
-        return;
-      }
-      const textarea = this.$refs.messageTextarea;
-      if (!textarea) return;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      this.messageText =
-        this.messageText.substring(0, start) +
-        emoji +
-        this.messageText.substring(end);
-
-      // 将光标移动到插入的表情符号后面
-      this.$nextTick(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + emoji.length, start + emoji.length);
-      });
+      const img = `<img src="${emoji}" class="emoji" style="width: 22px; height: 22px; vertical-align: middle;">`;
+      const editor = this.$refs.messageInput;
+      editor.focus();
+      document.execCommand('insertHTML', false, img);
+      this.messageText = editor.innerHTML;
     },
 
     /**
@@ -1080,9 +1069,9 @@ export default {
     handleEnterKey(event) {
       // 如果按下了Ctrl键，则插入换行
       if (event.ctrlKey) {
-        const textarea = this.$refs.messageTextarea;
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
+        const input = this.$refs.messageInput;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
         this.messageText =
           this.messageText.substring(0, start) +
           "\n" +
@@ -1090,7 +1079,7 @@ export default {
 
         // 将光标移动到换行后的位置
         this.$nextTick(() => {
-          textarea.selectionStart = textarea.selectionEnd = start + 1;
+          input.selectionStart = input.selectionEnd = start + 1;
         });
       } else {
         // 否则发送消息
@@ -1103,28 +1092,14 @@ export default {
      * @param {Event} event
      */
     handleInput(event) {
-      const textarea = this.$refs.messageTextarea;
-      const text = textarea.value;
-      const position = textarea.selectionStart;
+      const input = this.$refs.messageInput;
+      this.messageText = input.innerHTML; // 使用 innerHTML 而不是 innerText 来保留 HTML 标签
 
-      // 检查是否刚输入了@符号
-      if (text[position - 1] === "@") {
-        this.showMentionList = true;
-        this.mentionFilter = "";
-        this.selectedMentionIndex = -1;
-
-        // 计算@列表的位置
-        const coords = this.getCaretCoordinates(textarea, position);
-        this.mentionListPosition = {
-          top: `${coords.top + 20}px`,
-          left: `${coords.left}px`,
-        };
-      } else if (this.showMentionList) {
-        // 更新过滤文本
-        const lastAtIndex = text.lastIndexOf("@", position - 1);
-        if (lastAtIndex !== -1) {
-          this.mentionFilter = text.substring(lastAtIndex + 1, position);
-        }
+      // 处理 placeholder
+      if (input.innerHTML.trim() === '') {
+        input.setAttribute('data-empty', 'true');
+      } else {
+        input.setAttribute('data-empty', 'false');
       }
     },
 
@@ -1170,9 +1145,9 @@ export default {
      * @param {Object} user
      */
     selectMentionUser(user) {
-      const textarea = this.$refs.messageTextarea;
-      const text = textarea.value;
-      const position = textarea.selectionStart;
+      const input = this.$refs.messageInput;
+      const text = input.innerText;
+      const position = input.selectionStart;
       const lastAtIndex = text.lastIndexOf("@", position - 1);
 
       if (lastAtIndex !== -1) {
@@ -1184,8 +1159,8 @@ export default {
         // 将光标移动到插入的@用户名后面
         this.$nextTick(() => {
           const newPosition = lastAtIndex + user.nickname.length + 2;
-          textarea.focus();
-          textarea.setSelectionRange(newPosition, newPosition);
+          input.focus();
+          input.setSelectionRange(newPosition, newPosition);
         });
       }
 
@@ -1307,9 +1282,9 @@ export default {
 
       // 聚焦输入框
       this.$nextTick(() => {
-        const textarea = this.$refs.messageTextarea;
-        textarea.focus();
-        textarea.setSelectionRange(
+        const input = this.$refs.messageInput;
+        input.focus();
+        input.setSelectionRange(
           this.messageText.length,
           this.messageText.length
         );
@@ -1322,21 +1297,38 @@ export default {
     formatMessageContent(content) {
       if (content === '***') return content;
 
+      // 保留已有的img标签，不需要替换
+      if (content.includes('<img')) {
+        // 使用 marked 解析 Markdown 内容
+        const htmlContent = marked(content);
 
-      // 使用 marked 解析 Markdown 内容
+        if(!content.includes('code')){
+          content = content.replace(/\n/g, '<br>')
+        }
+
+        // 如果内容已经包含<mention>标签，说明是发送时已经处理过的
+        if (htmlContent.includes("<mention>")) {
+          return htmlContent;
+        }
+
+        // 处理普通文本中的@格式
+        return htmlContent.replace(/@(\S+)\s/g, "<mention>@$1</mention> ");
+      }
+
+      // 处理纯文本中的表情标记
+      content = content.replace(/\((https?:\/\/[^\s)]+)\)/g, '<img src="$1" class="emoji" style="width: 22px; height: 22px; vertical-align: middle;">');
+
+      // 继续处理其他格式
       const htmlContent = marked(content);
 
       if(!content.includes('code')){
         content = content.replace(/\n/g, '<br>')
       }
 
-      // 如果内容已经包含<mention>标签，说明是发送时已经处理过的
       if (htmlContent.includes("<mention>")) {
         return htmlContent;
       }
-      console.log(htmlContent)
 
-      // 否则处理普通文本中的@格式
       return htmlContent.replace(/@(\S+)\s/g, "<mention>@$1</mention> ");
     },
 
@@ -1639,8 +1631,8 @@ export default {
       this.selectedReplyMessage = this.selectedMessage;
       this.closeActionsMenu();
       this.$nextTick(() => {
-        const textarea = this.$refs.messageTextarea;
-        textarea.focus();
+        const input = this.$refs.messageInput;
+        input.focus();
       });
     },
     /**
@@ -2121,6 +2113,11 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       width: 170px;
+      :deep(img) {
+        width: 15px;
+        height: 15px;
+        vertical-align: middle;
+      }
     }
   }
 
@@ -2413,6 +2410,21 @@ export default {
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  :deep(.emoji-img) {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    margin: 0 2px;
+    display: inline-block;
+  }
+
+  :deep(img.emoji) {
+    width: 22px !important;
+    height: 22px !important;
+    vertical-align: middle;
+    display: inline-block;
   }
 }
 
@@ -2947,19 +2959,43 @@ export default {
   }
 }
 
-textarea {
+.message-input {
   flex: 1;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: $spacing-md;
-  resize: none;
-  height: 60px;
+  min-height: 60px;
+  max-height: 150px;
+  overflow-y: auto;
   background: var(--input-bg);
   color: var(--text-primary);
+  outline: none;
+  word-break: break-word;
 
   &:focus {
-    outline: none;
     border-color: $primary;
+  }
+
+  .emoji {
+    font-family: "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    font-size: 1.2em;
+    vertical-align: middle;
+    margin: 0 2px;
+  }
+
+  .emoji-img {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    margin: 0 2px;
+    display: inline-block;
+  }
+
+  :deep(img.emoji) {
+    width: 22px !important;
+    height: 22px !important;
+    vertical-align: middle;
+    display: inline-block;
   }
 }
 </style>

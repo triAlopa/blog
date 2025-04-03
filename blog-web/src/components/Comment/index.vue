@@ -7,29 +7,16 @@
           <img :src="userAvatar" :alt="userName" />
         </div>
         <div class="input-container">
-          <textarea 
-            v-model="commentContent" 
-            placeholder="写下你的评论... (支持 Markdown 格式)" 
-            :rows="6" 
-            ref="commentTextarea"
-            maxlength="50"
-          ></textarea>
+          <div 
+            class="comment-input" 
+            contenteditable="true"
+            ref="commentInput"
+            :placeholder="`写下你的评论...`"
+            @input="handleCommentInput"
+          ></div>
           <div class="editor-footer">
             <div class="editor-tools">
               <mj-emoji @select="insertEmoji" />
-              <mj-color-picker @select="insertMarkdown" @reset="removeColor" />
-              <button class="tool-btn" @click="insertMarkdown('**', '**')" title="加粗">
-                <i class="fas fa-bold"></i>
-              </button>
-              <button class="tool-btn" @click="insertMarkdown('`', '`')" title="行内代码">
-                <i class="fas fa-code"></i>
-              </button>
-              <button class="tool-btn" @click="insertMarkdown('\n```\n', '\n```')" title="代码块">
-                <i class="fas fa-file-code"></i>
-              </button>
-              <button class="tool-btn" @click="insertMarkdown('> ', '')" title="引用">
-                <i class="fas fa-quote-right"></i>
-              </button>
             </div>
             <button 
               class="submit-btn" 
@@ -85,7 +72,7 @@
                 </button>
               </div>
             </div>
-            <div class="comment-text markdown-body" v-html="parseComment(comment.content)"></div>
+            <div class="comment-text markdown-body" v-html="comment.content"></div>
 
             <!-- 回复列表 -->
             <div v-if="comment.children?.length" class="replies-list">
@@ -116,28 +103,20 @@
                       </button>
                     </div>
                   </div>
-                  <div class="reply-text markdown-body" v-html="parseComment(reply.content)"></div>
+                  <div class="reply-text markdown-body" v-html="reply.content"></div>
 
                   <!-- 添加子评论的回复框 -->
-                  <div class="reply-box" v-if="showReplyBox && activeReplyId === reply.id">
-                    <textarea v-model="replyContent" :placeholder="`回复 @${reply.nickname}`" rows="3"
-                      ref="childReplyTextarea" maxlength="50" class="reply-textarea"></textarea>
+                  <div v-if="showReplyBox && activeReplyId === reply.id" class="reply-box">
+                    <div 
+                      class="reply-input" 
+                      contenteditable="true"
+                      ref="childReplyInput"
+                      @input="handleChildReplyInput"
+                      :placeholder="`回复 @${reply.nickname}`"
+                    ></div>
                     <div class="editor-footer">
                       <div class="editor-tools">
                         <mj-emoji @select="insertChildReplyEmoji" />
-                        <mj-color-picker @select="insertChildReplyMarkdown" @reset="removeColor" />
-                        <button class="tool-btn" @click="insertChildReplyMarkdown('**', '**')" title="加粗">
-                          <i class="fas fa-bold"></i>
-                        </button>
-                        <button class="tool-btn" @click="insertChildReplyMarkdown('`', '`')" title="行内代码">
-                          <i class="fas fa-code"></i>
-                        </button>
-                        <button class="tool-btn" @click="insertChildReplyMarkdown('\n```\n', '\n```')" title="代码块">
-                          <i class="fas fa-file-code"></i>
-                        </button>
-                        <button class="tool-btn" @click="insertChildReplyMarkdown('> ', '')" title="引用">
-                          <i class="fas fa-quote-right"></i>
-                        </button>
                       </div>
                       <div class="reply-actions">
                         <button class="cancel-btn" @click="cancelReply">
@@ -155,24 +134,16 @@
 
             <!-- 回复框 -->
             <div v-if="replyingTo === comment.id" class="reply-editor">
-              <textarea v-model="replyContent" :placeholder="`回复 @${comment.nickname}`" rows="3" ref="replyTextarea"
-                maxlength="50"></textarea>
+              <div 
+                class="reply-input" 
+                contenteditable="true"
+                ref="replyInput"
+                @input="handleReplyInput"
+                :placeholder="`回复 @${comment.nickname}`"
+              ></div>
               <div class="editor-footer">
                 <div class="editor-tools">
                   <mj-emoji @select="insertReplyEmoji" />
-                  <mj-color-picker @select="insertMarkdown" @reset="removeColor" />
-                  <button class="tool-btn" @click="insertReplyMarkdown('**', '**')" title="加粗">
-                    <i class="fas fa-bold"></i>
-                  </button>
-                  <button class="tool-btn" @click="insertReplyMarkdown('`', '`')" title="行内代码">
-                    <i class="fas fa-code"></i>
-                  </button>
-                  <button class="tool-btn" @click="insertReplyMarkdown('\n```\n', '\n```')" title="代码块">
-                    <i class="fas fa-file-code"></i>
-                  </button>
-                  <button class="tool-btn" @click="insertReplyMarkdown('> ', '')" title="引用">
-                    <i class="fas fa-quote-right"></i>
-                  </button>
                 </div>
                 <div class="reply-actions">
                   <button class="cancel-btn" @click="cancelReply">取消</button>
@@ -202,12 +173,10 @@
 
 <script>
 import { mapState } from "vuex";
-import { marked } from "marked";
 import { getCommentsApi, addCommentApi } from "@/api/article";
 import { formatTime } from "@/utils/time.js";
 import { getBrowserInfo } from "@/utils/browser.js";
 
-import hljs from "highlight.js";
 export default {
   name: "Comment",
   props: {
@@ -279,33 +248,39 @@ export default {
       try {
         const res = await getCommentsApi(this.params);
         this.comments = res.data.records;
-        this.highlightCode();
         this.total = res.data.total;
       } catch (error) {
         this.$message.error("获取评论失败");
       }
     },
+
     /**
-     * 检查内容是否为空
-     * @param content 要检查的内容
-     * @returns boolean
+     * 处理主评论输入
      */
-    isEmptyContent(content) {
-      // 去除所有Markdown标记和空白字符后检查是否为空
-      const cleanContent = content
-        .replace(/\*\*/g, '') // 去除加粗标记
-        .replace(/`/g, '')    // 去除代码标记
-        .replace(/```/g, '')  // 去除代码块标记
-        .replace(/>/g, '')    // 去除引用标记
-        .trim();              // 去除空白字符
-      return !cleanContent;
+    handleCommentInput(e) {
+      this.commentContent = e.target.innerHTML;
     },
+
+    /**
+     * 处理回复输入
+     */
+    handleReplyInput(e) {
+      this.replyContent = e.target.innerHTML;
+    },
+
+    /**
+     * 处理子回复输入
+     */
+    handleChildReplyInput(e) {
+      this.replyContent = e.target.innerHTML;
+    },
+
     /**
      * 发表评论
      */
     async submitComment() {
       if (!this.commentContent.trim() || !this.canComment) return;
-      if (this.isEmptyContent(this.commentContent)) {
+      if (this.commentContent.trim() === '') {
         this.$message.warning('评论内容不能为空');
         return;
       }
@@ -326,8 +301,11 @@ export default {
         this.$message.success("评论成功");
         this.$emit('comment-added');
 
+        // 清空输入框内容
         this.commentContent = "";
+        this.$refs.commentInput.innerHTML = "";
         this.start()
+        
         this.$nextTick(() => {
           const firstComment = document.querySelector(".comment-item");
           if (firstComment) {
@@ -346,7 +324,7 @@ export default {
      */
     async submitReply(comment) {
       if (!this.replyContent.trim() || !this.canComment) return;
-      if (this.isEmptyContent(this.replyContent)) {
+      if (this.replyContent.trim() === '') {
         this.$message.warning('回复内容不能为空');
         return;
       }
@@ -368,8 +346,9 @@ export default {
         this.$message.success("回复成功");
         this.$emit('comment-added');
 
-        // 清空输入框并关闭回复框
+        // 清空输入框内容
         this.replyContent = "";
+        this.$refs.replyInput[0].innerHTML = "";
         this.replyingTo = null;
         this.start()
 
@@ -417,6 +396,13 @@ export default {
       this.showReplyBox = false;
       this.activeReplyId = null;
       this.replyContent = "";
+      // 清空对应输入框的内容
+      if (this.$refs.replyInput && this.$refs.replyInput[0]) {
+        this.$refs.replyInput[0].innerHTML = "";
+      }
+      if (this.$refs.childReplyInput && this.$refs.childReplyInput[0]) {
+        this.$refs.childReplyInput[0].innerHTML = "";
+      }
     },
     /**
      * 点赞评论
@@ -431,9 +417,6 @@ export default {
         this.$message.error("操作失败");
       }
     },
-    parseComment(content) {
-      return marked(content || "");
-    },
     /**
      * 切换表情面板
      */
@@ -447,76 +430,37 @@ export default {
       this.showEmojiPanel = false;
     },
     /**
-     * 插入表情
+     * 插入表情到主评论框
      */
-    insertEmoji(emoji) {
-      const textarea = this.$refs.commentTextarea;
-      const start = textarea.selectionStart;
-      const text = this.commentContent;
-
-      this.commentContent = text.slice(0, start) + emoji + text.slice(start);
-
-      this.$nextTick(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + emoji.length, start + emoji.length);
-      });
-    },
-    /**
-     * 插入Markdown
-     */
-    insertMarkdown(prefix, suffix) {
-      const textarea = this.$refs.commentTextarea;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const text = this.commentContent;
-
-      const beforeText = text.substring(0, start);
-      const selectedText = text.substring(start, end);
-      const afterText = text.substring(end);
-
-      this.commentContent =
-        beforeText + prefix + selectedText + suffix + afterText;
-
-      this.$nextTick(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + prefix.length, end + prefix.length);
-      });
+    insertEmoji(emojiUrl) {
+      const img = `<img src="${emojiUrl}" class="emoji" style="width: 22px; height: 22px; vertical-align: middle;">`;
+      const editor = this.$refs.commentInput;
+      editor.focus();
+      document.execCommand('insertHTML', false, img);
+      this.commentContent = editor.innerHTML;
     },
 
     /**
-     * 插入回复表情
+     * 插入表情到回复框
      */
-    insertReplyEmoji(emoji) {
-      const textarea = this.$refs.replyTextarea[0];
-      const start = textarea.selectionStart;
-      const text = this.replyContent;
-      this.replyContent = text.slice(0, start) + emoji + text.slice(start);
-
-      this.$nextTick(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + emoji.length, start + emoji.length);
-      });
+    insertReplyEmoji(emojiUrl) {
+      const img = `<img src="${emojiUrl}" class="emoji" style="width: 22px; height: 22px; vertical-align: middle;">`;
+      const editor = this.$refs.replyInput[0];
+      editor.focus();
+      document.execCommand('insertHTML', false, img);
+      this.replyContent = editor.innerHTML;
     },
     /**
-     * 插入回复Markdown
+     * 插入表情到子回复框
      */
-    insertReplyMarkdown(prefix, suffix) {
-      const textarea = this.$refs.replyTextarea[0];
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const text = this.replyContent;
-
-      const beforeText = text.substring(0, start);
-      const selectedText = text.substring(start, end);
-      const afterText = text.substring(end);
-
-      this.replyContent =
-        beforeText + prefix + selectedText + suffix + afterText;
-
-      this.$nextTick(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + prefix.length, end + prefix.length);
-      });
+    insertChildReplyEmoji(emojiUrl) {
+      const img = `<img src="${emojiUrl}" class="emoji" style="width: 22px; height: 22px; vertical-align: middle;">`;
+      const editor = this.$refs.childReplyInput[0];
+      if (!editor) return;
+      
+      editor.focus();
+      document.execCommand('insertHTML', false, img);
+      this.replyContent = editor.innerHTML;
     },
     /**
      * 格式化时间
@@ -529,24 +473,6 @@ export default {
      */
     formatIpSource(ipSource) {
       return ipSource ? ipSource.split("|")[1] : "";
-    },
-    /**
-     * 移除颜色
-     */
-    removeColor() {
-      // 可以在这里添加移除颜色的逻辑
-      this.$message.success("已重置文字颜色");
-    },
-    /**
-     * 高亮代码
-     */
-    highlightCode() {
-      this.$nextTick(() => {
-        const blocks = document.querySelectorAll(".comment-content pre code");
-        blocks.forEach((block) => {
-          hljs.highlightBlock(block);
-        });
-      });
     },
     /**
      * 回复子评论
@@ -569,7 +495,7 @@ export default {
         this.$message.warning('请输入回复内容');
         return;
       }
-      if (this.isEmptyContent(this.replyContent)) {
+      if (this.replyContent.trim() === '') {
         this.$message.warning('回复内容不能为空');
         return;
       }
@@ -584,52 +510,16 @@ export default {
         await addCommentApi(params);
         this.$message.success("回复成功");
         this.$emit('comment-added');
+
+        // 清空输入框内容
+        this.replyContent = "";
+        this.$refs.childReplyInput[0].innerHTML = "";
         this.cancelReply();
         this.getComments();
       } catch (error) {
         console.error("回复失败:", error);
         this.$message.error("回复失败，请重试");
       }
-    },
-    /**
-     * 插入子评论表情
-     */
-    insertChildReplyEmoji(emoji) {
-      const textarea = this.$refs.childReplyTextarea[0];
-      if (!textarea) return;
-
-      const start = textarea.selectionStart;
-      const text = this.replyContent;
-
-      this.replyContent = text.slice(0, start) + emoji + text.slice(start);
-
-      this.$nextTick(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + emoji.length, start + emoji.length);
-      });
-    },
-    /**
-     * 插入子评论Markdown
-     */
-    insertChildReplyMarkdown(prefix, suffix) {
-      const textarea = this.$refs.childReplyTextarea[0];
-      if (!textarea) return;
-
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const text = this.replyContent;
-
-      const beforeText = text.substring(0, start);
-      const selectedText = text.substring(start, end);
-      const afterText = text.substring(end);
-
-      this.replyContent =
-        beforeText + prefix + selectedText + suffix + afterText;
-
-      this.$nextTick(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + prefix.length, end + prefix.length);
-      });
     },
   },
   created() {
@@ -670,9 +560,8 @@ export default {
       flex: 1;
       min-width: 0;
 
-      textarea {
+      .comment-input {
         width: 100%;
-        resize: vertical;
         min-height: 120px;
         border: 1px solid var(--border-color);
         background: var(--card-bg);
@@ -682,6 +571,7 @@ export default {
         font-size: 1em;
         line-height: 1.6;
         transition: all 0.3s ease;
+        overflow-y: auto;
 
         &:focus {
           outline: none;
@@ -689,7 +579,8 @@ export default {
           box-shadow: 0 0 0 3px rgba($primary, 0.1);
         }
 
-        &::placeholder {
+        &:empty:before {
+          content: attr(placeholder);
           color: var(--text-secondary);
         }
       }
@@ -995,9 +886,8 @@ export default {
     border-radius: $border-radius-lg;
     padding: $spacing-md;
 
-    textarea {
+    .reply-input {
       width: 100%;
-      resize: vertical;
       min-height: 100px;
       border: 1px solid var(--border-color);
       background: var(--card-bg);
@@ -1007,6 +897,7 @@ export default {
       font-size: 0.95em;
       line-height: 1.6;
       transition: all 0.3s ease;
+      overflow-y: auto;
 
       &:focus {
         outline: none;
@@ -1014,7 +905,8 @@ export default {
         box-shadow: 0 0 0 3px rgba($primary, 0.1);
       }
 
-      &::placeholder {
+      &:empty:before {
+        content: attr(placeholder);
         color: var(--text-secondary);
       }
     }
@@ -1160,9 +1052,8 @@ export default {
   border-radius: $border-radius-lg;
   padding: $spacing-md;
 
-  .reply-textarea {
+  .reply-input {
     width: 100%;
-    resize: vertical;
     min-height: 80px;
     border: 1px solid var(--border-color);
     background: var(--card-bg);
@@ -1172,6 +1063,7 @@ export default {
     font-size: 0.95em;
     line-height: 1.6;
     transition: all 0.3s ease;
+    overflow-y: auto;
 
     &:focus {
       outline: none;
@@ -1179,7 +1071,8 @@ export default {
       box-shadow: 0 0 0 3px rgba($primary, 0.1);
     }
 
-    &::placeholder {
+    &:empty:before {
+      content: attr(placeholder);
       color: var(--text-secondary);
     }
   }
