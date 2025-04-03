@@ -110,7 +110,9 @@ const routes = [
                 name: 'Resources',
                 component: () => import('@/views/resources/index.vue'),
                 meta: {
-                  title: '资源'
+                  title: '资源',
+                  icon: 'fas fa-cloud-download-alt'
+
                 }
               },
               {
@@ -198,7 +200,8 @@ const routes = [
                 component: () => import('@/views/notifications/index.vue'),
                 meta: {
                   title: '消息通知',
-                  requiresAuth: true
+                  requiresAuth: true,
+                  hidden: true
                 }
               },
               {
