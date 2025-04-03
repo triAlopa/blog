@@ -106,7 +106,7 @@
                   <div class="reply-text markdown-body" v-html="reply.content"></div>
 
                   <!-- 添加子评论的回复框 -->
-                  <div v-if="showReplyBox && activeReplyId === reply.id" class="reply-box">
+                  <div  v-if="showReplyBox && activeReplyId === reply.id" class="reply-box">
                     <div 
                       class="reply-input" 
                       contenteditable="true"
@@ -433,7 +433,7 @@ export default {
      * 插入表情到主评论框
      */
     insertEmoji(emojiUrl) {
-      const img = `<img src="${emojiUrl}" class="emoji" style="width: 22px; height: 22px; vertical-align: middle;">`;
+      const img = `<img src="${emojiUrl}" class="emoji" style="width: 30px; height: 30px; vertical-align: middle;">`;
       const editor = this.$refs.commentInput;
       editor.focus();
       document.execCommand('insertHTML', false, img);

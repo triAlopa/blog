@@ -838,7 +838,7 @@ export default {
      * 插入表情
      */
     insertEmoji(emoji) {
-      const img = `<img src="${emoji}" class="emoji" style="width: 22px; height: 22px; vertical-align: middle;">`;
+      const img = `<img src="${emoji}" class="emoji" style="width: 30px; height: 30px; vertical-align: middle;">`;
       const editor = this.$refs.messageInput;
       editor.focus();
       document.execCommand('insertHTML', false, img);
@@ -2114,8 +2114,8 @@ export default {
       text-overflow: ellipsis;
       width: 170px;
       :deep(img) {
-        width: 15px;
-        height: 15px;
+        width: 20px !important;
+        height: 20px !important;
         vertical-align: middle;
       }
     }
@@ -2421,8 +2421,8 @@ export default {
   }
 
   :deep(img.emoji) {
-    width: 22px !important;
-    height: 22px !important;
+    width: 30px !important;
+    height: 30px !important;
     vertical-align: middle;
     display: inline-block;
   }
@@ -2976,26 +2976,5 @@ export default {
     border-color: $primary;
   }
 
-  .emoji {
-    font-family: "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
-    font-size: 1.2em;
-    vertical-align: middle;
-    margin: 0 2px;
-  }
-
-  .emoji-img {
-    width: 1.5em;
-    height: 1.5em;
-    vertical-align: middle;
-    margin: 0 2px;
-    display: inline-block;
-  }
-
-  :deep(img.emoji) {
-    width: 22px !important;
-    height: 22px !important;
-    vertical-align: middle;
-    display: inline-block;
-  }
 }
 </style>
