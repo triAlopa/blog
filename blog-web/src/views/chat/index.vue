@@ -1275,20 +1275,32 @@ export default {
       };
 
       // 在输入框末尾添加@用户
-      this.messageText += `@${user.nickname} `;
+      const input = this.$refs.messageInput;
+      const mentionText = `@${user.nickname} `;
+      
+      // 更新messageText
+      this.messageText += mentionText;
+      
+      // 更新contenteditable div的内容
+      input.innerHTML += mentionText;
+
+      // 将光标移动到末尾
+      const range = document.createRange();
+      const selection = window.getSelection();
+      
+      // 将range设置到input的最后
+      range.selectNodeContents(input);
+      range.collapse(false); // false means collapse to end
+      
+      // 清除当前选择并应用新的range
+      selection.removeAllRanges();
+      selection.addRange(range);
 
       // 关闭菜单
       this.closeActionsMenu();
 
       // 聚焦输入框
-      this.$nextTick(() => {
-        const input = this.$refs.messageInput;
-        input.focus();
-        input.setSelectionRange(
-          this.messageText.length,
-          this.messageText.length
-        );
-      });
+      input.focus();
     },
 
     /**
