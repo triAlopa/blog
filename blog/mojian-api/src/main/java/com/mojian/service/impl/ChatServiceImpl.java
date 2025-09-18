@@ -98,6 +98,10 @@ public class ChatServiceImpl implements ChatService {
             throw new ServiceException("只能撤回俩分钟以内的消息！");
         }
 
+        if (StpUtil.getLoginIdAsLong() != chatMsg1.getSenderId()) {
+            throw new ServiceException("只能撤回自己的消息！");
+        }
+
         chatSendMsgVo.setIsRecalled(Boolean.TRUE);
         chatSendMsgVo.setContent("消息已撤回");
 
