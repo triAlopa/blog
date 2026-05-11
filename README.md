@@ -1,7 +1,7 @@
 ## 博客介绍
 
 <p align=center>
-  <a href="http://www.shiyit.com" style="border-radius: 50%;width: 100px;height: 100px">
+  <a href="http://www.shiyit.site" style="border-radius: 50%;width: 100px;height: 100px">
     <img src="logo.ico" alt="拾壹博客" >
   </a>
 </p>
@@ -24,10 +24,10 @@
 
 ## 在线地址
 
-**项目链接：** [拾壹博客](http://111.228.7.223/)
+**项目链接：** [拾壹博客](https://www.shiyit.site/)
 
 ## 站点演示地址
-**后台链接：** [拾壹博客后台管理系统](http://111.228.7.223:18800/#/login)
+**后台链接：** [拾壹博客后台管理系统](https://admin.shiyit.site/#/login)
 
 账号:test 密码:123456
 
