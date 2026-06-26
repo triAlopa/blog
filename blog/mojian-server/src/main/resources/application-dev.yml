@@ -9,12 +9,13 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/blog?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai&tinyInt1isBit=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: 06170018
   redis:
     host: 127.0.0.1
     port: 6379
     timeout: 3000
     database: 8
+    password: 06170018
 
 
 #==============================knife4j配置==============================
@@ -65,8 +66,8 @@ mail:
   smtp:
     host: smtp.163.com
     port: 25
-    email:
-    password:
+    email: trialopa@163.com
+    password: DSU2z3BqPpeJEUev
 
 #============================第三方登录配置信息===================================
 qq:

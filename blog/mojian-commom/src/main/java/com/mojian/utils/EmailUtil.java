@@ -1,5 +1,8 @@
 package com.mojian.utils;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.mojian.common.RedisConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +45,7 @@ public class EmailUtil {
     private final JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
 
-
-    public void getJavaMailSenderImpl(){
+    public void getJavaMailSenderImpl() {
         javaMailSender.setHost(host);
         javaMailSender.setUsername(fromEmail);
         javaMailSender.setPassword(password);
@@ -57,6 +59,7 @@ public class EmailUtil {
 
     /**
      * 发送验证码
+     *
      * @param email
      * @throws MessagingException
      */
@@ -64,7 +67,8 @@ public class EmailUtil {
 
         this.getJavaMailSenderImpl();
 
-        int code = (int) ((Math.random() * 9 + 1) * 100000);
+//        int code = (int) ((Math.random() * 9 + 1) * 100000);
+        String code = RandomUtil.randomString(5);
         String content = "<html>\n" +
                 "\t<body><div id=\"contentDiv\" onmouseover=\"getTop().stopPropagation(event);\" onclick=\"getTop().preSwapLink(event, 'html', 'ZC0004_vDfNJayMtMUuKGIAzzsWvc8');\" style=\"position:relative;font-size:14px;height:auto;padding:15px 15px 10px 15px;z-index:1;zoom:1;line-height:1.7;\" class=\"body\">\n" +
                 "  <div id=\"qm_con_body\">\n" +
@@ -90,7 +94,7 @@ public class EmailUtil {
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "              <td class=\"p-code\">\n" +
-                "                <p style=\"color: #253858;text-align:center;line-height:1.75em;background-color: #f2f2f2;min-width: 200px;margin: 0 auto;font-size: 28px;border-radius: 5px;border: 1px solid #d9d9d9;font-weight: bold;\">"+code+"</p>\n" +
+                "                <p style=\"color: #253858;text-align:center;line-height:1.75em;background-color: #f2f2f2;min-width: 200px;margin: 0 auto;font-size: 28px;border-radius: 5px;border: 1px solid #d9d9d9;font-weight: bold;\">" + code + "</p>\n" +
                 "              </td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
@@ -120,9 +124,9 @@ public class EmailUtil {
 
         // 创建邮件消息
         this.send(email, content);
-        log.info("邮箱验证码发送成功,邮箱:{},验证码:{}",email,code);
+        log.info("邮箱验证码发送成功,邮箱:{},验证码:{}", email, code);
 
-        redisUtil.set(RedisConstants.CAPTCHA_CODE_KEY + email, code +"");
+        redisUtil.set(RedisConstants.CAPTCHA_CODE_KEY + email, code);
         redisUtil.expire(RedisConstants.CAPTCHA_CODE_KEY + email, RedisConstants.MINUTE_EXPIRE, TimeUnit.SECONDS);
     }
 
@@ -140,7 +144,7 @@ public class EmailUtil {
         // 设置邮件发送日期
         mineHelper.setSentDate(DateUtil.getNowDate());
         // 设置邮件的正文
-        mineHelper.setText(template,true);
+        mineHelper.setText(template, true);
         // 发送邮件
         javaMailSender.send(mimeMessage);
     }

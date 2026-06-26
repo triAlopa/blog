@@ -4,24 +4,24 @@
       <!-- 登录表单 -->
       <div class="login-body">
         <el-tooltip
-          class="item"
-          effect="dark"
-          content="回到首页"
-          placement="top"
+            class="item"
+            effect="dark"
+            content="回到首页"
+            placement="top"
         >
           <button class="back-btn" @click="backToHome">
             <i class="el-icon-back"></i>
           </button>
         </el-tooltip>
         <el-tooltip
-          class="item"
-          effect="dark"
-          :content="currentForm === 'login' ? '账号密码登录' : '扫码登录'"
-          placement="top"
+            class="item"
+            effect="dark"
+            :content="currentForm === 'login' ? '账号密码登录' : '扫码登录'"
+            placement="top"
         >
           <button class="switch-form-btn" @click="handleSwitchForm">
             <i
-              :class="
+                :class="
                 currentForm === 'login' ? 'el-icon-user' : 'fas fa-qrcode'
               "
             ></i>
@@ -33,9 +33,9 @@
             <div class="qrcode-box">
               <!-- 这里放二维码图片 -->
               <img
-                v-lazy="'https://img.shiyit.com/qrcode.jpg'"
-                :key="'https://img.shiyit.com/qrcode.jpg'"
-                alt="微信二维码"
+                  v-lazy="'https://img.shiyit.com/qrcode.jpg'"
+                  :key="'https://img.shiyit.com/qrcode.jpg'"
+                  alt="微信二维码"
               />
             </div>
             <p class="qrcode-tip">
@@ -54,11 +54,11 @@
 
           <div class="third-party-login">
             <div
-              v-for="(item, type) in loginTypes"
-              :key="type"
-              class="login-icon-wrapper"
-              @click="handleThirdPartyLogin(type)"
-              v-if="type !== 'wechat'"
+                v-for="(item, type) in loginTypes"
+                :key="type"
+                class="login-icon-wrapper"
+                @click="handleThirdPartyLogin(type)"
+                v-if="type !== 'wechat'"
             >
               <el-tooltip :content="item.title" placement="top">
                 <div :class="['login-icon', type]">
@@ -79,22 +79,22 @@
           <el-form :model="loginForm" :rules="rules" ref="ruleFrom">
             <el-form-item class="form-item" prop="username">
               <el-input
-                prefix-icon="el-icon-user-solid"
-                v-model="loginForm.username"
-                placeholder="请输入用户名"
-                @keyup.enter.native="handleLogin"
-                size="large"
+                  prefix-icon="el-icon-user-solid"
+                  v-model="loginForm.username"
+                  placeholder="请输入用户名"
+                  @keyup.enter.native="handleLogin"
+                  size="large"
               />
             </el-form-item>
 
             <el-form-item class="form-item" prop="password">
               <el-input
-                prefix-icon="el-icon-lock"
-                v-model="loginForm.password"
-                placeholder="请输入密码"
-                @keyup.enter.native="handleLogin"
-                show-password
-                size="large"
+                  prefix-icon="el-icon-lock"
+                  v-model="loginForm.password"
+                  placeholder="请输入密码"
+                  @keyup.enter.native="handleLogin"
+                  show-password
+                  size="large"
               />
             </el-form-item>
 
@@ -104,10 +104,10 @@
 
             <el-form-item class="form-item">
               <el-button
-                class="submit-btn ripple"
-                :loading="loading"
-                @click="handleLogin"
-                type="primary"
+                  class="submit-btn ripple"
+                  :loading="loading"
+                  @click="handleLogin"
+                  type="primary"
               >
                 登 录
               </el-button>
@@ -130,25 +130,25 @@
           <el-form :model="registerForm" :rules="rules" ref="registerForm">
             <el-form-item lable="昵称" prop="nickname">
               <el-input
-                prefix-icon="el-icon-user-solid"
-                v-model="registerForm.nickname"
-                placeholder="请输入昵称"
+                  prefix-icon="el-icon-user-solid"
+                  v-model="registerForm.nickname"
+                  placeholder="请输入昵称"
               />
             </el-form-item>
 
             <el-form-item class="form-item" prop="email">
               <el-input
-                prefix-icon="el-icon-message"
-                v-model="registerForm.email"
-                placeholder="请输入邮箱"
+                  prefix-icon="el-icon-message"
+                  v-model="registerForm.email"
+                  placeholder="请输入邮箱"
               />
             </el-form-item>
 
             <el-form-item class="form-item" prop="code">
               <el-input
-                prefix-icon="el-icon-key"
-                v-model="registerForm.code"
-                placeholder="请输入验证码"
+                  prefix-icon="el-icon-key"
+                  v-model="registerForm.code"
+                  placeholder="请输入验证码"
               >
                 <template slot="append">
                   <el-button @click="sendRegisterCode" :disabled="codeSending">
@@ -160,18 +160,18 @@
 
             <el-form-item class="form-item" prop="password">
               <el-input
-                prefix-icon="el-icon-lock"
-                v-model="registerForm.password"
-                placeholder="请输入密码"
-                show-password
+                  prefix-icon="el-icon-lock"
+                  v-model="registerForm.password"
+                  placeholder="请输入密码"
+                  show-password
               />
             </el-form-item>
 
             <el-form-item class="form-item">
               <el-button
-                class="submit-btn"
-                :loading="loading"
-                @click="handleRegister"
+                  class="submit-btn"
+                  :loading="loading"
+                  @click="handleRegister"
               >
                 注 册
               </el-button>
@@ -192,22 +192,22 @@
           <el-form :model="forgotForm" :rules="rules" ref="forgotForm">
             <el-form-item class="form-item" prop="email">
               <el-input
-                prefix-icon="el-icon-message"
-                v-model="forgotForm.email"
-                placeholder="请输入注册邮箱"
+                  prefix-icon="el-icon-message"
+                  v-model="forgotForm.email"
+                  placeholder="请输入注册邮箱"
               />
             </el-form-item>
 
             <el-form-item class="form-item" prop="code">
               <el-input
-                prefix-icon="el-icon-key"
-                v-model="forgotForm.code"
-                placeholder="请输入验证码"
+                  prefix-icon="el-icon-key"
+                  v-model="forgotForm.code"
+                  placeholder="请输入验证码"
               >
                 <template slot="append">
                   <el-button
-                    @click="sendVerificationCode"
-                    :disabled="codeSending"
+                      @click="sendVerificationCode"
+                      :disabled="codeSending"
                   >
                     {{ codeButtonText }}
                   </el-button>
@@ -217,18 +217,18 @@
 
             <el-form-item class="form-item" prop="password">
               <el-input
-                prefix-icon="el-icon-lock"
-                v-model="forgotForm.password"
-                placeholder="请输入新密码"
-                show-password
+                  prefix-icon="el-icon-lock"
+                  v-model="forgotForm.password"
+                  placeholder="请输入新密码"
+                  show-password
               />
             </el-form-item>
 
             <el-form-item class="form-item">
               <el-button
-                class="submit-btn"
-                :loading="loading"
-                @click="handleResetPassword"
+                  class="submit-btn"
+                  :loading="loading"
+                  @click="handleResetPassword"
               >
                 重置密码
               </el-button>
@@ -244,25 +244,25 @@
 
     <!-- 滑块验证 -->
     <el-dialog
-      title="请拖动滑块完成拼图"
-      width="360px"
-      :visible.sync="isShowSliderVerify"
-      :close-on-click-modal="false"
-      @close="refresh"
-      append-to-body
+        title="请拖动滑块完成拼图"
+        width="360px"
+        :visible.sync="isShowSliderVerify"
+        :close-on-click-modal="false"
+        @close="refresh"
+        append-to-body
     >
       <slider-verify
-        ref="sliderVerify"
-        @success="onSuccess"
-        @fail="onFail"
-        @again="onAgain"
+          ref="sliderVerify"
+          @success="onSuccess"
+          @fail="onFail"
+          @again="onAgain"
       />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { disableScroll, enableScroll } from "@/utils/scroll";
+import {disableScroll, enableScroll} from "@/utils/scroll";
 import {
   sendEmailCodeApi,
   registerApi,
@@ -272,8 +272,9 @@ import {
   getAuthRenderApi,
   getCaptchaSwitchApi,
 } from "@/api/auth";
-import { setCookie } from "@/utils/cookie";
+import {setCookie} from "@/utils/cookie";
 import SliderVerify from "./components/SliderVerify.vue";
+
 export default {
   name: "Login",
   components: {
@@ -334,7 +335,7 @@ export default {
       sliderVerify: null,
       rules: {
         nickname: [
-          { required: true, message: "请输入昵称", trigger: "blur" },
+          {required: true, message: "请输入昵称", trigger: "blur"},
           {
             min: 3,
             max: 10,
@@ -343,7 +344,7 @@ export default {
           },
         ],
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
+          {required: true, message: "请输入用户名", trigger: "blur"},
           {
             min: 3,
             max: 50,
@@ -352,11 +353,11 @@ export default {
           },
         ],
         email: [
-          { required: true, message: "请输入邮箱", trigger: "blur" },
-          { type: "email", message: "请输入正确的邮箱", trigger: "blur" },
+          {required: true, message: "请输入邮箱", trigger: "blur"},
+          {type: "email", message: "请输入正确的邮箱", trigger: "blur"},
         ],
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
+          {required: true, message: "请输入密码", trigger: "blur"},
           {
             min: 6,
             max: 16,
@@ -364,7 +365,7 @@ export default {
             trigger: "blur",
           },
         ],
-        code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+        code: [{required: true, message: "请输入验证码", trigger: "blur"}],
       },
       rememberMe: false,
     };
@@ -441,7 +442,8 @@ export default {
       this.$refs["ruleFrom"].validate(async (valid) => {
         if (valid) {
           getCaptchaSwitchApi().then((res) => {
-            if (!res.data || res.data.configValue === "Y") {
+            // 只有配置存在且值为 "Y" 时才显示滑块验证码
+            if (res.data && res.data.configValue === "Y") {
               this.isShowSliderVerify = true;
             } else {
               this.login();
@@ -591,27 +593,27 @@ export default {
      */
     sendEmailCode(email) {
       sendEmailCodeApi(email)
-        .then((res) => {
-          this.$message.success("发送成功，请前往邮箱查看验证码");
-          // 开始倒计时
-          let countdown = 60;
-          this.codeButtonText = `${countdown}秒后重试`;
+          .then((res) => {
+            this.$message.success("发送成功，请前往邮箱查看验证码");
+            // 开始倒计时
+            let countdown = 60;
+            this.codeButtonText = `${countdown}秒后重试`;
 
-          this.codeTimer = setInterval(() => {
-            countdown--;
-            if (countdown <= 0) {
-              clearInterval(this.codeTimer);
-              this.codeSending = false;
-              this.codeButtonText = "发送验证码";
-            } else {
-              this.codeButtonText = `${countdown}秒后重试`;
-            }
-          }, 1000);
-        })
-        .catch((err) => {
-          this.$message.error(err.message || "发送失败");
-          this.codeSending = false;
-        });
+            this.codeTimer = setInterval(() => {
+              countdown--;
+              if (countdown <= 0) {
+                clearInterval(this.codeTimer);
+                this.codeSending = false;
+                this.codeButtonText = "发送验证码";
+              } else {
+                this.codeButtonText = `${countdown}秒后重试`;
+              }
+            }, 1000);
+          })
+          .catch((err) => {
+            this.$message.error(err.message || "发送失败");
+            this.codeSending = false;
+          });
     },
 
     /**
@@ -671,7 +673,7 @@ export default {
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.95);
   position: relative;
@@ -758,15 +760,19 @@ export default {
   &.github {
     color: #24292e;
   }
+
   &.qq {
     color: #12b7f5;
   }
+
   &.wechat {
     color: #07c160;
   }
+
   &.gitee {
     color: #c71d23;
   }
+
   &.weibo {
     color: #e6162d;
   }
@@ -827,6 +833,7 @@ export default {
 .code-text {
   color: #6366f1;
   font-weight: 500;
+
   i {
     cursor: pointer;
     margin-left: $spacing-sm;

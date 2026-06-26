@@ -1,3 +1,6 @@
+// 修复方案：确保本地文件路径不被 Sa-Token 拦截
+// 文件位置：blog/mojian-auth/src/main/java/com/mojian/config/satoken/SaTokenConfigure.java
+
 package com.mojian.config.satoken;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
@@ -6,10 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Sa-Token 配置
- * 注意：拦截器配置已移至 WebMvcConfig.java 中统一管理
- */
 @Configuration
 public class SaTokenConfigure implements WebMvcConfigurer {
     // 注册拦截器
@@ -30,7 +29,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                         "/swagger-resources",
                         "/api/**",
                         "/wechat/**",
-                        "/localFile/**"
+                        "/localFile/**"      // ← 本地文件访问，不需要登录
                 );
     }
 }

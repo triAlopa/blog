@@ -19,28 +19,70 @@
 </template>
 
 <script>
-import { setCookieExpires,getCookie } from '@/utils/cookie'
+import { setCookieExpires, getCookie } from '@/utils/cookie'
+
+// 前端本地配置（独立于后台 admin）
+const ANNOUNCEMENT_CONFIG = {
+  // 是否启用公告
+  enabled: true,
+  // 内边距（参考苹果圆角图标距离控制）
+  padding: {
+    horizontal: '1rem',  // 水平内边距
+    vertical: '0.625rem' // 垂直内边距
+  },
+  // 圆角
+  borderRadius: '0.75rem',
+  // 字体大小
+  fontSize: '0.875rem',
+  // 图标大小
+  iconSize: '1rem',
+  // 关闭按钮大小
+  closeBtnSize: '1.5rem',
+  // 滚动速度（秒）
+  scrollDuration: 20,
+  // 自动关闭时间（毫秒，0 表示不自动关闭）
+  autoClose: 0
+}
+
 export default {
   name: 'Announcement',
   data() {
     return {
       visible: false,
       notice: {},
+      config: ANNOUNCEMENT_CONFIG,
+      autoCloseTimer: null
     }
   },
   watch: {
     '$store.state.notice'(val) {
       if (val && val.top) {
         this.notice = val.top[0]
-        if(getCookie('notice') == this.notice.id) return
+        if (getCookie('notice') == this.notice.id) return
+        if (!this.config.enabled) return
         this.visible = true
+
+        // 自动关闭
+        if (this.config.autoClose > 0) {
+          this.autoCloseTimer = setTimeout(() => {
+            this.close()
+          }, this.config.autoClose)
+        }
       }
-    } 
+    }
+  },
+  beforeDestroy() {
+    if (this.autoCloseTimer) {
+      clearTimeout(this.autoCloseTimer)
+    }
   },
   methods: {
     close() {
-      setCookieExpires('notice',this.notice.id,365)
+      setCookieExpires('notice', this.notice.id, 365)
       this.visible = false
+      if (this.autoCloseTimer) {
+        clearTimeout(this.autoCloseTimer)
+      }
     }
   }
 }
@@ -49,54 +91,68 @@ export default {
 <style lang="scss" scoped>
 .announcement-container {
   width: 100%;
-  background: $primary;
-  padding: 10px 0;
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.9), rgba(88, 86, 214, 0.9));
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 0.625rem 0;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .announcement-content {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  font-size: 0.95em;
+  justify-content: center;
+  padding: 0 2rem;
+  font-size: 0.875rem;
   position: relative;
+  gap: 1rem;
 }
 
 .announcement-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex: 1;
   overflow: hidden;
-  max-width: 800px;
+  max-width: 700px;
   position: relative;
-  backdrop-filter: blur(8px);
-  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  gap: 0.75rem;
 }
 
 .announcement-icon {
-  position: absolute;
-  left: 30px;
-  font-size: 16px;
+  font-size: 1rem;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   z-index: 1;
-  color:#f59e0b;
+  color: #ffd60a;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 214, 10, 0.15);
+  border-radius: 0.5rem;
 }
 
 .announcement-text {
-  width: calc(100% - 70px);
+  flex: 1;
   overflow: hidden;
-  margin-left: 70px;
   position: relative;
   display: flex;
   justify-content: center;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.01em;
 
   span {
     white-space: nowrap;
@@ -105,7 +161,8 @@ export default {
     font-weight: 500;
     color: rgba(255, 255, 255, 0.95);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    
+    font-size: 0.8125rem;
+
     &:hover {
       animation-play-state: paused;
     }
@@ -113,29 +170,27 @@ export default {
 }
 
 .announcement-close {
-  position: absolute;
-  right: 24px;
-  margin-left: 16px;
   cursor: pointer;
   opacity: 0.8;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+
   &:hover {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.25);
     transform: rotate(90deg);
   }
 
   i {
-    font-size: 14px;
+    font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.9);
   }
 }
@@ -177,4 +232,35 @@ export default {
   transform: translateY(-100%);
   opacity: 0;
 }
-</style> 
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .announcement-content {
+    padding: 0 1rem;
+  }
+
+  .announcement-wrapper {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.625rem;
+  }
+
+  .announcement-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .announcement-text span {
+    font-size: 0.75rem;
+  }
+
+  .announcement-close {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    i {
+      font-size: 0.625rem;
+    }
+  }
+}
+</style>

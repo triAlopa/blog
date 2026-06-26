@@ -14,6 +14,8 @@
  Date: 02/01/2025 14:21:29
 */
 
+use blog;
+
 SET NAMES utf8mb4;
 SET
 FOREIGN_KEY_CHECKS = 0;
