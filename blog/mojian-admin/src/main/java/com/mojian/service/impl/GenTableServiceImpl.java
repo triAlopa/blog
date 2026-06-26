@@ -6,7 +6,7 @@ import com.mojian.utils.PageUtil;
 import com.mojian.entity.GenTable;
 import com.mojian.entity.GenTableColumn;
 import com.mojian.mapper.GenTableMapper;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.utils.GenUtil;
 import com.mojian.utils.VelocityUtil;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,10 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.commons.io.FileUtils;
+
 import java.io.IOException;
 import com.mojian.exception.ServiceException;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.util.*;
 import java.util.stream.Collectors;

@@ -2,6 +2,7 @@ package com.mojian.controller.dashboard;
 
 
 import com.mojian.common.Result;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import com.mojian.vo.dashboard.IndexVo;
 import com.mojian.service.IndexService;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @RestController
@@ -23,6 +25,7 @@ public class DashboardController {
 
     @GetMapping
     @ApiOperation(value = "首页")
+    @RepeatSubmit
     public Result<IndexVo> index() {
         return Result.success(indexService.index());
     }

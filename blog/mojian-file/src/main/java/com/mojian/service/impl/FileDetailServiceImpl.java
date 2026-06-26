@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.entity.FileDetail;
 import com.mojian.entity.SysFileOss;
 import com.mojian.mapper.FileDetailMapper;

@@ -3,6 +3,7 @@ package com.mojian.controller.comment;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.mojian.annotation.UserLogger;
 import com.mojian.service.CommentService;
 import com.mojian.vo.comment.CommentListVo;
 import com.mojian.common.Result;
@@ -28,7 +29,8 @@ public class CommentController {
 
     @SaCheckLogin
     @PostMapping("/add")
-    @ApiOperation(value = "获取文章评论列表")
+    @ApiOperation(value = "添加评论")
+    @UserLogger(value = "添加评论", module = "评论")
     public Result<Void> add(@RequestBody SysComment sysComment) {
         commentService.add(sysComment);
         return Result.success();

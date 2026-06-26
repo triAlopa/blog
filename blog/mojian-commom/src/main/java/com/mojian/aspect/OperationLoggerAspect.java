@@ -4,7 +4,7 @@ import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import com.mojian.annotation.OperationLogger;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.dto.user.LoginUserInfo;
 import com.mojian.entity.SysOperateLog;
 import com.mojian.mapper.SysOperateLogMapper;
@@ -106,11 +106,12 @@ public class OperationLoggerAspect {
 
         SysOperateLog operateLog = SysOperateLog.builder()
                 .ip(ip)
-                .source(IpUtil.getIp2region(ip))
-                .type(type)
+                .ipSource(IpUtil.getIp2region(ip))
+                .type("admin")
                 .username(user.getUsername())
-                .paramsJson(paramsJson)
+                .requestParams(paramsJson)
                 .requestUrl(url)
+                .requestMethod(type)
                 .spendTime(spendTime)
                 .methodName(point.getSignature().getName())
                 .classPath(point.getTarget().getClass().getName())

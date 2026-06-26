@@ -1,7 +1,7 @@
 package com.mojian.config.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.enums.MenuTypeEnum;
 import com.mojian.mapper.SysMenuMapper;
 import com.mojian.mapper.SysRoleMapper;

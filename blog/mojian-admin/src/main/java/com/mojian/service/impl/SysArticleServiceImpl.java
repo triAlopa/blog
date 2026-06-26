@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.common.ResultCode;
 import com.mojian.dto.article.ArticleQueryDto;
 import com.mojian.entity.SysArticle;

@@ -1,6 +1,6 @@
 package com.mojian.service.impl;
 
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.entity.SysDict;
 import com.mojian.mapper.SysDictMapper;
 import com.mojian.service.SysDictDataService;

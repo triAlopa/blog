@@ -2,7 +2,7 @@ package com.mojian.service.impl;
 
 import java.util.List;
 
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.enums.NoticePosttionEnum;
 import com.mojian.exception.ServiceException;
 import org.springframework.stereotype.Service;

@@ -2,9 +2,11 @@ package com.mojian.controller.article;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.mojian.annotation.OperationLogger;
 import com.mojian.common.Result;
 import com.mojian.dto.article.ArticleQueryDto;
 import com.mojian.entity.SysArticle;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import com.mojian.service.SysArticleService;
 import com.mojian.vo.article.ArticleListVo;
 import com.mojian.vo.article.SysArticleDetailVo;
@@ -26,6 +28,7 @@ public class SysArticleController {
     @GetMapping("/list")
     @ApiOperation(value  = "文章列表")
     @SaCheckPermission("sys:article:list")
+    @RepeatSubmit
     public Result<IPage<ArticleListVo>> list(ArticleQueryDto articleQueryDto) {
         return Result.success(sysArticleService.selectPage(articleQueryDto));
     }

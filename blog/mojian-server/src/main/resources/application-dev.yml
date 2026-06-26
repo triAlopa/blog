@@ -16,7 +16,16 @@ spring:
     timeout: 3000
     database: 8
     password: 06170018
-
+  messages: # 资源文件基础名称（默认就是 messages）
+      basename: i18n/messages
+      # 或者如果放在根目录：basename: messages
+      encoding: UTF-8
+      # 缓存时间（秒）
+      cache-duration: 3600
+      # 如果找不到对应语言，使用系统默认
+      fallback-to-system-locale: true
+      # 是否始终使用默认语言
+      always-use-message-format: false
 
 #==============================knife4j配置==============================
 knife4j:

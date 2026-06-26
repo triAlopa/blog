@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.common.Result;
 import com.mojian.entity.FileDetail;
 import com.mojian.entity.SysFileOss;

@@ -4,7 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.common.RedisConstants;
 import com.mojian.dto.user.SysUserAddAndUpdateDto;
 import com.mojian.mapper.SysRoleMapper;

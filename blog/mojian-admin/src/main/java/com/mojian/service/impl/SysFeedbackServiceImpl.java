@@ -2,7 +2,7 @@ package com.mojian.service.impl;
 
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.dto.feedback.SysFeedbackQueryDto;
 import com.mojian.vo.feedback.SysFeedbackVo;
 import org.springframework.stereotype.Service;

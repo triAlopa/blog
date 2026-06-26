@@ -4,7 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.entity.SysUser;
 import com.mojian.enums.ChatTypeEnum;
 import com.mojian.exception.ServiceException;

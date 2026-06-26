@@ -1,4 +1,4 @@
-package com.mojian.common;
+package com.mojian.common.constant;
 
 public class Constants {
     public static final String UTF8 = "UTF-8";

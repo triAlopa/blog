@@ -1,6 +1,6 @@
 package com.mojian.config;
 
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import org.apache.velocity.app.Velocity;
 
 import java.util.Properties;

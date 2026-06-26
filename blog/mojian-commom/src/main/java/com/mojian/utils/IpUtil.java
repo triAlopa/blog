@@ -2,7 +2,7 @@ package com.mojian.utils;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.commons.lang3.StringUtils;
 import org.lionsoul.ip2region.xdb.Searcher;

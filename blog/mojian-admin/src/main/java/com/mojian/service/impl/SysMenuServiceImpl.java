@@ -3,7 +3,7 @@ package com.mojian.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.entity.SysMenu;
 import com.mojian.enums.MenuTypeEnum;
 import com.mojian.mapper.SysMenuMapper;

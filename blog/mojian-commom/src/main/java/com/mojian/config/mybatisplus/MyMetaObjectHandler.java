@@ -2,7 +2,7 @@ package com.mojian.config.mybatisplus;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.dto.user.LoginUserInfo;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;

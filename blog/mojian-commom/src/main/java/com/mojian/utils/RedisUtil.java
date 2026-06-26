@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -253,5 +254,33 @@ public class RedisUtil {
     public Long bitCount(String key, long start, long end) {
         return redisTemplate.execute((RedisCallback<Long>) connection ->
                 connection.bitCount(key.getBytes(), start, end));
+    }
+
+    /**
+     * 仅当key不存在时设置值（SET NX）
+     *
+     * @param key 键
+     * @param value 值
+     * @return true-设置成功（key不存在），false-设置失败（key已存在）
+     */
+    public Boolean setIfAbsent(String key, Object value) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value);
+    }
+
+    /**
+     * 仅当key不存在时设置值并设置过期时间（SET NX EX）
+     *
+     * @param key 键
+     * @param value 值
+     * @param timeout 过期时间
+     * @param unit 时间单位
+     * @return true-设置成功（key不存在），false-设置失败（key已存在）
+     */
+    public Boolean setIfAbsent(String key, Object value, long timeout, TimeUnit unit) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, unit);
+    }
+
+    public boolean setIfAbsent(String cacheRepeatKey, String s, Duration duration) {
+        return setIfAbsent(cacheRepeatKey,s, duration.toMillis(), TimeUnit.MILLISECONDS);
     }
 }

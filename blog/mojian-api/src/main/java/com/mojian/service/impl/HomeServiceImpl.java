@@ -3,7 +3,7 @@ package com.mojian.service.impl;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.common.RedisConstants;
 import com.mojian.common.Result;
 import com.mojian.entity.SysNotice;

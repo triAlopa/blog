@@ -1,6 +1,6 @@
 package com.mojian.quartz;
 
-import com.mojian.common.Constants;
+import com.mojian.common.constant.Constants;
 import com.mojian.entity.SysJob;
 import com.mojian.entity.SysJobLog;
 import com.mojian.mapper.SysJobLogMapper;

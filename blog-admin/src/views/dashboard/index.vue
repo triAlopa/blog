@@ -1,5 +1,16 @@
 <template>
   <div class="dashboard-container">
+    <!-- Tab 切换 -->
+    <el-tabs v-model="activeTab" class="mb-4">
+      <el-tab-pane label="概览" name="overview" />
+      <el-tab-pane label="访问统计" name="statistics" />
+    </el-tabs>
+
+    <!-- 访问统计面板 -->
+    <LogStatistics v-if="activeTab === 'statistics'" />
+
+    <!-- 概览面板 -->
+    <template v-if="activeTab === 'overview'">
     <!-- 数据卡片 -->
     <el-row :gutter="20">
       <el-col :span="6" v-for="(item, index) in statistics" :key="item.title">
@@ -61,6 +72,7 @@
       </el-col>
     </el-row>
 
+    </template>
   </div>
 </template>
 
@@ -77,7 +89,11 @@ import {
 } from '@element-plus/icons-vue'
 import CountTo from '@/views/dashboard/components/CountTo.vue'
 import ContributionGraph from './components/ContributionGraph.vue'
+import LogStatistics from './components/LogStatistics.vue'
 import { getDashboardDataApi, getBottomDataApi } from '@/api/system'
+
+// Tab 切换
+const activeTab = ref('overview')
 
 const icons = {
   Document: markRaw(Document),

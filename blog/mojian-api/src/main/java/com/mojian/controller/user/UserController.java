@@ -1,6 +1,7 @@
 package com.mojian.controller.user;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.mojian.annotation.UserLogger;
 import com.mojian.common.Result;
 import com.mojian.entity.SysArticle;
 import com.mojian.entity.SysUser;
@@ -30,6 +31,7 @@ public class UserController {
 
     @PutMapping("/updateProfile")
     @ApiOperation(value = "修改我的资料")
+    @UserLogger(value = "修改个人资料", module = "个人中心")
     public Result<Void> updateProfile(@RequestBody SysUser user){
         userService.updateProfile(user);
         return Result.success();
@@ -43,6 +45,7 @@ public class UserController {
 
     @DeleteMapping("/delMyComment/{ids}")
     @ApiOperation(value = "删除我的评论")
+    @UserLogger(value = "删除我的评论", module = "个人中心")
     public Result<Void> delMyComment(@PathVariable List<Long> ids){
         return Result.success(userService.delMyComment(ids));
     }
