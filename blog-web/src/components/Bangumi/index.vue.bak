@@ -1,0 +1,526 @@
+<template>
+  <div class="bangumi-container">
+    <!-- 页面标题 -->
+    <div class="bangumi-header">
+      <h2 class="bangumi-title">
+        <span class="title-bar"></span>
+        <span class="title-text">我的追番</span>
+      </h2>
+      <p class="bangumi-subtitle">记录我的二次元之旅</p>
+    </div>
+
+    <!-- 过滤按钮 -->
+    <div class="filter-container">
+      <button
+        v-for="filter in filters"
+        :key="filter.value"
+        :class="['filter-tag', { active: currentFilter === filter.value }]"
+        @click="handleFilter(filter.value)"
+      >
+        {{ filter.label }}
+        <span class="filter-count">{{ getFilterCount(filter.value) }}</span>
+      </button>
+    </div>
+
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">加载中...</p>
+    </div>
+
+    <!-- 错误提示 -->
+    <div v-else-if="error" class="error-container">
+      <div class="error-icon">😢</div>
+      <h3 class="error-title">{{ error }}</h3>
+      <p class="error-desc">请检查 API 配置是否正确</p>
+      <button class="retry-btn" @click="fetchData">重试</button>
+    </div>
+
+    <!-- 空状态 -->
+    <div v-else-if="animeList.length === 0" class="empty-container">
+      <div class="empty-icon">😢</div>
+      <h3 class="empty-title">暂无追番数据</h3>
+      <p class="empty-desc">请在后台配置 Bangumi 用户ID</p>
+    </div>
+
+    <!-- 追番列表 -->
+    <div v-else class="anime-grid" ref="animeGrid">
+      <div class="anime-grid-inner">
+        <div
+          v-for="anime in animeList"
+          :key="anime.id"
+          :class="['anime-card', { 'anime-hidden': !isVisible(anime) }]"
+          :data-anime-status="anime.status"
+        >
+          <!-- 封面区域 - 竖屏比例 2:3 -->
+          <div class="anime-cover-container">
+            <a :href="anime.link" target="_blank" rel="noopener noreferrer" class="anime-cover-link">
+              <img
+                :src="anime.cover"
+                :alt="anime.title"
+                class="anime-cover"
+                @error="handleImageError"
+                loading="lazy"
+              />
+              <!-- 悬停遮罩 -->
+              <div class="anime-cover-overlay">
+                <div class="play-button">
+                  <svg class="play-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            <!-- 状态标签 -->
+            <div :class="['anime-status-tag', getStatusClass(anime.status)]">
+              <span class="status-icon">{{ getStatusIcon(anime.status) }}</span>
+              <span class="status-text">{{ getStatusText(anime.status) }}</span>
+            </div>
+
+            <!-- 评分标签 -->
+            <div v-if="anime.rating > 0" class="anime-rating-tag">
+              <svg class="star-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              <span>{{ anime.rating }}</span>
+            </div>
+
+            <!-- 进度条 - 仅在看状态显示 -->
+            <div v-if="anime.status === 'watching'" class="anime-progress-bar">
+              <div class="progress-track">
+                <div
+                  class="progress-fill"
+                  :style="{ width: getProgressPercent(anime) + '%' }"
+                ></div>
+              </div>
+              <div class="progress-text">
+                {{ anime.progress }}/{{ anime.totalEpisodes }} ({{ Math.round(getProgressPercent(anime)) }}%)
+              </div>
+            </div>
+          </div>
+
+          <!-- 内容区域 -->
+          <div class="anime-content">
+            <h3 class="anime-title" :title="anime.title">{{ anime.title }}</h3>
+            <p class="anime-description" :title="anime.description">
+              {{ anime.description || '暂无简介' }}
+            </p>
+
+            <!-- 详细信息 -->
+            <div class="anime-meta">
+              <div class="meta-row">
+                <span class="meta-label">年份</span>
+                <span class="meta-value">{{ anime.year || '未知' }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">制作</span>
+                <span class="meta-value">{{ anime.studio || '未知' }}</span>
+              </div>
+              <div class="meta-tags">
+                <span
+                  v-for="tag in anime.genre"
+                  :key="tag"
+                  class="genre-tag"
+                >
+                  {{ tag }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { getAllCollectionsApi, getSubjectPersonsApi } from '@/api/bangumi'
+
+export default {
+  name: 'Bangumi',
+  data() {
+    return {
+      loading: false,
+      error: null,
+      animeList: [],
+      currentFilter: 'all',
+      filters: [
+        { label: '全部', value: 'all' },
+        { label: '在看', value: 'watching' },
+        { label: '想看', value: 'planned' },
+        { label: '看过', value: 'completed' },
+        { label: '搁置', value: 'onhold' },
+        { label: '抛弃', value: 'dropped' }
+      ]
+    }
+  },
+  computed: {
+    filteredAnimeList() {
+      if (this.currentFilter === 'all') {
+        return this.animeList
+      }
+      return this.animeList.filter(a => a.status === this.currentFilter)
+    }
+  },
+  mounted() {
+    this.fetchData()
+  },
+  methods: {
+    async fetchData() {
+      this.loading = true
+      this.error = null
+
+      try {
+        const res = await getAllCollectionsApi()
+        if (res.code === 200) {
+          console.log('=== Bangumi API 返回数据 ===')
+          console.log(res.data)
+          await this.processData(res.data)
+          console.log('=== 处理后的追番列表 ===')
+          console.log(this.animeList)
+        } else {
+          this.error = res.message || '获取数据失败'
+        }
+      } catch (err) {
+        console.error('获取追番数据失败:', err)
+        this.error = '获取数据失败，请检查 API 配置'
+      } finally {
+        this.loading = false
+      }
+    },
+
+    processData(data) {
+      const list = []
+      const statusMap = {
+        watching: 3,
+        completed: 2,
+        planned: 1,
+        onhold: 4,
+        dropped: 5
+      }
+
+      Object.entries(statusMap).forEach(([status, type]) => {
+        const key = status
+        if (data[key] && data[key].data) {
+          data[key].data.forEach(item => {
+            const studio = this.extractStudio(item.subject)
+            list.push(this.transformItem(item, status, studio))
+          })
+        }
+      })
+
+      this.animeList = list
+    },
+
+    extractStudio(subject) {
+      if (!subject || !subject.infobox) return '未知'
+
+      const infobox = subject.infobox
+
+      // 按优先级查找制作方字段
+      const priorities = ['动画制作', '动画工作室', '制作公司', '動畫製作', '製作', '主动画师', '动画制片人']
+
+      for (const key of priorities) {
+        const found = infobox.find(item => item.key === key)
+        if (found && found.value) {
+          // value 可能是字符串、数组或对象
+          if (typeof found.value === 'string') return found.value
+          if (Array.isArray(found.value)) {
+            const names = found.value.map(v => {
+              if (typeof v === 'object' && v !== null) return v.v || v.name || ''
+              return String(v)
+            }).filter(Boolean)
+            if (names.length > 0) return names.join('、')
+          }
+        }
+      }
+
+      return '未知'
+    },
+
+    transformItem(item, status, studio) {
+      const subject = item.subject || {}
+      const progress = item.ep_status || 0
+      const totalEpisodes = subject.eps || progress
+
+      return {
+        id: item.subject_id || subject.id,
+        title: subject.name_cn || subject.name || '未知标题',
+        status: status,
+        rating: item.rate ? parseFloat(item.rate.toFixed(1)) : 0,
+        cover: subject.images?.medium || subject.images?.large || '/default-cover.jpg',
+        description: (subject.short_summary || '').trim(),
+        year: subject.date ? subject.date.split('-')[0] : '未知',
+        genre: subject.tags ? subject.tags.slice(0, 3).map(t => t.name) : [],
+        studio: studio,
+        link: subject.id ? `https://bgm.tv/subject/${subject.id}` : '#',
+        progress: progress,
+        totalEpisodes: totalEpisodes
+      }
+    },
+
+    handleFilter(value) {
+      if (this.currentFilter === value) return
+
+      var self = this
+      var container = this.$refs.animeGrid
+
+      if (!container) {
+        this.currentFilter = value
+        return
+      }
+
+      // Step 1: 获取当前可见的卡片，缩小消失
+      var visibleCards = container.querySelectorAll('.anime-card:not(.anime-hidden)')
+
+      visibleCards.forEach(function(item) {
+        item.style.transition = 'all 0.15s cubic-bezier(0.55, 0.085, 0.68, 0.53)'
+        item.style.opacity = '0'
+        item.style.transform = 'scale(0.3)'
+      })
+
+      // Step 2: 等待缩小完成（150ms），切换数据
+      setTimeout(function() {
+        // 切换过滤器（Vue 重新渲染，animeList 不变，只是过滤条件变了）
+        self.currentFilter = value
+
+        // 等待 Vue 重新渲染
+        self.$nextTick(function() {
+          self.$nextTick(function() {
+            var container = self.$refs.animeGrid
+            if (!container) return
+
+            // 获取所有卡片
+            var allCards = container.querySelectorAll('.anime-card')
+
+            // 先隐藏所有卡片
+            allCards.forEach(function(item) {
+              item.classList.add('anime-hidden')
+              item.style.opacity = ''
+              item.style.transform = ''
+              item.style.transition = ''
+            })
+
+            // 找出需要显示的卡片
+            var cardsToShow = []
+            allCards.forEach(function(item) {
+              var status = item.getAttribute('data-anime-status')
+              var shouldShow = self.currentFilter === 'all' || status === self.currentFilter
+              if (shouldShow) {
+                cardsToShow.push(item)
+              }
+            })
+
+            // 设置初始状态：透明 + 缩小
+            cardsToShow.forEach(function(item) {
+              item.classList.remove('anime-hidden')
+              item.style.opacity = '0'
+              item.style.transform = 'scale(0.3)'
+              item.style.transition = 'none'
+            })
+
+            // 强制重排
+            container.offsetHeight
+
+            // Step 3: 新卡片弹性放大出现
+            cardsToShow.forEach(function(item, index) {
+              setTimeout(function() {
+                item.style.transition = 'all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                item.style.opacity = '1'
+                item.style.transform = 'scale(1)'
+              }, index * 20)
+            })
+
+            // 清理
+            setTimeout(function() {
+              cardsToShow.forEach(function(item) {
+                item.style.transition = ''
+                item.style.transform = ''
+                item.style.opacity = ''
+              })
+            }, 250 + cardsToShow.length * 20)
+          })
+        })
+      }, 150)
+    },
+
+    getFilterCount(value) {
+      if (value === 'all') {
+        return this.animeList.length
+      }
+      return this.animeList.filter(a => a.status === value).length
+    },
+
+    isVisible(anime) {
+      return this.currentFilter === 'all' || anime.status === this.currentFilter
+    },
+
+    getProgressPercent(anime) {
+      if (!anime.totalEpisodes || anime.totalEpisodes === 0) return 0
+      return (anime.progress / anime.totalEpisodes) * 100
+    },
+
+    getStatusText(status) {
+      const map = {
+        watching: '在看',
+        completed: '看过',
+        planned: '想看',
+        onhold: '搁置',
+        dropped: '抛弃'
+      }
+      return map[status] || status
+    },
+
+    getStatusClass(status) {
+      const map = {
+        watching: 'status-watching',
+        completed: 'status-completed',
+        planned: 'status-planned',
+        onhold: 'status-onhold',
+        dropped: 'status-dropped'
+      }
+      return map[status] || ''
+    },
+
+    getStatusIcon(status) {
+      const map = {
+        watching: '▶',
+        completed: '✓',
+        planned: '⏰',
+        onhold: '⏸',
+        dropped: '✗'
+      }
+      return map[status] || '?'
+    },
+
+    handleImageError(e) {
+      e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2YzZjRmNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7mmoLml6Dlm77niYc8L3RleHQ+PC9zdmc+'
+    }
+  }
+}
+</script>
+
+
+<style scoped>
+/* 追番页面样式 */
+.bangumi-container { padding: 20px; }
+
+/* 页面标题 */
+.bangumi-header { margin-bottom: 20px; }
+.bangumi-title { font-size: 24px; font-weight: 700; color: #333; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+.title-bar { width: 4px; height: 20px; border-radius: 2px; background: #409eff; flex-shrink: 0; }
+.bangumi-subtitle { color: #999; font-size: 14px; padding-left: 14px; }
+
+/* 过滤按钮 */
+.filter-container { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+.filter-tag { padding: 8px 16px; border: 1px solid #e0e0e0; border-radius: 6px; background: #fff; color: #666; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.filter-tag:hover:not(.active) { background: #f5f5f5; border-color: #409eff; transform: translateY(-1px); }
+.filter-tag.active { background: #409eff; color: #fff; border-color: #409eff; }
+.filter-count { font-size: 12px; background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 10px; }
+.filter-tag.active .filter-count { background: rgba(255,255,255,0.2); }
+
+/* 加载/错误/空状态 */
+.loading-container, .error-container, .empty-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; background: #fff; border-radius: 8px; border: 1px solid #e8e8e8; }
+.loading-spinner { width: 40px; height: 40px; border: 3px solid #e8e8e8; border-top-color: #409eff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { margin-top: 16px; color: #999; font-size: 14px; }
+.error-icon, .empty-icon { font-size: 48px; margin-bottom: 16px; }
+.error-title, .empty-title { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 8px; }
+.error-desc, .empty-desc { color: #999; font-size: 14px; margin-bottom: 20px; }
+.retry-btn { padding: 10px 24px; background: #409eff; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; }
+.retry-btn:hover { background: #337ecc; }
+
+/* 动漫网格布局 - 一行5个 */
+.anime-grid { container-type: inline-size; }
+.anime-grid-inner { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+
+/* 响应式 */
+@container (max-width: 1200px) { .anime-grid-inner { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
+@container (max-width: 900px) { .anime-grid-inner { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
+@container (max-width: 600px) { .anime-grid-inner { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+
+/* 动漫卡片 - 不添加入场动画，由 FLIP 控制 */
+.anime-card { background: #fff; border: 1px solid #e8e8e8; border-radius: 10px; overflow: hidden; transition: all 0.5s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; }
+.anime-card:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.1); border-color: #409eff; transform: scale(1.02); }
+
+/* 封面容器 */
+.anime-cover-container { position: relative; aspect-ratio: 2/3; overflow: hidden; background: #f5f5f5; }
+.anime-cover-link { display: block; width: 100%; height: 100%; }
+.anime-cover { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+.anime-cover-link:hover .anime-cover { transform: scale(1.1); }
+.anime-cover-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); opacity: 0; transition: opacity 0.5s ease; display: flex; align-items: center; justify-content: center; }
+.anime-cover-link:hover .anime-cover-overlay { opacity: 1; }
+.play-button { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; transform: scale(0.75); transition: transform 0.5s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+.anime-cover-link:hover .play-button { transform: scale(1); }
+.play-icon { width: 16px; height: 16px; color: #fff; margin-left: 2px; }
+
+/* 状态标签 */
+.anime-status-tag { position: absolute; top: 6px; left: 6px; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-weight: 500; display: flex; align-items: center; gap: 2px; }
+.status-watching { background: #e8f5e9; color: #2e7d32; }
+.status-completed { background: #e3f2fd; color: #1565c0; }
+.status-planned { background: #fff3e0; color: #e65100; }
+.status-onhold { background: #f3e5f5; color: #7b1fa2; }
+.status-dropped { background: #ffebee; color: #c62828; }
+.status-icon { font-size: 10px; }
+
+/* 评分标签 */
+.anime-rating-tag { position: absolute; top: 6px; right: 6px; padding: 1px 4px; border-radius: 2px; background: rgba(0,0,0,0.6); color: #fff; font-size: 9px; font-weight: 500; display: flex; align-items: center; gap: 1px; }
+.star-icon { width: 10px; height: 10px; color: #ffc107; }
+
+/* 进度条 */
+.anime-progress-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px 6px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); }
+.progress-track { width: 100%; height: 2px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; margin-bottom: 2px; }
+.progress-fill { height: 100%; background: #4caf50; border-radius: 2px; transition: width 0.3s ease; }
+.progress-text { color: rgba(255,255,255,0.9); font-size: 9px; }
+
+/* 内容区域 */
+.anime-content { padding: 6px 6px 8px; flex: 1; display: flex; flex-direction: column; }
+.anime-title { font-size: 11px; font-weight: 600; color: #333; margin-bottom: 2px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.anime-description { font-size: 10px; color: #999; margin-bottom: 4px; line-height: 1.35; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* 详细信息 */
+.anime-meta { font-size: 9px; margin-top: auto; }
+.meta-row { display: flex; justify-content: space-between; margin-bottom: 2px; }
+.meta-label { color: #999; }
+.meta-value { color: #666; }
+.meta-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+.genre-tag { padding: 1px 5px; background: #f5f5f5; color: #666; border-radius: 3px; font-size: 9px; }
+.genre-tag:hover { background: #e8e8e8; }
+
+/* 暗色主题 */
+:root.dark .bangumi-container, [data-theme="dark"] .bangumi-container {
+  .bangumi-title { color: #f5f5f5; }
+  .bangumi-subtitle { color: #999; }
+  .filter-tag { background: #2a2a2a; border-color: #404040; color: #ccc; }
+  .filter-tag:hover:not(.active) { background: #333; border-color: #555; }
+  .anime-card { background: #2a2a2a; border-color: #404040; }
+  .anime-cover-container { background: #333; }
+  .anime-title { color: #e0e0e0; }
+  .anime-description { color: #999; }
+  .meta-label { color: #888; }
+  .meta-value { color: #ccc; }
+  .genre-tag { background: #333; color: #aaa; }
+  .loading-container, .error-container, .empty-container { background: #2a2a2a; border-color: #404040; }
+  .error-title, .empty-title { color: #e0e0e0; }
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+  .bangumi-container { padding: 12px; }
+  .bangumi-title { font-size: 20px; }
+  .filter-tag { padding: 6px 12px; font-size: 13px; }
+  .anime-content { padding: 10px; }
+  .anime-title { font-size: 14px; }
+  .anime-description { font-size: 12px; -webkit-line-clamp: 2; }
+}
+
+/* ========================================
+   动画效果
+   ======================================== */
+
+/* 隐藏状态 */
+.anime-card.anime-hidden {
+  display: none !important;
+}
+</style>

@@ -16,6 +16,13 @@
         <span class="tab-icon">📺</span>
         <span class="tab-text">我的追番</span>
       </div>
+      <div
+        :class="['tab-item', { active: activeTab === 'manga' }]"
+        @click="activeTab = 'manga'"
+      >
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">我的漫画</span>
+      </div>
     </div>
 
     <!-- 关于我 -->
@@ -29,16 +36,23 @@
     <el-card v-show="activeTab === 'bangumi'" class="bangumi-card">
       <Bangumi />
     </el-card>
+
+    <!-- 我的漫画 -->
+    <el-card v-show="activeTab === 'manga'" class="bangumi-card">
+      <Manga />
+    </el-card>
   </div>
 </template>
 
 <script>
 import Bangumi from '@/components/Bangumi/index.vue'
+import Manga from '@/components/Manga/index.vue'
 
 export default {
   name: 'About',
   components: {
-    Bangumi
+    Bangumi,
+    Manga
   },
   data() {
     return {
@@ -47,9 +61,12 @@ export default {
   },
   mounted() {
     this.initImagePreview();
-    // 检查 URL 参数，支持直接跳转到追番页面
+    // 检查 URL 参数，支持直接跳转
     if (this.$route.query.tab === 'bangumi') {
       this.activeTab = 'bangumi'
+    }
+    if (this.$route.query.tab === 'manga') {
+      this.activeTab = 'manga'
     }
   },
   methods: {

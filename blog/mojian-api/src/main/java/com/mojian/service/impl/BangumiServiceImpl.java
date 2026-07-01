@@ -128,7 +128,7 @@ public class BangumiServiceImpl implements BangumiService {
             HttpResponse response = HttpRequest.get(url)
                     .header("User-Agent", "ShiyiBlog/1.0")
                     .header("Accept", "application/json")
-                    .timeout(10000)
+                    .timeout(60000)
                     .execute();
 
             if (response.getStatus() == 200) {
@@ -162,23 +162,36 @@ public class BangumiServiceImpl implements BangumiService {
         String userId = getUserId();
         Map<String, Object> result = new HashMap<>();
 
-        // 获取在看列表 (type=3)
         result.put("watching", getCollectionsByType(userId, 3));
-        // 获取想看列表 (type=1)
         result.put("planned", getCollectionsByType(userId, 1));
-        // 获取看过列表 (type=2)
         result.put("completed", getCollectionsByType(userId, 2));
-        // 获取搁置列表 (type=4)
         result.put("onhold", getCollectionsByType(userId, 4));
-        // 获取抛弃列表 (type=5)
         result.put("dropped", getCollectionsByType(userId, 5));
 
         return result;
     }
 
-    /**
-     * 根据类型获取收藏列表
-     */
+    @Override
+    @Cacheable(value = "bangumi_all_manga", key = "#root.methodName", unless = "#result == null")
+    public Map<String, Object> getAllMangaCollections() {
+        String userId = getUserId();
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("reading", getMangaCollectionsByType(userId, 3));
+        result.put("planned", getMangaCollectionsByType(userId, 1));
+        result.put("completed", getMangaCollectionsByType(userId, 2));
+        result.put("onhold", getMangaCollectionsByType(userId, 4));
+        result.put("dropped", getMangaCollectionsByType(userId, 5));
+
+        return result;
+    }
+
+    private Object getMangaCollectionsByType(String userId, int type) {
+        String path = String.format("/v0/users/%s/collections?subject_type=1&type=%d&limit=50&offset=0",
+                userId, type);
+        return sendGetRequest(path);
+    }
+
     private Object getCollectionsByType(String userId, int type) {
         String path = String.format("/v0/users/%s/collections?subject_type=2&type=%d&limit=50&offset=0",
                 userId, type);

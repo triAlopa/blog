@@ -163,14 +163,19 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
             List<Integer> tagIds = new ArrayList<>();
             tags.forEach(item ->{
                 String tag = item.text();
-                SysTag result = sysTagMapper.selectOne(new LambdaQueryWrapper<SysTag>().eq(SysTag::getName,tag ));
-                if (result == null){
-                    result = SysTag.builder().name(tag).build();
-                    sysTagMapper.insert(result);
+                if (StringUtils.isNotBlank(tag)) {
+                    SysTag result = sysTagMapper.selectOne(new LambdaQueryWrapper<SysTag>().eq(SysTag::getName, tag));
+                    if (result == null){
+                        result = SysTag.builder().name(tag).build();
+                        sysTagMapper.insert(result);
+                    }
+                    tagIds.add(result.getId());
                 }
-                tagIds.add(result.getId());
             });
-            sysTagMapper.addArticleTagRelations(entity.getId(),tagIds);
+            // 只有当标签列表不为空时才插入关联
+            if (!tagIds.isEmpty()) {
+                sysTagMapper.addArticleTagRelations(entity.getId(), tagIds);
+            }
 
             System.out.println("文章抓取成功，内容为:" + JSON.toJSONString(entity));
         } catch (IOException e) {

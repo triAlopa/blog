@@ -5,6 +5,7 @@ import com.mojian.service.BangumiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Map;
 /**
  * Bangumi 追番控制器
  */
+@Slf4j
 @RestController
 @RequestMapping("/bangumi")
 @RequiredArgsConstructor
@@ -43,11 +45,21 @@ public class BangumiController {
     }
 
     /**
+     * 获取所有漫画数据（在读+想读+读过+搁置+抛弃）
+     */
+    @GetMapping("/manga")
+    @ApiOperation(value = "获取所有漫画数据")
+    public Result<Map<String, Object>> getAllMangaCollections() {
+        return Result.success(bangumiService.getAllMangaCollections());
+    }
+
+    /**
      * 获取条目详情
      */
     @GetMapping("/subject/{subjectId}")
     @ApiOperation(value = "获取条目详情")
     public Result<Object> getSubject(@PathVariable int subjectId) {
+        log.info("获取条目详情 ：{}", bangumiService.getSubject(subjectId));
         return Result.success(bangumiService.getSubject(subjectId));
     }
 

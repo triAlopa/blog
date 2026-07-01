@@ -2,9 +2,6 @@ import request from '@/utils/request'
 
 /**
  * 获取追番列表
- * @param {number} type 收藏类型：1=想看, 2=看过, 3=在看, 4=搁置, 5=抛弃
- * @param {number} offset 偏移量
- * @param {number} limit 每页数量
  */
 export function getCollectionsApi(type = 3, offset = 0, limit = 50) {
   return request({
@@ -25,8 +22,17 @@ export function getAllCollectionsApi() {
 }
 
 /**
+ * 获取所有漫画数据
+ */
+export function getAllMangaCollectionsApi() {
+  return request({
+    url: '/bangumi/manga',
+    method: 'get'
+  })
+}
+
+/**
  * 获取条目详情
- * @param {number} subjectId 条目ID
  */
 export function getSubjectApi(subjectId) {
   return request({
@@ -36,8 +42,7 @@ export function getSubjectApi(subjectId) {
 }
 
 /**
- * 获取条目相关人员信息
- * @param {number} subjectId 条目ID
+ * 获取条目相关人员信息（制作方等）
  */
 export function getSubjectPersonsApi(subjectId) {
   return request({

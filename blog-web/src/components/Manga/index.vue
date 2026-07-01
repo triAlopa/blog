@@ -3,9 +3,9 @@
     <div class="bangumi-header">
       <h2 class="bangumi-title">
         <span class="title-bar"></span>
-        <span class="title-text">我的追番</span>
+        <span class="title-text">我的漫画</span>
       </h2>
-      <p class="bangumi-subtitle">记录我的二次元之旅</p>
+      <p class="bangumi-subtitle">漫画阅读记录</p>
     </div>
 
     <!-- 过滤按钮 -->
@@ -83,10 +83,10 @@
 </template>
 
 <script>
-import { getAllCollectionsApi } from '@/api/bangumi'
+import { getAllMangaCollectionsApi } from '@/api/bangumi'
 
 export default {
-  name: 'Bangumi',
+  name: 'Manga',
   data() {
     return {
       loading: false,
@@ -95,7 +95,7 @@ export default {
       currentFilter: 'all',
       filters: [
         { label: '全部', value: 'all' },
-        { label: '在看', value: 'watching' },
+        { label: '在读', value: 'reading' },
         { label: '想看', value: 'planned' },
         { label: '看过', value: 'completed' },
         { label: '搁置', value: 'onhold' },
@@ -109,11 +109,11 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const res = await getAllCollectionsApi()
+        const res = await getAllMangaCollectionsApi()
         if (res.code === 200) {
           console.log('Bangumi API 数据:', res.data)
           const list = []
-          const map = { watching: 3, completed: 2, planned: 1, onhold: 4, dropped: 5 }
+          const map = { reading: 3, completed: 2, planned: 1, onhold: 4, dropped: 5 }
           Object.entries(map).forEach(([status]) => {
             if (res.data[status] && res.data[status].data) {
               res.data[status].data.forEach(item => {
@@ -215,8 +215,8 @@ export default {
     },
     getCount(v) { return v === 'all' ? this.animeList.length : this.animeList.filter(a => a.status === v).length },
     pct(a) { return a.totalEpisodes ? (a.progress / a.totalEpisodes * 100) : 0 },
-    statusText(s) { return { watching: '在看', completed: '看过', planned: '想看', onhold: '搁置', dropped: '抛弃' }[s] || s },
-    statusIcon(s) { return { watching: '▶', completed: '✓', planned: '⏰', onhold: '⏸', dropped: '✗' }[s] || '?' },
+    statusText(s) { return { reading: '在读', completed: '看过', planned: '想看', onhold: '搁置', dropped: '抛弃' }[s] || s },
+    statusIcon(s) { return { reading: '📖', completed: '✓', planned: '⏰', onhold: '⏸', dropped: '✗' }[s] || '?' },
     onImgError(e) { e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2YzZjRmNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7mmoLml6Dlm77niYc8L3RleHQ+PC9zdmc+' }
   }
 }
@@ -270,7 +270,7 @@ export default {
 
 /* 标签 */
 .status-tag { position: absolute; top: 8px; left: 8px; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: 500; display: flex; align-items: center; gap: 3px; }
-.status-watching { background: #e8f5e9; color: #2e7d32; }
+.status-reading { background: #e8eaf6; color: #283593; }
 .status-completed { background: #e3f2fd; color: #1565c0; }
 .status-planned { background: #fff3e0; color: #e65100; }
 .status-onhold { background: #f3e5f5; color: #7b1fa2; }

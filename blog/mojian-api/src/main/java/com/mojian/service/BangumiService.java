@@ -23,6 +23,12 @@ public interface BangumiService {
     Map<String, Object> getAllCollections();
 
     /**
+     * 获取所有漫画数据（在看+想看+看过+搁置+抛弃）
+     * @return 所有漫画数据
+     */
+    Map<String, Object> getAllMangaCollections();
+
+    /**
      * 获取条目详情
      * @param subjectId 条目ID
      * @return 条目详情
