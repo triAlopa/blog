@@ -3,7 +3,9 @@ package com.mojian.controller.message;
 import java.util.List;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.mojian.annotation.OperationLogger;
 import com.mojian.dto.feedback.SysFeedbackQueryDto;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import com.mojian.vo.feedback.SysFeedbackVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +30,7 @@ public class SysFeedbackController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取反馈列表")
+    @OperationLogger("反馈")
     public Result<IPage<SysFeedbackVo>> list(SysFeedbackQueryDto feedbackQueryDto) {
         return Result.success(sysFeedbackService.selectPage(feedbackQueryDto));
     }
@@ -35,6 +38,8 @@ public class SysFeedbackController {
     @PostMapping("/add")
     @ApiOperation(value = "添加反馈")
     @SaCheckPermission("sys:feedback:add")
+    @RepeatSubmit
+    @OperationLogger("反馈")
     public Result<Object> add(@RequestBody SysFeedback sysFeedback) {
         return Result.success(sysFeedbackService.insert(sysFeedback));
     }
@@ -42,6 +47,8 @@ public class SysFeedbackController {
     @PutMapping("/update")
     @ApiOperation(value = "修改反馈")
     @SaCheckPermission("sys:feedback:update")
+    @RepeatSubmit
+    @OperationLogger("反馈")
     public Result<Object> update(@RequestBody SysFeedback sysFeedback) {
         return Result.success(sysFeedbackService.update(sysFeedback));
     }
@@ -49,6 +56,8 @@ public class SysFeedbackController {
     @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "删除反馈")
     @SaCheckPermission("sys:feedback:delete")
+    @RepeatSubmit
+    @OperationLogger("反馈")
     public Result<Object> delete(@PathVariable List<Long> ids) {
         return Result.success(sysFeedbackService.removeBatchByIds(ids));
     }

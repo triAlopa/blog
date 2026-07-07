@@ -9,6 +9,7 @@
     <file url="file://$PROJECT_DIR$/script/MySQL/mj-blog.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/script/MySQL/operate-log-refactor.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/script/MySQL/quick-add-user.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/script/MySQL/sensitive-word.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/script/MySQL/test-log-data.sql" dialect="MySQL" />
   </component>
 </project>

@@ -3,6 +3,8 @@ package com.mojian.controller.article;
 import java.util.List;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.mojian.annotation.OperationLogger;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -23,29 +25,36 @@ public class SysMomentController {
 
     private final SysMomentService sysMomentService;
 
+    @OperationLogger("说说")
     @GetMapping("/list")
     @ApiOperation(value = "获取说说列表")
     public Result<IPage<SysMoment>> list(SysMoment sysMoment) {
         return Result.success(sysMomentService.selectPage(sysMoment));
     }
 
+    @OperationLogger("说说")
     @PostMapping("/add")
     @SaCheckPermission("sys:moment:add")
     @ApiOperation(value = "添加说说")
+    @RepeatSubmit
     public Result<Object> add(@RequestBody SysMoment sysMoment) {
         return Result.success(sysMomentService.add(sysMoment));
     }
 
+    @OperationLogger("说说")
     @PutMapping("/update")
     @SaCheckPermission("sys:moment:update")
     @ApiOperation(value = "修改说说")
+    @RepeatSubmit
     public Result<Object> edit(@RequestBody SysMoment sysMoment) {
         return Result.success(sysMomentService.updateById(sysMoment));
     }
 
+    @OperationLogger("说说")
     @DeleteMapping("/delete/{ids}")
     @SaCheckPermission("sys:moment:delete")
     @ApiOperation(value = "删除说说")
+    @RepeatSubmit
     public Result<Object> remove(@PathVariable List<Long> ids) {
         return Result.success(sysMomentService.removeByIds(ids));
     }

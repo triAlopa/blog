@@ -28,48 +28,59 @@ public class SysArticleController {
     @GetMapping("/list")
     @ApiOperation(value  = "文章列表")
     @SaCheckPermission("sys:article:list")
-    @RepeatSubmit
+    @OperationLogger("文章")
     public Result<IPage<ArticleListVo>> list(ArticleQueryDto articleQueryDto) {
         return Result.success(sysArticleService.selectPage(articleQueryDto));
     }
 
     @GetMapping("/detail/{id}")
     @ApiOperation(value = "文章详情")
+    @OperationLogger("文章")
     public Result<SysArticleDetailVo> detail(@PathVariable Integer id) {
         return Result.success(sysArticleService.detail(id));
     }
 
+    @OperationLogger("文章")
     @PostMapping("/add")
     @ApiOperation(value = "新增文章")
     @SaCheckPermission("sys:article:add")
+    @RepeatSubmit
     public Result<Boolean> add(@RequestBody SysArticleDetailVo sysArticle) {
         return Result.success(sysArticleService.add(sysArticle));
     }
 
+    @OperationLogger("文章")
     @PutMapping("/update")
     @ApiOperation(value = "修改文章")
     @SaCheckPermission("sys:article:update")
+    @RepeatSubmit
     public Result<Boolean> update(@RequestBody SysArticleDetailVo sysArticle) {
         return Result.success(sysArticleService.update(sysArticle));
     }
 
+    @OperationLogger("文章")
     @PutMapping("/updateStatus")
     @ApiOperation(value = "修改状态")
     @SaCheckPermission("sys:article:updateStatus")
+    @RepeatSubmit
     public Result<Boolean> updateStatus(@RequestBody SysArticle sysArticle) {
         return Result.success(sysArticleService.updateById(sysArticle));
     }
 
+    @OperationLogger("文章")
     @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "删除文章")
     @SaCheckPermission("sys:article:delete")
+    @RepeatSubmit
     public Result<Boolean> delete(@PathVariable List<Long> ids) {
         return Result.success(sysArticleService.delete(ids));
     }
 
+    @OperationLogger("文章")
     @GetMapping("/reptile")
     @ApiOperation(value = "爬取文章")
     @SaCheckPermission("sys:article:reptile")
+    @RepeatSubmit
     public Result<Void> reptile(String url){
         sysArticleService.reptile(url);
         return Result.success();

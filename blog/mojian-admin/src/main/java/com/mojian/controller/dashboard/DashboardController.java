@@ -1,6 +1,7 @@
 package com.mojian.controller.dashboard;
 
 
+import com.mojian.annotation.OperationLogger;
 import com.mojian.common.Result;
 import com.mojian.idempotent.annotation.RepeatSubmit;
 import com.mojian.vo.dashboard.IndexVo;
@@ -23,14 +24,14 @@ public class DashboardController {
 
     private final IndexService indexService;
 
+    @OperationLogger("仪表盘")
     @GetMapping
     @ApiOperation(value = "首页")
-    @RepeatSubmit
     public Result<IndexVo> index() {
         return Result.success(indexService.index());
     }
 
-
+    @OperationLogger("仪表盘\"")
     @GetMapping("/bottom")
     @ApiOperation(value = "首页底部分类")
     public Result<List<Map<String, Integer>>> getCategories() {

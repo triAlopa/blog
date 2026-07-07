@@ -3,7 +3,9 @@ package com.mojian.controller.monitor;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.mojian.annotation.OperationLogger;
 import com.mojian.common.Result;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import com.mojian.service.SysUserService;
 import com.mojian.vo.user.OnlineUserVo;
 import io.swagger.annotations.Api;
@@ -29,6 +31,8 @@ public class OnlineUserController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取在线用户列表")
+    @RepeatSubmit
+    @OperationLogger("在线用户")
     public Result<IPage<OnlineUserVo>> getOnlineUserList(String username) {
         return Result.success(sysUserService.getOnlineUserList(username));
     }
@@ -36,6 +40,8 @@ public class OnlineUserController {
     @ApiOperation(value = "强制踢出")
     @GetMapping("/forceLogout/{token}")
     @SaCheckPermission("monitor:online:forceLogout")
+    @RepeatSubmit
+    @OperationLogger("在线用户")
     public Result<Void> forceLogout(@PathVariable String token) {
         StpUtil.logoutByTokenValue(token);
         return Result.success();

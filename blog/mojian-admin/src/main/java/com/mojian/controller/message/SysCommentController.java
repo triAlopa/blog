@@ -2,7 +2,9 @@ package com.mojian.controller.message;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mojian.annotation.OperationLogger;
 import com.mojian.common.Result;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import com.mojian.service.SysCommentService;
 import com.mojian.vo.comment.SysCommentVO;
 import io.swagger.annotations.Api;
@@ -27,6 +29,7 @@ public class SysCommentController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取评论列表")
+    @OperationLogger("评论")
     public Result<Page<SysCommentVO>> list() {
         return Result.success(sysCommentService.selectList());
     }
@@ -34,6 +37,8 @@ public class SysCommentController {
     @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "删除评论")
     @SaCheckPermission("sys:comment:delete")
+    @RepeatSubmit
+    @OperationLogger("评论")
     public Result<Void> delete(@PathVariable List<Integer> ids) {
         sysCommentService.removeBatchByIds(ids);
         return Result.success();

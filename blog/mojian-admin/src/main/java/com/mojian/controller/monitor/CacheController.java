@@ -1,7 +1,9 @@
 package com.mojian.controller.monitor;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.mojian.annotation.OperationLogger;
 import com.mojian.common.Result;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import com.mojian.service.CacheService;
 import com.mojian.vo.cache.*;
 import io.swagger.annotations.Api;
@@ -19,24 +21,29 @@ public class CacheController {
 
     @ApiOperation(value = "获取缓存信息")
     @GetMapping("/info")
+    @OperationLogger("redis缓存")
     public Result<CacheInfoVo> getCacheInfo() {
         return Result.success(cacheService.getCacheInfo());
     }
 
+    @OperationLogger("redis缓存")
     @ApiOperation(value = "获取内存信息")
     @GetMapping("/memory")
     public Result<CacheMemoryVo> getMemoryInfo() {
         return Result.success(cacheService.getMemoryInfo());
     }
 
+    @OperationLogger("redis缓存")
     @ApiOperation(value = "获取缓存键列表")
     @GetMapping("/keys")
     public Result<IPage<CacheKeyVo>> getKeyList(CacheKeyQuery query) {
         return Result.success(cacheService.getKeyList(query));
     }
 
+    @OperationLogger("redis缓存")
     @ApiOperation(value = "清空缓存")
     @DeleteMapping
+    @RepeatSubmit
     public Result<Void> clearCache() {
         cacheService.clearCache();
         return Result.success();
