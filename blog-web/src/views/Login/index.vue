@@ -532,14 +532,13 @@ export default {
       });
     },
     /**
-     * 获取微信登录二维码和验证码
+     * 获取微信登录验证码
      */
     getWechatLoginCode() {
       getWechatLoginQrcodeApi().then((res) => {
         if (res.data) {
-          this.wechatForm.code = res.data.code;
-          this.wechatForm.qrcodeUrl = res.data.qrcodeUrl;
-          this.wechatForm.expire = parseInt(res.data.expire) || 300;
+          this.wechatForm.code = res.data;
+          this.wechatForm.expire = 300;
           this.startPolling();
           this.startCountdown();
         }

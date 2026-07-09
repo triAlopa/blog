@@ -5,7 +5,8 @@
     <SearchDialog />
     <router-view class="main-container" />
     <TheFooter />
-    <FloatingButtons />
+    <FloatingButtons @sakura-change="onSakuraChange" />
+    <SakuraFall :enabled="sakuraEnabled" :count="sakuraCount" />
     <Lantern />
     <RandomVideo />
     <div class="cursor-container"></div>
@@ -17,6 +18,7 @@
 import TheHeader from '@/layout/Header/index.vue'
 import TheFooter from '@/layout/Footer/index.vue'
 import FloatingButtons from '@/components/common/FloatingButtons.vue'
+import SakuraFall from '@/components/SakuraFall/index.vue'
 import { getWebConfigApi, reportApi,getNoticeApi } from '@/api/site'
 import { mapActions } from 'vuex'
 import { initTheme, applyColorTheme } from '@/utils/theme'
@@ -33,14 +35,22 @@ export default {
     TheHeader,
     TheFooter,
     FloatingButtons,
+    SakuraFall,
     SearchDialog,
     MobileMenu,
     Lantern,
     RandomVideo,
     ContextMenu,
   },
+  data() {
+    return {
+      sakuraEnabled: false,
+      sakuraCount: 15
+    }
+  },
 
   async created() {
+    this.loadSakuraSettings()
     await reportApi()
     const res = await getWebConfigApi()
     this.setSiteInfo(res.data)
@@ -82,6 +92,29 @@ export default {
   },
   methods: {
     ...mapActions(['setSiteInfo','getUserInfo']),
+
+    /**
+     * 樱花特效变化
+     */
+    onSakuraChange({ enabled, count }) {
+      console.log('[App] Sakura change:', { enabled, count })
+      this.sakuraEnabled = enabled
+      this.sakuraCount = count
+    },
+
+    /**
+     * 加载樱花设置
+     */
+    loadSakuraSettings() {
+      const enabled = localStorage.getItem('sakura-enabled')
+      const count = localStorage.getItem('sakura-count')
+      if (enabled === '1') {
+        this.sakuraEnabled = true
+      }
+      if (count) {
+        this.sakuraCount = parseInt(count)
+      }
+    },
 
     /**
      * 处理第三方登录用回调逻辑
@@ -133,6 +166,7 @@ export default {
     }
   },
   mounted() {
+    console.log('[App] Mounted, sakuraEnabled:', this.sakuraEnabled)
     this.initCursorEffect()
     this.initContextMenu()
   }
