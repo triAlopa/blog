@@ -33,7 +33,7 @@
     margin-bottom: $spacing-lg;
     font-weight: 700;
     line-height: 1;
-    text-shadow: 4px 4px 0px rgba($primary, 0.2);
+    text-shadow: 4px 4px 0px rgba(var(--primary-rgb), 0.2);
   }
 
   p {
@@ -56,7 +56,7 @@
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba($primary, 0.3);
+      box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
     }
 
     i {

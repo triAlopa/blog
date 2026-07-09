@@ -3,6 +3,8 @@ package com.mojian.controller.site;
 import java.util.List;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.mojian.annotation.OperationLogger;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ public class SysFriendController {
 
     @GetMapping("/list")
     @ApiOperation(value = "友情链接列表")
+    @OperationLogger(value = "友情链接",module = "管理端")
     public Result<IPage<SysFriend>> list(SysFriend sysFriend) {
         return Result.success(sysFriendService.selectPage(sysFriend));
     }
@@ -32,6 +35,8 @@ public class SysFriendController {
     @PostMapping("add")
     @ApiOperation(value = "新增友情链接")
     @SaCheckPermission("sys:friend:add")
+    @OperationLogger(value = "友情链接",module = "管理端")
+    @RepeatSubmit
     public Result<Object> add(@RequestBody SysFriend sysFriend) {
         return Result.success(sysFriendService.save(sysFriend));
     }
@@ -39,6 +44,8 @@ public class SysFriendController {
     @PutMapping("update")
     @ApiOperation(value = "修改友情链接")
     @SaCheckPermission("sys:friend:update")
+    @OperationLogger(value = "友情链接",module = "管理端")
+    @RepeatSubmit
     public Result<Object> update(@RequestBody SysFriend sysFriend) {
         return Result.success(sysFriendService.update(sysFriend));
     }
@@ -46,6 +53,8 @@ public class SysFriendController {
     @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "删除友情链接")
     @SaCheckPermission("sys:friend:delete")
+    @OperationLogger(value = "友情链接",module = "管理端")
+    @RepeatSubmit
     public Result<Object> delete(@PathVariable List<Integer> ids) {
         return Result.success(sysFriendService.removeBatchByIds(ids));
     }

@@ -93,6 +93,39 @@ public class SysWebConfig implements Serializable {
     @ApiModelProperty(value = "是否开启灯笼")
     private Integer openLantern;
 
+    @ApiModelProperty(value = "预设配色方案(JSON数组)")
+    private String themePresets;
+
+    @ApiModelProperty(value = "当前主题名称")
+    private String themeName;
+
+    @ApiModelProperty(value = "主色调")
+    private String primaryColor;
+
+    @ApiModelProperty(value = "次要色")
+    private String secondaryColor;
+
+    @ApiModelProperty(value = "强调色")
+    private String accentColor;
+
+    @ApiModelProperty(value = "背景色")
+    private String bgColor;
+
+    @ApiModelProperty(value = "文字色")
+    private String textColor;
+
+    @ApiModelProperty(value = "卡片背景色")
+    private String cardBgColor;
+
+    @ApiModelProperty(value = "渐变开始色")
+    private String gradientStart;
+
+    @ApiModelProperty(value = "渐变结束色")
+    private String gradientEnd;
+
+    @ApiModelProperty(value = "阴影颜色")
+    private String shadowColor;
+
     @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)

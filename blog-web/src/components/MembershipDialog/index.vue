@@ -373,13 +373,13 @@ export default {
     flex-direction: column;
 
     &:hover {
-      border-color: rgba($primary, 0.3);
+      border-color: rgba(var(--primary-rgb), 0.3);
       transform: translateY(-2px);
     }
 
     &.active {
       border-color: $primary;
-      background: rgba($primary, 0.05);
+      background: rgba(var(--primary-rgb), 0.05);
     }
 
     .plan-header {
@@ -507,13 +507,13 @@ export default {
     }
 
     &:hover {
-      border-color: rgba($primary, 0.3);
-      background: rgba($primary, 0.02);
+      border-color: rgba(var(--primary-rgb), 0.3);
+      background: rgba(var(--primary-rgb), 0.02);
     }
 
     &.active {
       border-color: $primary;
-      background: rgba($primary, 0.05);
+      background: rgba(var(--primary-rgb), 0.05);
 
       .check-icon {
         opacity: 1;

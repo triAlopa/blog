@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import com.mojian.annotation.UserLogger;
 import com.mojian.common.constant.Constants;
+import com.mojian.config.ResponseAdvice;
 import com.mojian.dto.user.LoginUserInfo;
 import com.mojian.entity.SysOperateLog;
 import com.mojian.mapper.SysOperateLogMapper;
@@ -144,6 +145,22 @@ public class UserLoggerAspect {
             Long startTime = START_TIME.get();
             Long spendTime = startTime != null ? System.currentTimeMillis() - startTime : 0;
 
+            // 计算耗时等级：<=200ms=fast, 200-1000ms=normal, >1000ms=slow
+            String durationLevel = "fast";
+            if (spendTime > 1000) {
+                durationLevel = "slow";
+            } else if (spendTime > 200) {
+                durationLevel = "normal";
+            }
+
+            // 获取响应体
+            String responseBody = null;
+            try {
+                responseBody = ResponseAdvice.getResponseBody();
+            } catch (Exception e) {
+                // ignore
+            }
+
             // 构建日志对象
             SysOperateLog operateLog = SysOperateLog.builder()
                     .type("user")
@@ -162,6 +179,8 @@ public class UserLoggerAspect {
                     .os(os)
                     .browser(browser)
                     .spendTime(spendTime)
+                    .durationLevel(durationLevel)
+                    .responseBody(responseBody)
                     .classPath(point.getTarget().getClass().getName())
                     .methodName(point.getSignature().getName())
                     .createTime(LocalDateTime.now())
@@ -169,6 +188,9 @@ public class UserLoggerAspect {
 
             // 异步保存日志（不阻塞主线程）
             operateLogMapper.insert(operateLog);
+
+            // 清理 ThreadLocal
+            ResponseAdvice.clear();
 
         } catch (Exception e) {
             logger.error("用户日志记录失败", e);

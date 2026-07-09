@@ -369,11 +369,11 @@ export default {
     }
     
     &:hover {
-      background: rgba($primary, 0.04);
+      background: rgba(var(--primary-rgb), 0.04);
     }
     
     &.active {
-      background: rgba($primary, 0.08);
+      background: rgba(var(--primary-rgb), 0.08);
       color: $primary;
       
       i {
@@ -444,14 +444,14 @@ export default {
   transition: background-color 0.2s ease;
   
   &:hover {
-    background: rgba($primary, 0.02);
+    background: rgba(var(--primary-rgb), 0.02);
   }
   
   .notification-icon {
     width: 36px;
     height: 36px;
     border-radius: 4px;
-    background: rgba($primary, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -523,10 +523,10 @@ export default {
   }
   
   &.unread {
-    background: rgba($primary, 0.04);
+    background: rgba(var(--primary-rgb), 0.04);
     
     &:hover {
-      background: rgba($primary, 0.06);
+      background: rgba(var(--primary-rgb), 0.06);
     }
   }
 }

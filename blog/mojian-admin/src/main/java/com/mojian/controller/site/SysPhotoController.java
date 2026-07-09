@@ -3,6 +3,8 @@ package com.mojian.controller.site;
 import java.util.List;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.mojian.annotation.OperationLogger;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +27,14 @@ public class SysPhotoController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取照片列表")
+    @OperationLogger(value = "照片",module = "管理端")
     public Result<IPage<SysPhoto>> list(SysPhoto sysPhoto) {
         return Result.success(sysPhotoService.selectPage(sysPhoto));
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "获取照片详情")
+    @OperationLogger(value = "照片",module = "管理端")
     public Result<SysPhoto> getInfo(@PathVariable("id") Long id) {
         return Result.success(sysPhotoService.getById(id));
     }
@@ -38,6 +42,8 @@ public class SysPhotoController {
     @PostMapping("/add")
     @SaCheckPermission("sys:photo:add")
     @ApiOperation(value = "添加照片")
+    @OperationLogger(value = "照片",module = "管理端")
+    @RepeatSubmit
     public Result<Object> add(@RequestBody SysPhoto sysPhoto) {
         return Result.success(sysPhotoService.insert(sysPhoto));
     }
@@ -45,6 +51,8 @@ public class SysPhotoController {
     @PutMapping("/update")
     @SaCheckPermission("sys:photo:update")
     @ApiOperation(value = "修改照片")
+    @OperationLogger(value = "修改",module = "管理端")
+    @RepeatSubmit
     public Result<Object> edit(@RequestBody SysPhoto sysPhoto) {
         return Result.success(sysPhotoService.update(sysPhoto));
     }

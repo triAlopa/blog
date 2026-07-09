@@ -533,7 +533,7 @@ export default {
 
       &:hover {
         border-color: $primary;
-        box-shadow: 0 0 0 2px rgba($primary, 0.1);
+        box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
       }
 
       i {
@@ -567,7 +567,7 @@ export default {
 
         &:hover {
           color: $primary;
-          background: rgba($primary, 0.1);
+          background: rgba(var(--primary-rgb), 0.1);
         }
       }
     }
@@ -583,7 +583,7 @@ export default {
   margin: $spacing-lg 0;
   font-size: 1em;
   padding: $spacing-sm;
-  background: rgba($primary, 0.05);
+  background: rgba(var(--primary-rgb), 0.05);
   border-radius: $border-radius-lg;
 
   i {
@@ -627,7 +627,7 @@ export default {
     color: var(--text-secondary);
     font-size: 1.2em;
     padding: $spacing-xs $spacing-sm;
-    background: rgba($primary, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     border-radius: $border-radius-lg;
     font-weight: 500;
   }
@@ -646,7 +646,7 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: $spacing-sm;
-  box-shadow: 0 4px 15px rgba($primary, 0.3);
+  box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
 
   i {
     font-size: 1.1em;
@@ -655,7 +655,7 @@ export default {
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba($primary, 0.4);
+    box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
 
     i {
       transform: rotate(180deg);
@@ -669,13 +669,13 @@ export default {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba($primary, 0.4);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba($primary, 0);
+    box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba($primary, 0);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
   }
 }
 
@@ -712,7 +712,7 @@ export default {
       
       &:focus {
         border-color: $primary;
-        box-shadow: 0 0 0 2px rgba($primary, 0.1);
+        box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
       }
 
       &::placeholder {
@@ -739,7 +739,7 @@ export default {
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba($primary, 0.3);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
       }
 
       &:active {

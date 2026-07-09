@@ -73,22 +73,23 @@ export function forgotPasswordApi(data) {
   }
 
 /**
- * 获取微信登录验证码
+ * 获取微信登录二维码（包含验证码）
  */
-export function getWechatLoginCodeApi() {
+export function getWechatLoginQrcodeApi() {
   return request({
-    url: `/api/wechat/getCode`,
+    url: `/wechat/login/qrcode`,
     method: 'get',
   })
-} 
+}
 
 /**
- * 获取微信登录状态
+ * 检查微信登录状态
  */
-export function getWechatIsLoginApi(code) {
+export function checkWechatLoginStatusApi(code) {
   return request({
-    url: `/api/wechat/isLogin/${code}`,
+    url: `/wechat/login/check`,
     method: 'get',
+    params: { code }
   })
 } 
 

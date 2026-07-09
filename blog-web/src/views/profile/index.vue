@@ -1396,7 +1396,7 @@ export default {
     transition: all 0.3s ease;
 
     &:hover {
-      background: darken($primary, 10%);
+      background: var(--primary-dark-color);
     }
 
     i {
@@ -1442,7 +1442,7 @@ export default {
       color: white;
 
       &:hover {
-        background: darken($primary, 10%);
+        background: var(--primary-dark-color);
       }
     }
   }

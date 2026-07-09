@@ -59,7 +59,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba($primary, 0.8);  /* 增加不透明度 */
+  background: rgba(var(--primary-rgb), 0.8);  /* 增加不透明度 */
   transition: all 0.3s ease;
   border-radius: 10px;
 
@@ -71,10 +71,10 @@
 /* 深色模式滚动条 */
 :root[data-theme='dark'] {
   ::-webkit-scrollbar-thumb {
-    background: rgba($primary, 0.6);  /* 深色模式下的基础颜色 */
+    background: rgba(var(--primary-rgb), 0.6);  /* 深色模式下的基础颜色 */
 
     &:hover {
-      background: rgba($primary, 0.8);  /* 深色模式下悬浮颜色 */
+      background: rgba(var(--primary-rgb), 0.8);  /* 深色模式下悬浮颜色 */
     }
   }
 
@@ -191,7 +191,7 @@
   --border-color: rgba(0, 0, 0, 0.1);
   --card-bg: #{$surface};
   --loading-bg: #{$loading-bg};
-  --hover-bg: #{rgba($primary, 0.1)};
+  --hover-bg: #{rgba(var(--primary-rgb), 0.1)};
   --input-bg: #{$surface};
   --surface-rgb: 255, 255, 255;
   --border-color-rgb: 0, 0, 0;

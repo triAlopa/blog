@@ -197,7 +197,7 @@
         &:focus {
           outline: none;
           border-color: $primary;
-          box-shadow: 0 0 0 4px rgba($primary, 0.1);
+          box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1);
         }
       }
   
@@ -217,7 +217,7 @@
   
         &:hover {
           transform: translateY(-50%) scale(1.1);
-          box-shadow: 0 4px 12px rgba($primary, 0.3);
+          box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
         }
       }
     }
@@ -245,7 +245,7 @@
           background: $primary;
           color: var(--text-primary);
           transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba($primary, 0.2);
+          box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
         }
   
         &:hover:not(.active) {
@@ -409,7 +409,7 @@
             .hot-tag {
               padding: 3px 8px;
               border-radius: 6px;
-              background: rgba($primary, 0.1);
+              background: rgba(var(--primary-rgb), 0.1);
               color: $primary;
               font-size: 0.85em;
               font-weight: 500;

@@ -1,12 +1,35 @@
-// 颜色
-$primary: #409eff;
-$secondary: #a855f7;
+// 颜色 - 主题配色 CSS 变量默认值
+:root {
+  --primary-color: #6366f1;
+  --primary-light-color: #818cf8;
+  --primary-dark-color: #4f46e5;
+  --primary-rgb: 99, 102, 241;
+  --secondary-color: #8b5cf6;
+  --secondary-dark-color: #7c3aed;
+  --secondary-rgb: 139, 92, 246;
+  --accent-color: #f59e0b;
+  --bg-color: #ffffff;
+  --text-color: #1f2937;
+  --card-bg-color: #ffffff;
+  --gradient-start: #6366f1;
+  --gradient-end: #8b5cf6;
+  --shadow-color: rgba(99,102,241,0.1);
+}
+
+// 静态颜色值（用于 Sass 颜色函数，如 darken、rgba 等）
+// 注意：这些值不会随主题动态变化，仅用于编译时计算
+$primary-static: #6366f1;
+$secondary-static: #8b5cf6;
+
+// CSS 变量引用（用于需要动态主题的场景）
+$primary: var(--primary-color, #6366f1);
+$secondary: var(--secondary-color, #8b5cf6);
 
 // 浅色模式
-$text-primary: #1f2937;
+$text-primary: var(--text-color, #1f2937);
 $text-secondary: #666;
 $background: linear-gradient(125deg, #e0f2ff 0%, #f0f5ff 20%, #f5f0ff 40%, #fff0f7 60%, #fff5f5 80%, #fff8f0 100%);
-$surface: #ffffff;
+$surface: var(--card-bg-color, #ffffff);
 $loading-bg: rgba(255, 255, 255, 0.95);
 // 深色模式
 $dark: (

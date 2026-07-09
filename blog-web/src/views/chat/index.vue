@@ -2020,7 +2020,7 @@ export default {
       &:focus {
         outline: none;
         border-color: $primary;
-        box-shadow: 0 0 0 3px rgba($primary, 0.1);
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
 
         & + .search-icon {
           color: $primary;

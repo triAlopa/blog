@@ -19,7 +19,7 @@ import TheFooter from '@/layout/Footer/index.vue'
 import FloatingButtons from '@/components/common/FloatingButtons.vue'
 import { getWebConfigApi, reportApi,getNoticeApi } from '@/api/site'
 import { mapActions } from 'vuex'
-import { initTheme } from '@/utils/theme'
+import { initTheme, applyColorTheme } from '@/utils/theme'
 import SearchDialog from '@/components/Search/index.vue'
 import MobileMenu from '@/layout/MobileMenu/index.vue'
 import Lantern from '@/components/Lanterns/index.vue'
@@ -49,7 +49,26 @@ export default {
 
     const noticeRes = await getNoticeApi()
     this.$store.commit('SET_NOTICE', noticeRes.data)
-    initTheme()
+
+    // 应用后台配置的主题颜色
+    const config = res.data
+    if (config.primaryColor) {
+      applyColorTheme({
+        themeName: config.themeName || 'default',
+        primaryColor: config.primaryColor,
+        secondaryColor: config.secondaryColor,
+        accentColor: config.accentColor,
+        bgColor: config.bgColor,
+        textColor: config.textColor,
+        cardBgColor: config.cardBgColor,
+        gradientStart: config.gradientStart,
+        gradientEnd: config.gradientEnd,
+        shadowColor: config.shadowColor
+      })
+    } else {
+      initTheme()
+    }
+
     await this.handleThirdPartyLogin()
     //这里等待第三方登录处理完成在获取用户信息
     await this.getUserInfo();

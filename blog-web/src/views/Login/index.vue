@@ -31,10 +31,8 @@
         <div v-show="currentForm === 'login'" class="form-container">
           <div class="qrcode-content">
             <div class="qrcode-box">
-              <!-- 这里放二维码图片 -->
               <img
-                  v-lazy="'https://img.shiyit.com/qrcode.jpg'"
-                  :key="'https://img.shiyit.com/qrcode.jpg'"
+                  :src="wechatForm.qrcodeUrl || 'https://img.shiyit.com/qrcode.jpg'"
                   alt="微信二维码"
               />
             </div>
@@ -267,8 +265,8 @@ import {
   sendEmailCodeApi,
   registerApi,
   forgotPasswordApi,
-  getWechatLoginCodeApi,
-  getWechatIsLoginApi,
+  getWechatLoginQrcodeApi,
+  checkWechatLoginStatusApi,
   getAuthRenderApi,
   getCaptchaSwitchApi,
 } from "@/api/auth";
@@ -286,6 +284,8 @@ export default {
       loading: false,
       wechatForm: {
         code: "",
+        qrcodeUrl: "",
+        expire: 300,
         showQrcode: false,
       },
       countdown: 0,
@@ -519,7 +519,7 @@ export default {
      */
     handleThirdPartyLogin(type) {
       if (type === "wechat") {
-        this.wechatForm.showQrcode = true;
+        this.switchForm("login");
         this.getWechatLoginCode();
         return;
       }
@@ -532,38 +532,52 @@ export default {
       });
     },
     /**
-     * 获取微信登录验证码
+     * 获取微信登录二维码和验证码
      */
     getWechatLoginCode() {
-      getWechatLoginCodeApi().then((res) => {
-        this.wechatForm.code = res.data;
-        this.pollingWechatIsLogin();
-        // 开始倒计时
-        let countdown = 60;
-        this.codeTimer = setInterval(() => {
-          countdown--;
-          if (countdown <= 0) {
-            clearInterval(this.codeTimer);
-            clearInterval(this.pollingTimer);
-            this.wechatForm.code = "验证码已失效";
-          }
-        }, 1000);
+      getWechatLoginQrcodeApi().then((res) => {
+        if (res.data) {
+          this.wechatForm.code = res.data.code;
+          this.wechatForm.qrcodeUrl = res.data.qrcodeUrl;
+          this.wechatForm.expire = parseInt(res.data.expire) || 300;
+          this.startPolling();
+          this.startCountdown();
+        }
+      }).catch(() => {
+        this.wechatForm.code = "获取失败";
       });
     },
     /**
-     * 定时轮询获取微信登录状态
+     * 开始轮询检查登录状态
      */
-    pollingWechatIsLogin() {
+    startPolling() {
+      this.clearTimer();
       this.pollingTimer = setInterval(() => {
-        getWechatIsLoginApi(this.wechatForm.code).then((res) => {
-          if (res.code === 200) {
+        checkWechatLoginStatusApi(this.wechatForm.code).then((res) => {
+          if (res.data) {
+            // 登录成功
+            clearInterval(this.pollingTimer);
+            clearInterval(this.codeTimer);
             this.$store.commit("SET_TOKEN", res.data.token);
             this.$store.commit("SET_USER_INFO", res.data);
-            clearInterval(this.pollingTimer);
             this.$message.success("登录成功");
             this.handleClose();
           }
         });
+      }, 3000); // 每3秒轮询一次
+    },
+    /**
+     * 开始倒计时
+     */
+    startCountdown() {
+      let countdown = this.wechatForm.expire || 300;
+      this.codeTimer = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+          clearInterval(this.codeTimer);
+          clearInterval(this.pollingTimer);
+          this.wechatForm.code = "验证码已失效";
+        }
       }, 1000);
     },
 
@@ -793,7 +807,7 @@ export default {
     cursor: pointer;
 
     &:hover {
-      color: darken($primary, 10%);
+      color: var(--primary-dark-color);
     }
   }
 }
@@ -871,7 +885,7 @@ export default {
   cursor: pointer;
 
   &:hover {
-    color: darken($primary, 10%);
+    color: var(--primary-dark-color);
   }
 }
 

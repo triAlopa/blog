@@ -140,7 +140,7 @@ export default {
         align-items: center;
         gap: 4px;
         font-size: 0.6em;
-        background: linear-gradient(135deg, $secondary, darken($secondary, 10%));
+        background: linear-gradient(135deg, $secondary-static, var(--secondary-dark-color));
         color: white;
         padding: 3px 8px;
         border-radius: 4px;

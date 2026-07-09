@@ -126,7 +126,7 @@
                 color: #fff !important;
                 border-color: $primary !important;
                 font-weight: bold !important;
-                box-shadow: 0 4px 12px rgba($primary, 0.2) !important;
+                box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2) !important;
 
                 &:hover {
                     color: #fff !important;
@@ -166,7 +166,7 @@
         transition: all 0.3s ease !important;
         
         &:focus {
-            box-shadow: 0 0 0 2px rgba($primary, 0.1) !important;
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1) !important;
         }
     }
 

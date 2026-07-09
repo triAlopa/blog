@@ -78,6 +78,12 @@ public class SysOperateLog implements Serializable {
     @ApiModelProperty(value = "请求耗时（毫秒）")
     private Long spendTime;
 
+    @ApiModelProperty(value = "耗时等级：fast/normal/slow")
+    private String durationLevel;
+
+    @ApiModelProperty(value = "响应体内容")
+    private String responseBody;
+
     @ApiModelProperty(value = "类路径")
     private String classPath;
 

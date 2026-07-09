@@ -986,7 +986,7 @@ export default {
         height: 42px;
         border-radius: 50%;
         object-fit: cover;
-        border: 2px solid rgba($primary, 0.2);
+        border: 2px solid rgba(var(--primary-rgb), 0.2);
         padding: 2px;
         background: var(--card-bg);
         transition: all 0.3s ease;
@@ -1063,7 +1063,7 @@ export default {
     font-size: 1.8em;
     margin: $spacing-xl 0 $spacing-lg;
     padding-bottom: $spacing-sm;
-    border-bottom: 2px solid rgba($primary, 0.1);
+    border-bottom: 2px solid rgba(var(--primary-rgb), 0.1);
     position: relative;
     color: var(--text-primary);
 
@@ -1421,7 +1421,7 @@ export default {
         width: 60px;
         height: 60px;
         margin: 0 auto $spacing-lg;
-        background: rgba($primary, 0.1);
+        background: rgba(var(--primary-rgb), 0.1);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -1484,7 +1484,7 @@ export default {
 
     .notice-header {
       padding: $spacing-md $spacing-lg;
-      background: rgba($primary, 0.1);
+      background: rgba(var(--primary-rgb), 0.1);
       color: $primary;
       font-weight: 500;
       display: flex;
@@ -1525,7 +1525,7 @@ export default {
         &.notice-warning {
           margin-top: $spacing-sm;
           padding: $spacing-sm;
-          background: rgba($primary, 0.05);
+          background: rgba(var(--primary-rgb), 0.05);
           border-radius: $border-radius-sm;
 
           i {
@@ -1606,7 +1606,7 @@ export default {
 
         &:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba($primary, 0.2);
+          box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
         }
       }
     }
@@ -1711,7 +1711,7 @@ export default {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(45deg, transparent, rgba($primary, 0.03), transparent);
+      background: linear-gradient(45deg, transparent, rgba(var(--primary-rgb), 0.03), transparent);
       opacity: 0;
       transition: opacity 0.3s ease;
     }
@@ -1748,7 +1748,7 @@ export default {
         align-items: center;
         gap: $spacing-xs;
         padding: 4px 8px;
-        background: rgba($primary, 0.05);
+        background: rgba(var(--primary-rgb), 0.05);
         border-radius: $border-radius-lg;
         transition: all 0.3s ease;
 
@@ -1787,8 +1787,8 @@ export default {
         background: linear-gradient(
           to bottom,
           transparent,
-          rgba($primary, 0.1),
-          rgba($primary, 0.1),
+          rgba(var(--primary-rgb), 0.1),
+          rgba(var(--primary-rgb), 0.1),
           transparent
         );
       }
@@ -1822,14 +1822,14 @@ export default {
           border-radius: 50%;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           opacity: 0;
-          box-shadow: 0 0 4px rgba($primary, 0.4);
+          box-shadow: 0 0 4px rgba(var(--primary-rgb), 0.4);
         }
 
         &:hover {
           color: $primary;
           background: linear-gradient(90deg,
-            rgba($primary, 0.05),
-            rgba($primary, 0.02)
+            rgba(var(--primary-rgb), 0.05),
+            rgba(var(--primary-rgb), 0.02)
           );
           padding-left: 20px;
 
@@ -1843,8 +1843,8 @@ export default {
         &.active {
           color: $primary;
           background: linear-gradient(90deg,
-            rgba($primary, 0.1),
-            rgba($primary, 0.05)
+            rgba(var(--primary-rgb), 0.1),
+            rgba(var(--primary-rgb), 0.05)
           );
           font-weight: 500;
           padding-left: 20px;
@@ -1890,13 +1890,13 @@ export default {
 
 @keyframes tocDotPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba($primary, 0.4);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4);
   }
   70% {
-    box-shadow: 0 0 0 4px rgba($primary, 0);
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba($primary, 0);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
   }
 }
 
@@ -1966,7 +1966,7 @@ export default {
 
     &:hover {
       .action-button {
-        background: rgba($primary, 0.1);
+        background: rgba(var(--primary-rgb), 0.1);
         transform: translateY(-2px);
 
         i {

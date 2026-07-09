@@ -233,7 +233,7 @@ export default {
 
     .post-date {
       border-color: $primary;
-      background: rgba($primary, 0.1);
+      background: rgba(var(--primary-rgb), 0.1);
     }
   }
 
@@ -319,13 +319,13 @@ export default {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba($primary, 0.4);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba($primary, 0);
+    box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba($primary, 0);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
   }
 }
 

@@ -3,6 +3,8 @@ package com.mojian.controller.site;
 import java.util.List;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.mojian.annotation.OperationLogger;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +27,14 @@ public class SysResourceController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取资源表列表")
+    @OperationLogger(value = "资源",module = "管理端")
     public Result<IPage<SysResource>> list(SysResource sysResource) {
         return Result.success(sysResourceService.selectPage(sysResource));
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "获取资源表详情")
+    @OperationLogger(value = "资源",module = "管理端")
     public Result<SysResource> getInfo(@PathVariable("id") Long id) {
         return Result.success(sysResourceService.getById(id));
     }
@@ -38,6 +42,8 @@ public class SysResourceController {
     @PostMapping("/add")
     @SaCheckPermission("sys:resource:add")
     @ApiOperation(value = "添加资源表")
+    @OperationLogger(value = "资源",module = "管理端")
+    @RepeatSubmit
     public Result<Object> add(@RequestBody SysResource sysResource) {
         return Result.success(sysResourceService.insert(sysResource));
     }
@@ -45,6 +51,8 @@ public class SysResourceController {
     @PutMapping("/update")
     @SaCheckPermission("sys:resource:update")
     @ApiOperation(value = "修改资源表")
+    @OperationLogger(value = "资源",module = "管理端")
+    @RepeatSubmit
     public Result<Object> edit(@RequestBody SysResource sysResource) {
         return Result.success(sysResourceService.update(sysResource));
     }
@@ -52,6 +60,8 @@ public class SysResourceController {
     @DeleteMapping("/delete/{ids}")
     @SaCheckPermission("sys:resource:delete")
     @ApiOperation(value = "删除资源表")
+    @OperationLogger(value = "资源",module = "管理端")
+    @RepeatSubmit
     public Result<Object> remove(@PathVariable List<Long> ids) {
         return Result.success(sysResourceService.deleteByIds(ids));
     }

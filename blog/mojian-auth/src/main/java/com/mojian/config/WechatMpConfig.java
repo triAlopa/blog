@@ -12,11 +12,11 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author: quequnlong
  * @date: 2024/12/29
- * @description:
+ * @description: 微信公众号配置
  */
 
 @Configuration
-public class WechatConfig {
+public class WechatMpConfig {
 
     @Autowired
     private WechatProperties wechatMpProperties;

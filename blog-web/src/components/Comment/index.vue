@@ -576,7 +576,7 @@ export default {
         &:focus {
           outline: none;
           border-color: $primary;
-          box-shadow: 0 0 0 3px rgba($primary, 0.1);
+          box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
         }
 
         &:empty:before {
@@ -627,7 +627,7 @@ export default {
 
           &:not(:disabled):hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba($primary, 0.2);
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
           }
         }
       }
@@ -698,8 +698,8 @@ export default {
       font-size: 12px;
       line-height: 1.2;
       color: $primary;
-      background: rgba($primary, 0.1);
-      border: 1px solid rgba($primary, 0.2);
+      background: rgba(var(--primary-rgb), 0.1);
+      border: 1px solid rgba(var(--primary-rgb), 0.2);
       border-radius: 4px;
       margin: 0 $spacing-xs;
     }
@@ -902,7 +902,7 @@ export default {
       &:focus {
         outline: none;
         border-color: $primary;
-        box-shadow: 0 0 0 3px rgba($primary, 0.1);
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
       }
 
       &:empty:before {
@@ -971,7 +971,7 @@ export default {
 
             &:not(:disabled):hover {
               transform: translateY(-1px);
-              box-shadow: 0 2px 8px rgba($primary, 0.2);
+              box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.2);
             }
           }
         }
@@ -1068,7 +1068,7 @@ export default {
     &:focus {
       outline: none;
       border-color: $primary;
-      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
     }
 
     &:empty:before {
@@ -1137,7 +1137,7 @@ export default {
 
           &:not(:disabled):hover {
             transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba($primary, 0.2);
+            box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.2);
           }
         }
       }

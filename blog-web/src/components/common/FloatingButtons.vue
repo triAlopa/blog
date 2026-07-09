@@ -106,7 +106,7 @@ export default {
     text-decoration: none;
     animation: pulse 2s infinite;
     &:hover {
-      background: darken($primary, 10%);
+      background: var(--primary-dark-color);
     }
   }
 
@@ -156,13 +156,13 @@ export default {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba($primary, 0.4);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba($primary, 0);
+    box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba($primary, 0);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
   }
 }
 

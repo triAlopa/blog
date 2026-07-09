@@ -18,6 +18,11 @@ public @interface OperationLogger {
     String value() default "";
 
     /**
+     * 模块名称
+     */
+    String module() default "";
+
+    /**
      * 是否将当前日志记录到数据库中
      */
     boolean save() default true;

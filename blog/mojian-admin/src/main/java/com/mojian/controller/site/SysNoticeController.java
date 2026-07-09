@@ -3,6 +3,8 @@ package com.mojian.controller.site;
 import java.util.List;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.mojian.annotation.OperationLogger;
+import com.mojian.idempotent.annotation.RepeatSubmit;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +27,14 @@ public class SysNoticeController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取公告列表")
+    @OperationLogger(value = "公告",module = "管理端")
     public Result<IPage<SysNotice>> list(SysNotice sysNotice) {
         return Result.success(sysNoticeService.selectPage(sysNotice));
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "获取公告详情")
+    @OperationLogger(value = "公告",module = "管理端")
     public Result<SysNotice> getInfo(@PathVariable("id") Long id) {
         return Result.success(sysNoticeService.getById(id));
     }
@@ -38,6 +42,8 @@ public class SysNoticeController {
     @PostMapping("/add")
     @SaCheckPermission("sys:notice:add")
     @ApiOperation(value = "添加公告")
+    @OperationLogger(value = "公告",module = "管理端")
+    @RepeatSubmit
     public Result<Object> add(@RequestBody SysNotice sysNotice) {
         return Result.success(sysNoticeService.insert(sysNotice));
     }
@@ -45,6 +51,8 @@ public class SysNoticeController {
     @PutMapping("/update")
     @SaCheckPermission("sys:notice:update")
     @ApiOperation(value = "修改公告")
+    @OperationLogger(value = "公告",module = "管理端")
+    @RepeatSubmit
     public Result<Object> edit(@RequestBody SysNotice sysNotice) {
         return Result.success(sysNoticeService.update(sysNotice));
     }
@@ -52,6 +60,8 @@ public class SysNoticeController {
     @DeleteMapping("/delete/{ids}")
     @SaCheckPermission("sys:notice:delete")
     @ApiOperation(value = "删除公告")
+    @OperationLogger(value = "公告",module = "管理端")
+    @RepeatSubmit
     public Result<Object> remove(@PathVariable List<Long> ids) {
         return Result.success(sysNoticeService.deleteByIds(ids));
     }

@@ -158,9 +158,9 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-      radial-gradient(circle at 10% 20%, rgba($primary, 0.03) 0%, transparent 20%),
-      radial-gradient(circle at 90% 80%, rgba(adjust-hue($primary, 60deg), 0.03) 0%, transparent 20%);
+    background:
+      radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 20%),
+      radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.03) 0%, transparent 20%);
     pointer-events: none;
     z-index: -1;
   }
@@ -194,7 +194,7 @@ export default {
   h3 {
     font-size: 1.6em;
     font-weight: 800;
-    background: linear-gradient(120deg, $primary, adjust-hue($primary, 60deg));
+    background: linear-gradient(120deg, var(--primary-color, #6366f1), var(--secondary-color, #8b5cf6));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: $spacing-sm;
@@ -299,8 +299,8 @@ export default {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(to bottom, $primary, adjust-hue($primary, 40deg));
-    
+    background: linear-gradient(to bottom, var(--primary-color, #6366f1), var(--secondary-color, #8b5cf6));
+
     &::before,
     &::after {
       content: '';
@@ -311,11 +311,11 @@ export default {
       background: white;
       filter: blur(4px);
     }
-    
+
     &::before {
       top: 0;
     }
-    
+
     &::after {
       bottom: 0;
     }
@@ -330,7 +330,7 @@ export default {
     margin: 0;
 
     i {
-      color: $primary;
+      color: var(--primary-color, #6366f1);
       font-size: 0.9em;
       transition: transform 0.3s ease;
     }
@@ -340,26 +340,26 @@ export default {
       color: var(--text-secondary);
       margin-left: auto;
       padding: $spacing-xs $spacing-md;
-      background: linear-gradient(120deg, rgba($primary, 0.1), rgba(adjust-hue($primary, 60deg), 0.1));
+      background: linear-gradient(120deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
       backdrop-filter: blur(4px);
-      border: 1px solid rgba($primary, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.15);
       transition: all 0.3s ease;
       border-radius: $border-radius-lg;
       letter-spacing: 0.5px;
       display: flex;
       align-items: center;
       gap: $spacing-xs;
-      
+
       .count-number {
-        color: $primary;
+        color: var(--primary-color, #6366f1);
         font-weight: 600;
         font-size: 1.2em;
       }
 
       &:hover {
-        border-color: rgba($primary, 0.4);
+        border-color: rgba(var(--primary-rgb), 0.4);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba($primary, 0.15);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15);
       }
     }
   }

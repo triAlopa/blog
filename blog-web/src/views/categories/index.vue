@@ -222,7 +222,7 @@
   .category-header {
     margin-bottom: $spacing-lg;
     padding-bottom: $spacing-sm;
-    border-bottom: 2px solid rgba($primary, 0.1);
+    border-bottom: 2px solid rgba(var(--primary-rgb), 0.1);
     position: relative;
   
     &::after {
@@ -276,7 +276,7 @@
   
       .post-date {
         border-color: $primary;
-        background: rgba($primary, 0.1);
+        background: rgba(var(--primary-rgb), 0.1);
       }
     }
   

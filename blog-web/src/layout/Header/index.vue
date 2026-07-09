@@ -581,7 +581,7 @@ export default {
       color: $primary;
       border-color: $primary;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba($primary, 0.1);
+      box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.1);
       
       i {
         transform: scale(1.1);
